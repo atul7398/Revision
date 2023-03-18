@@ -4,11 +4,15 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.app.rivisio.R
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
+import com.app.rivisio.ui.onboarding.OnboardingActivity
 import com.app.rivisio.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @SuppressLint("CustomSplashScreen")
@@ -46,12 +50,18 @@ class SplashActivity : BaseActivity() {
                     showError(it.e.message)
                 }
                 else -> {
+                    hideLoading()
                     Timber.e(it.toString())
                 }
             }
         })
 
-        splashViewModel.fetchUsers()
+        lifecycleScope.launch {
+            delay(500)
+            startActivity(OnboardingActivity.getStartIntent(this@SplashActivity))
+            finish()
+        }
+        //splashViewModel.fetchUsers()
     }
 
 }

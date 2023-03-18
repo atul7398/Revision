@@ -10,7 +10,6 @@ import com.app.rivisio.utils.NetworkResult
 import com.google.gson.JsonElement
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel

@@ -17,6 +17,10 @@
         android:theme="@style/Theme.Rivisio"
         tools:targetApi="31">
         <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"

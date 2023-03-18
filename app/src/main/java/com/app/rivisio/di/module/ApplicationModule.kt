@@ -4,6 +4,8 @@ import com.app.rivisio.BuildConfig
 import com.app.rivisio.data.network.ApiHelper
 import com.app.rivisio.data.network.ApiHelperImpl
 import com.app.rivisio.data.network.ApiService
+import com.app.rivisio.data.prefs.PreferencesHelper
+import com.app.rivisio.data.prefs.PreferencesHelperImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +21,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ApplicationModule {
-
 
     @Provides
     fun provideBaseUrl() = BuildConfig.BASE_URL
@@ -94,5 +95,10 @@ class ApplicationModule {
     @Provides
     @Singleton
     fun provideApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
+
+    @Provides
+    @Singleton
+    fun providePreferenceHelper(preferencesHelper: PreferencesHelperImpl): PreferencesHelper =
+        preferencesHelper
 
 }
