@@ -17,6 +17,7 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
     private val PREF_KEY_USER_NAME = "PREF_KEY_USER_NAME"
     private val PREF_KEY_USER_GENDER = "PREF_KEY_USER_GENDER"
     private val PREF_KEY_USER_LOGGED_IN = "PREF_KEY_USER_LOGGED_IN"
+    private val PREF_KEY_USER_ONBOARDING_SHOWN = "PREF_KEY_USER_ONBOARDING_SHOWN"
     private val PREF_KEY_USER_STATE = "PREF_KEY_USER_STATE"
 
     private val sharedPreferences: SharedPreferences =

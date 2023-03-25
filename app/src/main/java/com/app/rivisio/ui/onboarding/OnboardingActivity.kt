@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.rivisio.R
+import com.app.rivisio.data.prefs.UserState
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.login.LoginActivity
 import com.app.rivisio.ui.splash.SplashViewModel
@@ -68,6 +69,7 @@ class OnboardingActivity : BaseActivity() {
         })
 
         findViewById<AppCompatButton>(R.id.try_button).setOnClickListener {
+            onboardingViewModel.setUserState(UserState.ONBOARDED)
             startActivity(LoginActivity.getStartIntent(this@OnboardingActivity))
             finish()
         }

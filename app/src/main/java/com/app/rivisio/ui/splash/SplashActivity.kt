@@ -6,8 +6,11 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.app.rivisio.R
+import com.app.rivisio.data.prefs.UserState
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
+import com.app.rivisio.ui.home.HomeActivity
+import com.app.rivisio.ui.login.LoginActivity
 import com.app.rivisio.ui.onboarding.OnboardingActivity
 import com.app.rivisio.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +35,29 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun setupObserver() {
+
+        splashViewModel.userState.observe(this, Observer { userState: UserState ->
+            when (userState) {
+                UserState.EMPTY -> {
+                    startActivity(OnboardingActivity.getStartIntent(this@SplashActivity))
+                    finish()
+                }
+                UserState.ONBOARDED -> {
+                    startActivity(LoginActivity.getStartIntent(this@SplashActivity))
+                    finish()
+                }
+                UserState.LOGGED_IN -> {
+                    startActivity(HomeActivity.getStartIntent(this@SplashActivity))
+                    finish()
+                }
+                UserState.LOGGED_OUT -> {
+                    startActivity(LoginActivity.getStartIntent(this@SplashActivity))
+                    finish()
+                }
+
+            }
+        })
+
         splashViewModel.users.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {
@@ -56,11 +82,8 @@ class SplashActivity : BaseActivity() {
             }
         })
 
-        lifecycleScope.launch {
-            delay(500)
-            startActivity(OnboardingActivity.getStartIntent(this@SplashActivity))
-            finish()
-        }
+        splashViewModel.getUserState()
+
         //splashViewModel.fetchUsers()
     }
 
