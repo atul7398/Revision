@@ -20,8 +20,16 @@ class MainRepository @Inject constructor(
         preferencesHelper.setUserState(userState)
     }
 
+    fun getUserEmail(): String? {
+        return preferencesHelper.getUserEmail()
+    }
+
     fun setUserEmail(email: String) {
         preferencesHelper.setUserEmail(email)
+    }
+
+    fun getName(): String? {
+        return preferencesHelper.getName()
     }
 
     fun setName(name: String) {

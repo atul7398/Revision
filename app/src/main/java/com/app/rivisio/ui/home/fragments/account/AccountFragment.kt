@@ -1,18 +1,20 @@
 package com.app.rivisio.ui.home.fragments.account
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.app.rivisio.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.app.rivisio.databinding.FragmentAccountBinding
+import com.app.rivisio.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AccountFragment : Fragment() {
+class AccountFragment : BaseFragment() {
 
     private var _binding: FragmentAccountBinding? = null
+    private val accountViewModel: AccountViewModel by viewModels()
 
     private val binding
         get() = _binding!!
@@ -25,9 +27,22 @@ class AccountFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAccountBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun setUp(view: View) {
+        accountViewModel.userEmail.observe(this, Observer {
+            binding.accountEmail.text = it
+        })
+
+        accountViewModel.userName.observe(this, Observer {
+            binding.accountName.text = it
+        })
+
+        accountViewModel.getUserDetails()
+
     }
 
     override fun onDestroyView() {
