@@ -5,5 +5,5 @@ import retrofit2.Response
 
 interface ApiHelper {
 
-    suspend fun getUsers(): Response<JsonElement>
+    suspend fun signup(body: Map<String, String>): Response<JsonElement>
 }

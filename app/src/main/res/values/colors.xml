@@ -16,4 +16,5 @@
     <color name="gray_navigation">#888898</color>
     <color name="gray_text">#888898</color>
     <color name="red">#E82C59</color>
+    <color name="lable_color">#616075</color>
 </resources>

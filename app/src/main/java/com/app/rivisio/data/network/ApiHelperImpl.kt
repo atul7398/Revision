@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : ApiHelper {
 
-    override suspend fun getUsers(): Response<JsonElement> = apiService.getUsers()
+    override suspend fun signup(body: Map<String, String>): Response<JsonElement> =
+        apiService.signup(body)
 
 }

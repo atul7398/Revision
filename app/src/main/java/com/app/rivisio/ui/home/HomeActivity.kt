@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentTransaction
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityHomeBinding
+import com.app.rivisio.ui.add_topic.AddTopicActivity
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.fragments.account.AccountFragment
@@ -31,6 +32,10 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.floatingButton.setOnClickListener {
+            startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
+        }
 
         setUpFragments()
     }

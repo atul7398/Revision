@@ -33,8 +33,8 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             _users.value = NetworkResult.Loading
 
-            val response = handleApi { mainRepository.getUsers() }
-            _users.value = response
+            //val response = handleApi { mainRepository.getUsers() }
+            //_users.value = response
 
         }
 

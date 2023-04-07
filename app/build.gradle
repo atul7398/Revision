@@ -18,7 +18,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField 'String', 'BASE_URL', "\"https://5e510330f2c0d300147c034c.mockapi.io/\""
+        buildConfigField 'String', 'BASE_URL', "\"http://65.1.86.178:8080/\""
 
     }
 

@@ -36,6 +36,6 @@ class MainRepository @Inject constructor(
         preferencesHelper.setName(name)
     }
 
-    suspend fun getUsers() = apiHelper.getUsers()
+    suspend fun signup(body: Map<String, String>) = apiHelper.signup(body)
 
 }
