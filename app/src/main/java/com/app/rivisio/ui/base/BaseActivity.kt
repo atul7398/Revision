@@ -58,7 +58,7 @@ abstract class BaseActivity : AppCompatActivity() {
             Toasty.custom(
                 this,
                 message,
-                R.mipmap.ic_launcher,
+                R.drawable.ic_error,
                 es.dmoral.toasty.R.color.errorColor,
                 Toast.LENGTH_SHORT,
                 true,
@@ -71,7 +71,7 @@ abstract class BaseActivity : AppCompatActivity() {
             Toasty.custom(
                 this,
                 message,
-                R.mipmap.ic_launcher,
+                R.drawable.ic_info,
                 es.dmoral.toasty.R.color.infoColor,
                 Toast.LENGTH_SHORT,
                 true,

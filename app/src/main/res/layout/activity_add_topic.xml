@@ -61,32 +61,21 @@
         android:textColor="@color/lable_color"
         android:textSize="12sp" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tags_container"
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/tags_text_view"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="20dp"
-        android:textColorHint="?android:textColorHint"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:hintAnimationEnabled="false"
-        app:hintEnabled="false">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tags_selector"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/edit_text_bg"
-            android:imeOptions="actionDone"
-            android:hint="Tags here"
-            android:paddingLeft="24dp"
-            android:inputType="text"
-            android:textColorHint="@color/lable_color"
-            android:textSize="16sp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        android:background="@drawable/edit_text_bg"
+        android:gravity="center_vertical"
+        android:hint="Tags here"
+        android:imeOptions="actionDone"
+        android:paddingLeft="24dp"
+        android:textColorHint="@color/lable_color"
+        android:textSize="16sp" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/selected_tags"

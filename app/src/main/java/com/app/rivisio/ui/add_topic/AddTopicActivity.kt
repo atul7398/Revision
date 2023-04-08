@@ -3,24 +3,27 @@ package com.app.rivisio.ui.add_topic
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.ListPopupWindow
+import androidx.core.content.ContextCompat
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityAddTopicBinding
-import com.app.rivisio.databinding.ActivityHomeBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
-import com.app.rivisio.ui.home.HomeViewModel
+import com.app.rivisio.ui.login.Tag
+import com.app.rivisio.ui.login.tags
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class AddTopicActivity : BaseActivity() {
@@ -35,58 +38,96 @@ class AddTopicActivity : BaseActivity() {
 
     override fun getViewModel(): BaseViewModel = addTopicViewModel
 
-    private val planetList = listOf(
-        "Mercury",
-        "Venus",
-        "Earth",
-        "Mars",
-        "Jupiter",
-        "Saturn",
-        "Uranus",
-        "Neptune",
-        "Pluto"
-    )
+    private val selectedTags = mutableListOf<Tag>()
 
-    private val selectedPlanets = ArrayList<String>()
+    private lateinit var listPopupWindow: ListPopupWindow
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddTopicBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = ArrayAdapter(this@AddTopicActivity, R.layout.item_drop_down, planetList)
-        binding.tagsSelector.setAdapter(adapter)
+        listPopupWindow = ListPopupWindow(this)
+        listPopupWindow.anchorView = binding.tagsTextView
 
-        binding.tagsSelector.setOnItemClickListener { parent, _, position, _ ->
-            val selectedPlanet = parent.getItemAtPosition(position) as String
-            if (selectedPlanets.contains(selectedPlanet)) {
-                Toast.makeText(
-                    this@AddTopicActivity,
-                    "You have already selected $selectedPlanet",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                addPlanetChip(selectedPlanet)
+        binding.tagsTextView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+
+                if (listPopupWindow.isShowing) {
+                    listPopupWindow.dismiss()
+                }
+
+                val filteredTags = mutableListOf<Tag>()
+
+                if (s.toString().isNotEmpty()) {
+                    tags.forEach {
+                        if (it.name.uppercase(Locale.getDefault())
+                                .startsWith(s.toString().uppercase(Locale.getDefault()))
+                        ) {
+                            filteredTags.add(it)
+                        }
+                    }
+
+                    showMenu(filteredTags)
+                }
             }
-            binding.tagsSelector.setText("")
+        })
+    }
+
+    private fun showMenu(filteredTags: MutableList<Tag>) {
+
+        if (filteredTags.isEmpty())
+            filteredTags.add(Tag("Create Tag", -1, ""))
+
+        val adapter = ArrayAdapter(this, R.layout.item_drop_down, filteredTags)
+        listPopupWindow.setAdapter(adapter)
+        listPopupWindow.setBackgroundDrawable(
+            ContextCompat.getDrawable(this@AddTopicActivity, R.drawable.bg_popup_menu)
+        );
+
+        listPopupWindow.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+
+            val clickedTag = parent?.getItemAtPosition(position) as Tag
+
+            if (clickedTag.name == "Create Tag") {
+                showMessage("Show create tag ui here")
+                binding.tagsTextView.setText("")
+                listPopupWindow.dismiss()
+                return@setOnItemClickListener
+            }
+
+            if (selectedTags.contains(clickedTag)) {
+                showError("You have already selected $clickedTag")
+                binding.tagsTextView.setText("")
+                listPopupWindow.dismiss()
+                return@setOnItemClickListener
+            }
+
+            addPlanetChip(clickedTag)
         }
+
+        listPopupWindow.show()
     }
 
-    private fun addPlanetChip(planetName: String) {
-        selectedPlanets.add(planetName)
-        binding.selectedTags.addView(getChip(planetName))
+    private fun addPlanetChip(tag: Tag) {
+        selectedTags.add(tag)
+        binding.tagsTextView.setText("")
+        listPopupWindow.dismiss()
+        binding.selectedTags.addView(getChip(tag))
     }
 
-    private fun getChip(name: String): Chip {
-        val colorInt: Int = getColor(R.color.white)
-
+    private fun getChip(tag: Tag): Chip {
         return Chip(this@AddTopicActivity).apply {
-            text = name
+            text = tag.name
             isCloseIconVisible = true
-            chipBackgroundColor = ColorStateList.valueOf(colorInt)
+            chipBackgroundColor = ColorStateList.valueOf(Color.parseColor(tag.color))
             closeIcon = AppCompatResources.getDrawable(this@AddTopicActivity, R.drawable.ic_clear)
             setOnCloseIconClickListener {
-                selectedPlanets.remove((it as Chip).text)
+                selectedTags.remove(tag)
                 (it.parent as ChipGroup).removeView(it)
             }
         }
