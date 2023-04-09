@@ -36,6 +36,54 @@ class MainRepository @Inject constructor(
         preferencesHelper.setName(name)
     }
 
+    fun getFirstName(): String? {
+        return preferencesHelper.getFirstName()
+    }
+
+    fun setFirstName(firstName: String) {
+        preferencesHelper.setFirstName(firstName)
+    }
+
+    fun getLastName(): String? {
+        return preferencesHelper.getLastName()
+    }
+
+    fun setLastName(lastName: String) {
+        preferencesHelper.setLastName(lastName)
+    }
+
+    fun getMobile(): String? {
+        return preferencesHelper.getMobile()
+    }
+
+    fun setMobile(mobile: String) {
+        preferencesHelper.setMobile(mobile)
+    }
+
+    fun getUserLoggedIn(): Boolean {
+        return preferencesHelper.getUserLoggedIn()
+    }
+
+    fun setUserLoggedIn() {
+        preferencesHelper.setUserLoggedIn()
+    }
+
+    fun getProfilePicture(): String? {
+        return preferencesHelper.getProfilePicture()
+    }
+
+    fun setProfilePicture(profilePictureUrl: String) {
+        preferencesHelper.setProfilePicture(profilePictureUrl)
+    }
+
+    fun getAccessToken(): String? {
+        return preferencesHelper.getAccessToken()
+    }
+
+    fun setAccessToken(accessToken: String) {
+        preferencesHelper.setAccessToken(accessToken)
+    }
+
     suspend fun signup(body: Map<String, String>) = apiHelper.signup(body)
 
 }

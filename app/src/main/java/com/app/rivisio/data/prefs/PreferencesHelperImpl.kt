@@ -13,12 +13,15 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
 
     private val PREF_KEY_ACCESS_TOKEN = "PREF_KEY_ACCESS_TOKEN"
     private val PREF_KEY_USER_EMAIL = "PREF_KEY_USER_EMAIL"
+    private val PREF_KEY_USER_MOBILE = "PREF_KEY_USER_MOBILE"
     private val PREF_KEY_USER_ID = "PREF_KEY_USER_ID"
     private val PREF_KEY_USER_NAME = "PREF_KEY_USER_NAME"
+    private val PREF_KEY_FIRST_NAME = "PREF_KEY_FIRST_NAME"
+    private val PREF_KEY_LAST_NAME = "PREF_KEY_LAST_NAME"
     private val PREF_KEY_USER_GENDER = "PREF_KEY_USER_GENDER"
     private val PREF_KEY_USER_LOGGED_IN = "PREF_KEY_USER_LOGGED_IN"
-    private val PREF_KEY_USER_ONBOARDING_SHOWN = "PREF_KEY_USER_ONBOARDING_SHOWN"
     private val PREF_KEY_USER_STATE = "PREF_KEY_USER_STATE"
+    private val PREF_KEY_USER_PROFILE_PICTURE_URL = "PREF_KEY_USER_PROFILE_PICTURE_URL"
 
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -56,12 +59,37 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
         sharedPreferences.edit().putString(PREF_KEY_USER_NAME, name).apply()
     }
 
-    override fun getGender(): String? {
-        return sharedPreferences.getString(PREF_KEY_USER_GENDER, null)
+    override fun getFirstName(): String? {
+        return sharedPreferences.getString(PREF_KEY_FIRST_NAME, null)
     }
 
-    override fun setGender(gender: String) {
-        sharedPreferences.edit().putString(PREF_KEY_USER_GENDER, gender).apply()
+    override fun setFirstName(name: String) {
+        sharedPreferences.edit().putString(PREF_KEY_FIRST_NAME, name).apply()
+    }
+
+    override fun getLastName(): String? {
+        return sharedPreferences.getString(PREF_KEY_LAST_NAME, null)
+    }
+
+    override fun setLastName(name: String) {
+        sharedPreferences.edit().putString(PREF_KEY_LAST_NAME, name).apply()
+    }
+
+    override fun getMobile(): String? {
+        return sharedPreferences.getString(PREF_KEY_USER_MOBILE, null)
+    }
+
+    override fun setMobile(name: String) {
+        sharedPreferences.edit().putString(PREF_KEY_USER_MOBILE, name).apply()
+    }
+
+    override fun getProfilePicture(): String? {
+        return sharedPreferences.getString(PREF_KEY_USER_PROFILE_PICTURE_URL, null)
+    }
+
+    override fun setProfilePicture(profilePictureUrl: String) {
+        sharedPreferences.edit().putString(PREF_KEY_USER_PROFILE_PICTURE_URL, profilePictureUrl)
+            .apply()
     }
 
     override fun getUserLoggedIn(): Boolean {

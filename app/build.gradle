@@ -44,7 +44,7 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -53,6 +53,7 @@ dependencies {
 
     //to fix: error CreationExtras must have a value by `SAVED_STATE_REGISTRY_OWNER_KEY`
     implementation "androidx.fragment:fragment-ktx:1.5.6"
+    implementation "androidx.activity:activity-ktx:1.7.0"
 
     //hilt
     implementation "com.google.dagger:hilt-android:2.44"
@@ -77,7 +78,7 @@ dependencies {
     implementation 'com.github.GrenderG:Toasty:1.5.2'
 
     //google authentication
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
     //calendar
     implementation 'com.kizitonwose.calendar:view:2.2.0'

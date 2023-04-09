@@ -18,8 +18,6 @@ import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityAddTopicBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
-import com.app.rivisio.ui.login.Tag
-import com.app.rivisio.ui.login.tags
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint

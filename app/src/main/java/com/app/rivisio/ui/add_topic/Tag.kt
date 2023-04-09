@@ -1,4 +1,4 @@
-package com.app.rivisio.ui.login
+package com.app.rivisio.ui.add_topic
 
 data class Tag(
     val name: String,

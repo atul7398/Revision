@@ -17,6 +17,14 @@ interface PreferencesHelper {
     fun getName(): String?
 
     fun setName(name: String)
+    fun getFirstName(): String?
+    fun setFirstName(name: String)
+
+    fun getLastName(): String?
+    fun setLastName(name: String)
+
+    fun getMobile(): String?
+    fun setMobile(name: String)
 
     fun getUserLoggedIn(): Boolean
 
@@ -27,8 +35,6 @@ interface PreferencesHelper {
     fun getUserState(): UserState?
 
     fun setUserState(userState: UserState)
-
-    fun getGender(): String?
-
-    fun setGender(gender: String)
+    fun getProfilePicture(): String?
+    fun setProfilePicture(gender: String)
 }
