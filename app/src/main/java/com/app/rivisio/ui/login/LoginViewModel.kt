@@ -69,6 +69,7 @@ class LoginViewModel @Inject constructor(
         mainRepository.setFirstName(networkResponse.data.asJsonObject[FIRST_NAME].asString)
         mainRepository.setLastName(networkResponse.data.asJsonObject[LAST_NAME].asString)
         mainRepository.setMobile(networkResponse.data.asJsonObject[MOBILE].asString)
+        mainRepository.setUserId(networkResponse.data.asJsonObject[ID].asInt)
 
         if (!networkResponse.data.asJsonObject[PROFILE_IMAGE_URL].isJsonNull) {
             mainRepository.setProfilePicture(networkResponse.data.asJsonObject[PROFILE_IMAGE_URL].asString)

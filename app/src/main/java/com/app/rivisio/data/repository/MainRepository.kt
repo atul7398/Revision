@@ -1,9 +1,11 @@
 package com.app.rivisio.data.repository
 
 import com.app.rivisio.data.network.ApiHelper
+import com.app.rivisio.data.network.USER_ID
 import com.app.rivisio.data.prefs.PreferencesHelper
 import com.app.rivisio.data.prefs.UserState
 import dagger.hilt.android.scopes.ViewModelScoped
+import retrofit2.http.Query
 import javax.inject.Inject
 
 @ViewModelScoped
@@ -84,6 +86,16 @@ class MainRepository @Inject constructor(
         preferencesHelper.setAccessToken(accessToken)
     }
 
+    fun getUserId(): Int {
+        return preferencesHelper.getUserId()
+    }
+
+    fun setUserId(userId: Int) {
+        preferencesHelper.setUserId(userId)
+    }
+
     suspend fun signup(body: Map<String, String>) = apiHelper.signup(body)
+
+    suspend fun tags(token: String?, userId: Int) = apiHelper.tags(token, userId)
 
 }

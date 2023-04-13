@@ -18,9 +18,12 @@ import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityAddTopicBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
+import com.app.rivisio.ui.home.HomeActivity
+import com.app.rivisio.utils.NetworkResult
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
@@ -45,6 +48,37 @@ class AddTopicActivity : BaseActivity() {
         binding = ActivityAddTopicBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpTagsUi()
+
+        addTopicViewModel.tags.observe(this) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    startActivity(HomeActivity.getStartIntent(this@AddTopicActivity))
+                    finish()
+                }
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        }
+
+        addTopicViewModel.getTopics()
+    }
+
+    private fun setUpTagsUi() {
         listPopupWindow = ListPopupWindow(this)
         listPopupWindow.anchorView = binding.tagsTextView
 

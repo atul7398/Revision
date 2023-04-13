@@ -4,6 +4,6 @@ import com.google.gson.JsonElement
 import retrofit2.Response
 
 interface ApiHelper {
-
     suspend fun signup(body: Map<String, String>): Response<JsonElement>
+    suspend fun tags(token: String?, userId: Int): Response<JsonElement>
 }
