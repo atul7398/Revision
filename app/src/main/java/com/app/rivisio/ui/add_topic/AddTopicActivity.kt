@@ -15,23 +15,30 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.core.content.ContextCompat
 import com.app.rivisio.R
+import com.app.rivisio.data.network.HEX_CODE
+import com.app.rivisio.data.network.ID
+import com.app.rivisio.data.network.NAME
 import com.app.rivisio.databinding.ActivityAddTopicBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.HomeActivity
 import com.app.rivisio.utils.NetworkResult
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
-class AddTopicActivity : BaseActivity() {
+class AddTopicActivity : BaseActivity(), ModalBottomSheet.Callback {
 
     private val addTopicViewModel: AddTopicViewModel by viewModels()
 
     private lateinit var binding: ActivityAddTopicBinding
+
+    private val tags = mutableListOf<Tag>()
 
     companion object {
         fun getStartIntent(context: Context) = Intent(context, AddTopicActivity::class.java)
@@ -50,12 +57,60 @@ class AddTopicActivity : BaseActivity() {
 
         setUpTagsUi()
 
+        binding.selectDate.setOnClickListener {
+            val datePicker =
+                MaterialDatePicker.Builder.datePicker()
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .setTitleText("Select dates")
+                    .setTheme(R.style.ThemeOverlay_App_DatePicker)
+                    .build()
+
+            datePicker.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
+        }
+
         addTopicViewModel.tags.observe(this) {
             when (it) {
                 is NetworkResult.Success -> {
                     hideLoading()
-                    startActivity(HomeActivity.getStartIntent(this@AddTopicActivity))
-                    finish()
+                    try {
+                        tags.clear()
+                        it.data.asJsonArray.forEach { tag ->
+                            tags.add(
+                                Tag(
+                                    tag.asJsonObject[ID].asInt,
+                                    tag.asJsonObject[NAME].asString,
+                                    tag.asJsonObject[HEX_CODE].asString
+                                )
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                    }
+                }
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        }
+
+        addTopicViewModel.addTags.observe(this) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    addTopicViewModel.getTopics()
                 }
                 is NetworkResult.Loading -> {
                     showLoading()
@@ -80,9 +135,9 @@ class AddTopicActivity : BaseActivity() {
 
     private fun setUpTagsUi() {
         listPopupWindow = ListPopupWindow(this)
-        listPopupWindow.anchorView = binding.tagsTextView
+        listPopupWindow.anchorView = binding.tagsField
 
-        binding.tagsTextView.addTextChangedListener(object : TextWatcher {
+        binding.tagsField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -113,7 +168,7 @@ class AddTopicActivity : BaseActivity() {
     private fun showMenu(filteredTags: MutableList<Tag>) {
 
         if (filteredTags.isEmpty())
-            filteredTags.add(Tag("Create Tag", -1, ""))
+            filteredTags.add(Tag(-1, "Create Tag", ""))
 
         val adapter = ArrayAdapter(this, R.layout.item_drop_down, filteredTags)
         listPopupWindow.setAdapter(adapter)
@@ -126,15 +181,18 @@ class AddTopicActivity : BaseActivity() {
             val clickedTag = parent?.getItemAtPosition(position) as Tag
 
             if (clickedTag.name == "Create Tag") {
-                showMessage("Show create tag ui here")
-                binding.tagsTextView.setText("")
+
+                showCreateTagUI()
+
+                binding.tagsField.setText("")
                 listPopupWindow.dismiss()
                 return@setOnItemClickListener
+
             }
 
             if (selectedTags.contains(clickedTag)) {
                 showError("You have already selected $clickedTag")
-                binding.tagsTextView.setText("")
+                binding.tagsField.setText("")
                 listPopupWindow.dismiss()
                 return@setOnItemClickListener
             }
@@ -145,9 +203,15 @@ class AddTopicActivity : BaseActivity() {
         listPopupWindow.show()
     }
 
+    private fun showCreateTagUI() {
+        val modalBottomSheet = ModalBottomSheet()
+        modalBottomSheet.show(supportFragmentManager, ModalBottomSheet.TAG)
+        modalBottomSheet.setCallback(this)
+    }
+
     private fun addPlanetChip(tag: Tag) {
         selectedTags.add(tag)
-        binding.tagsTextView.setText("")
+        binding.tagsField.setText("")
         listPopupWindow.dismiss()
         binding.selectedTags.addView(getChip(tag))
     }
@@ -156,12 +220,18 @@ class AddTopicActivity : BaseActivity() {
         return Chip(this@AddTopicActivity).apply {
             text = tag.name
             isCloseIconVisible = true
-            chipBackgroundColor = ColorStateList.valueOf(Color.parseColor(tag.color))
+            chipBackgroundColor =
+                ColorStateList.valueOf(Color.parseColor(if (tag.hexCode.startsWith("#")) tag.hexCode else "#" + tag.hexCode))
             closeIcon = AppCompatResources.getDrawable(this@AddTopicActivity, R.drawable.ic_clear)
             setOnCloseIconClickListener {
                 selectedTags.remove(tag)
                 (it.parent as ChipGroup).removeView(it)
             }
         }
+    }
+
+    override fun onAddTagClick(tagName: String, tagColor: String) {
+        Timber.e("Tag: $tagName, $tagColor")
+        addTopicViewModel.addTag(tagName, tagColor)
     }
 }

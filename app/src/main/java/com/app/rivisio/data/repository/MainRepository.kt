@@ -98,4 +98,9 @@ class MainRepository @Inject constructor(
 
     suspend fun tags(token: String?, userId: Int) = apiHelper.tags(token, userId)
 
+    suspend fun addTag(
+        token: String?,
+        userId: Int,
+        body: Map<String, String>,
+    ) = apiHelper.addTag(token, userId, body)
 }

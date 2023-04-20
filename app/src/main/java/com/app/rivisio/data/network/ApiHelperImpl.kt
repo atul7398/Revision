@@ -7,10 +7,15 @@ import javax.inject.Inject
 
 class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : ApiHelper {
 
-    override suspend fun signup(body: Map<String, String>): Response<JsonElement> =
-        apiService.signup(body)
+    override suspend fun signup(body: Map<String, String>) = apiService.signup(body)
 
-    override suspend fun tags(token: String?, userId: Int): Response<JsonElement> =
-        apiService.tags(token, userId)
+    override suspend fun tags(token: String?, userId: Int) = apiService.tags(token, userId)
+
+    override suspend fun addTag(
+        token: String?,
+        userId: Int,
+        body: Map<String, String>
+    ) = apiService.addTag(token, userId, body)
+
 
 }

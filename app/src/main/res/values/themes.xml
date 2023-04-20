@@ -13,4 +13,9 @@
         <item name="android:color">@android:color/transparent</item>
     </style>
     <!--bottom navigation view theming end-->
+
+    <style name="ThemeOverlay.App.DatePicker" parent="@style/ThemeOverlay.Material3.MaterialCalendar">
+        <item name="colorPrimary">@color/secondary</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
 </resources>

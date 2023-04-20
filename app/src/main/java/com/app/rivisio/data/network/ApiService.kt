@@ -20,4 +20,10 @@ interface ApiService {
         @Query(USER_ID) userId: Int,
     ): Response<JsonElement>
 
+    @POST("/tag/add")
+    suspend fun addTag(
+        @Query(TOKEN) token: String?,
+        @Query(USER_ID) userId: Int,
+        @Body body: Map<String, String>,
+    ): Response<JsonElement>
 }

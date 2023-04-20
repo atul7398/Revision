@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/edit_text_bg"
         android:hint="Topic Name"
@@ -63,11 +64,11 @@
 
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/tags_text_view"
+        android:id="@+id/tags_field"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/edit_text_bg"
         android:gravity="center_vertical"
@@ -84,5 +85,46 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Studied on"
+        android:textColor="@color/lable_color"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/studied_on_field"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/edit_text_bg"
+            android:gravity="center_vertical"
+            android:hint="Select Date"
+            android:imeOptions="actionDone"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:textColorHint="@color/lable_color"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/select_date"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="44dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@drawable/calendar_2" />
+
+    </FrameLayout>
 
 </LinearLayout>
