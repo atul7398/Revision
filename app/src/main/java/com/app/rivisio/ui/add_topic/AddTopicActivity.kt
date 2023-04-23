@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
@@ -19,20 +20,20 @@ import com.app.rivisio.data.network.HEX_CODE
 import com.app.rivisio.data.network.ID
 import com.app.rivisio.data.network.NAME
 import com.app.rivisio.databinding.ActivityAddTopicBinding
+import com.app.rivisio.ui.add_notes.AddNotesActivity
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
-import com.app.rivisio.ui.home.HomeActivity
 import com.app.rivisio.utils.NetworkResult
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class AddTopicActivity : BaseActivity(), ModalBottomSheet.Callback {
+class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
 
     private val addTopicViewModel: AddTopicViewModel by viewModels()
 
@@ -57,6 +58,10 @@ class AddTopicActivity : BaseActivity(), ModalBottomSheet.Callback {
 
         setUpTagsUi()
 
+        binding.backButton.setOnClickListener {
+            finish()
+        }
+
         binding.selectDate.setOnClickListener {
             val datePicker =
                 MaterialDatePicker.Builder.datePicker()
@@ -64,6 +69,12 @@ class AddTopicActivity : BaseActivity(), ModalBottomSheet.Callback {
                     .setTitleText("Select dates")
                     .setTheme(R.style.ThemeOverlay_App_DatePicker)
                     .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val date = sdf.format(it)
+                binding.studiedOnField.setText(date)
+            }
 
             datePicker.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
         }
@@ -128,6 +139,26 @@ class AddTopicActivity : BaseActivity(), ModalBottomSheet.Callback {
                     Timber.e(it.toString())
                 }
             }
+        }
+
+        binding.nextButton.setOnClickListener {
+
+            if (TextUtils.isEmpty(binding.topicField.text)) {
+                showError("Topic name is empty")
+                return@setOnClickListener
+            }
+
+            if (selectedTags.isEmpty()) {
+                showError("Please select a few tags")
+                return@setOnClickListener
+            }
+
+            if (TextUtils.isEmpty(binding.studiedOnField.text)) {
+                showError("Select date")
+                return@setOnClickListener
+            }
+
+            startActivity(AddNotesActivity.getStartIntent(this@AddTopicActivity))
         }
 
         addTopicViewModel.getTopics()
@@ -204,9 +235,9 @@ class AddTopicActivity : BaseActivity(), ModalBottomSheet.Callback {
     }
 
     private fun showCreateTagUI() {
-        val modalBottomSheet = ModalBottomSheet()
-        modalBottomSheet.show(supportFragmentManager, ModalBottomSheet.TAG)
-        modalBottomSheet.setCallback(this)
+        val createTagBottomSheetDialog = CreateTagBottomSheetDialog()
+        createTagBottomSheetDialog.show(supportFragmentManager, CreateTagBottomSheetDialog.TAG)
+        createTagBottomSheetDialog.setCallback(this)
     }
 
     private fun addPlanetChip(tag: Tag) {

@@ -12,7 +12,7 @@ import com.app.rivisio.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.dmoral.toasty.Toasty
 
-class ModalBottomSheet : BottomSheetDialogFragment() {
+class CreateTagBottomSheetDialog : BottomSheetDialogFragment() {
 
     private var callback: Callback? = null
 
@@ -28,7 +28,7 @@ class ModalBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.modal_bottom_sheet_content, container, false)
+    ): View? = inflater.inflate(R.layout.create_tag_bottom_sheet_content, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

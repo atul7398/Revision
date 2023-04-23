@@ -6,6 +6,11 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
+    </style>
+
+    <style name="Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupElevation">0dp</item>
     </style>
 
     <!--bottom navigation view theming start-->
@@ -14,8 +19,11 @@
     </style>
     <!--bottom navigation view theming end-->
 
+    <!--date picker theming start-->
     <style name="ThemeOverlay.App.DatePicker" parent="@style/ThemeOverlay.Material3.MaterialCalendar">
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorOnPrimary">@color/white</item>
     </style>
+    <!--date picker theming end-->
+
 </resources>

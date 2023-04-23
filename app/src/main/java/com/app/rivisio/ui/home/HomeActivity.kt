@@ -13,6 +13,7 @@ import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.fragments.account.AccountFragment
 import com.app.rivisio.ui.home.fragments.calendar.CalendarFragment
 import com.app.rivisio.ui.home.fragments.home_fragment.HomeFragment
+import com.app.rivisio.ui.home.fragments.topics.TopicsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,6 +46,13 @@ class HomeActivity : BaseActivity() {
             when (item.itemId) {
                 R.id.home_item -> {
                     val fragment = HomeFragment.newInstance()
+                    val fragmentTransaction: FragmentTransaction =
+                        supportFragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.home_container, fragment, "")
+                    fragmentTransaction.commit()
+                }
+                R.id.topics_item -> {
+                    val fragment = TopicsFragment.newInstance()
                     val fragmentTransaction: FragmentTransaction =
                         supportFragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.home_container, fragment, "")

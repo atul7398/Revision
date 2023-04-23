@@ -14,19 +14,33 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             android:layout_marginLeft="20dp"
+            android:padding="5dp"
             app:srcCompat="@drawable/arrow_left_line" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:fontFamily="@font/poppins_semi_bold"
             android:text="Add topic"
             android:textColor="@color/black"
             android:textSize="20sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="step 1 of 2"
+            android:textColor="@color/gray_1"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -36,7 +50,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:text="Topic"
-        android:textColor="@color/lable_color"
+        android:textColor="@color/subtext_color"
         android:textSize="12sp" />
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -49,8 +63,9 @@
         android:background="@drawable/edit_text_bg"
         android:hint="Topic Name"
         android:paddingLeft="24dp"
+        android:inputType="text"
         android:textColor="@color/black"
-        android:textColorHint="@color/lable_color"
+        android:textColorHint="@color/subtext_color"
         android:textSize="16sp" />
 
     <TextView
@@ -59,7 +74,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:text="Tags for your topic"
-        android:textColor="@color/lable_color"
+        android:textColor="@color/subtext_color"
         android:textSize="12sp" />
 
 
@@ -68,6 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
+        android:inputType="text"
         android:layout_marginTop="4dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/edit_text_bg"
@@ -75,7 +91,7 @@
         android:hint="Tags here"
         android:imeOptions="actionDone"
         android:paddingLeft="24dp"
-        android:textColorHint="@color/lable_color"
+        android:textColorHint="@color/subtext_color"
         android:textSize="16sp" />
 
     <com.google.android.material.chip.ChipGroup
@@ -92,7 +108,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:text="Studied on"
-        android:textColor="@color/lable_color"
+        android:textColor="@color/subtext_color"
         android:textSize="12sp" />
 
     <FrameLayout
@@ -107,12 +123,16 @@
             android:layout_marginTop="4dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/edit_text_bg"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:gravity="center_vertical"
             android:hint="Select Date"
             android:imeOptions="actionDone"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
-            android:textColorHint="@color/lable_color"
+            android:textColorHint="@color/subtext_color"
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -126,5 +146,30 @@
             app:srcCompat="@drawable/calendar_2" />
 
     </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/gray"
+        android:layout_height="1dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/button_bg"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Next"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
 </LinearLayout>
