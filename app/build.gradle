@@ -85,8 +85,13 @@ dependencies {
     //noinspection GradleDependency
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 
-    implementation 'com.github.dhaval2404:imagepicker:2.1'
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
+    implementation("com.github.esafirm:android-image-picker:3.0.0") {
+        exclude group: 'com.github.bumptech.glide', module: 'glide'
+    }
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

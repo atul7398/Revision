@@ -3,4 +3,5 @@
     <dimen name="popup_width">220dp</dimen>
     <dimen name="popup_vertical_offset">-15dp</dimen>
     <dimen name="popup_horizontal_offset">-45dp</dimen>
+    <dimen name="image_grid_spacing">10dp</dimen>
 </resources>
