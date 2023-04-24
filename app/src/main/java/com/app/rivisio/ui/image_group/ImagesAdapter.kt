@@ -13,10 +13,10 @@ import javax.inject.Inject
 class ImagesAdapter @Inject constructor() :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val images: MutableList<Image> = mutableListOf()
+    private lateinit var images: List<Image>
 
     interface Callback {
-        fun onImageClick(image: Image)
+        fun onDeleteImageClick(image: Image)
     }
 
     private lateinit var callback: Callback
@@ -26,8 +26,7 @@ class ImagesAdapter @Inject constructor() :
     }
 
     fun updateItems(images: List<Image>) {
-        this.images.clear()
-        this.images.addAll(images)
+        this.images = images
         notifyDataSetChanged()
     }
 
@@ -36,11 +35,12 @@ class ImagesAdapter @Inject constructor() :
             LayoutInflater.from(parent.context).inflate(R.layout.image_item, parent, false)
         )
 
-        dietViewHolder.itemView.findViewById<AppCompatImageView>(R.id.image_note)
+        dietViewHolder.itemView.findViewById<AppCompatImageView>(R.id.delete_image)
             .setOnClickListener {
                 val position = dietViewHolder.bindingAdapterPosition
-                if (this::callback.isInitialized)
-                    callback.onImageClick(images[position])
+                if (this::callback.isInitialized) {
+                    callback.onDeleteImageClick(images[position])
+                }
             }
 
         return dietViewHolder

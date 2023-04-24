@@ -16,12 +16,14 @@ import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.ArrayList
 import javax.inject.Inject
 
 const val IMAGE_GROUP_NAME = "image_group_name"
+const val IMAGE_LIST = "image_list"
 
 @AndroidEntryPoint
-class ImageGroupActivity : BaseActivity() {
+class ImageGroupActivity : BaseActivity(), ImagesAdapter.Callback {
 
     @Inject
     lateinit var imagesAdapter: ImagesAdapter
@@ -32,7 +34,7 @@ class ImageGroupActivity : BaseActivity() {
 
     override fun getViewModel(): BaseViewModel = imageGroupViewModel
 
-    private val selectedImages = arrayListOf<Image>()
+    private var selectedImages = arrayListOf<Image>()
 
     private val config = ImagePickerConfig {
         mode = ImagePickerMode.MULTIPLE // default is multi image mode
@@ -77,6 +79,17 @@ class ImageGroupActivity : BaseActivity() {
             intent.putExtra(IMAGE_GROUP_NAME, imageGroupName)
             return intent
         }
+
+        fun getStartIntent(
+            context: Context,
+            imageGroupName: String,
+            selectedImages: ArrayList<Image>
+        ): Intent {
+            val intent = Intent(context, ImageGroupActivity::class.java)
+            intent.putExtra(IMAGE_GROUP_NAME, imageGroupName)
+            intent.putParcelableArrayListExtra(IMAGE_LIST, selectedImages)
+            return intent
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,13 +114,29 @@ class ImageGroupActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-
+            val intent = Intent()
+            intent.putParcelableArrayListExtra(IMAGE_LIST, selectedImages)
+            intent.putExtra(IMAGE_GROUP_NAME, imageGroupName)
+            setResult(RESULT_OK, intent)
+            finish()
         }
-
 
         binding.imageGrid.layoutManager = GridLayoutManager(this, 2)
         binding.imageGrid.adapter = imagesAdapter
         //binding.imageGrid.addItemDecoration(ItemOffsetDecoration(R.dimen.image_grid_spacing))
-        //imagesAdapter.setCallback(this)
+        imagesAdapter.setCallback(this)
+
+        if (intent.getParcelableArrayListExtra<Image>(IMAGE_LIST) != null) {
+            selectedImages = intent.getParcelableArrayListExtra(IMAGE_LIST)!!
+            binding.imageGroupIllustration.visibility = View.GONE
+            binding.imageGrid.visibility = View.VISIBLE
+            imagesAdapter.updateItems(selectedImages)
+        }
+    }
+
+    override fun onDeleteImageClick(image: Image) {
+        Timber.e("Image delete")
+        selectedImages.remove(image)
+        imagesAdapter.notifyDataSetChanged()
     }
 }

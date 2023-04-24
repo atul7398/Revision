@@ -143,7 +143,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
 
         binding.nextButton.setOnClickListener {
 
-            if (TextUtils.isEmpty(binding.topicField.text)) {
+            /*if (TextUtils.isEmpty(binding.topicField.text)) {
                 showError("Topic name is empty")
                 return@setOnClickListener
             }
@@ -156,7 +156,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
             if (TextUtils.isEmpty(binding.studiedOnField.text)) {
                 showError("Select date")
                 return@setOnClickListener
-            }
+            }*/
 
             startActivity(AddNotesActivity.getStartIntent(this@AddTopicActivity))
         }
