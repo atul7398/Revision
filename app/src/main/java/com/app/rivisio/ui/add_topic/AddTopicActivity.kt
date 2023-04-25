@@ -31,6 +31,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+
+const val TOPIC_NAME = "topic"
+const val STUDIED_ON = "studied_on"
+const val TAGS = "tags"
 
 @AndroidEntryPoint
 class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
@@ -39,7 +44,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
 
     private lateinit var binding: ActivityAddTopicBinding
 
-    private val tags = mutableListOf<Tag>()
+    private val tags = ArrayList<Tag>()
 
     companion object {
         fun getStartIntent(context: Context) = Intent(context, AddTopicActivity::class.java)
@@ -47,7 +52,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
 
     override fun getViewModel(): BaseViewModel = addTopicViewModel
 
-    private val selectedTags = mutableListOf<Tag>()
+    private val selectedTags = ArrayList<Tag>()
 
     private lateinit var listPopupWindow: ListPopupWindow
 
@@ -143,7 +148,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
 
         binding.nextButton.setOnClickListener {
 
-            /*if (TextUtils.isEmpty(binding.topicField.text)) {
+            if (TextUtils.isEmpty(binding.topicField.text)) {
                 showError("Topic name is empty")
                 return@setOnClickListener
             }
@@ -156,9 +161,16 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
             if (TextUtils.isEmpty(binding.studiedOnField.text)) {
                 showError("Select date")
                 return@setOnClickListener
-            }*/
+            }
 
-            startActivity(AddNotesActivity.getStartIntent(this@AddTopicActivity))
+            startActivity(
+                AddNotesActivity.getStartIntent(
+                    this@AddTopicActivity,
+                    binding.topicField.text.toString(),
+                    binding.studiedOnField.text.toString(),
+                    selectedTags
+                )
+            )
         }
 
         addTopicViewModel.getTopics()

@@ -30,6 +30,6 @@ class RivisioApp : Application() {
                 0,
                 px.toInt()
             ) // optional (set toast gravity, offsets are optional)
-            .apply();
+            .apply()
     }
 }

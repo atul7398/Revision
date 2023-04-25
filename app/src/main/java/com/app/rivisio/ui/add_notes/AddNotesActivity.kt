@@ -15,7 +15,7 @@ import androidx.appcompat.widget.ListPopupWindow
 import androidx.core.content.ContextCompat
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityAddNotesBinding
-import com.app.rivisio.ui.add_topic.CreateTagBottomSheetDialog
+import com.app.rivisio.ui.add_topic.*
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.image_group.IMAGE_GROUP_NAME
@@ -28,7 +28,6 @@ import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.ArrayList
 
 @AndroidEntryPoint
 class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callback {
@@ -137,7 +136,18 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
 
 
     companion object {
-        fun getStartIntent(context: Context) = Intent(context, AddNotesActivity::class.java)
+        fun getStartIntent(
+            context: Context,
+            topic: String,
+            studiedOn: String,
+            tags: ArrayList<Tag>
+        ): Intent {
+            val intent = Intent(context, AddNotesActivity::class.java)
+            intent.putExtra(TOPIC_NAME, topic)
+            intent.putExtra(STUDIED_ON, studiedOn)
+            intent.putParcelableArrayListExtra(TAGS, tags)
+            return intent
+        }
     }
 
     override fun getViewModel(): BaseViewModel = addNotesViewModel
@@ -152,13 +162,24 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
 
     private fun init() {
 
+        val topic = intent.getStringExtra(TOPIC_NAME)
+        val studiedOn = intent.getStringExtra(STUDIED_ON)
+        val tags = intent.getParcelableArrayListExtra<Tag>(TAGS)
+
+        Timber.e("Topic: $topic")
+        Timber.e("Studied On: $studiedOn")
+
+        tags?.forEach {
+            Timber.e("Tag: ${it.name}, ${it.id}")
+        }
+
         binding.backButton.setOnClickListener {
             finish()
         }
 
         binding.editNote.setOnClickListener {
             val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
-            val listener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 if (position == 0) {
                     addTextNoteLauncher.launch(
                         TextNoteActivity.getStartIntent(
@@ -181,10 +202,9 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
 
         }
 
-
         binding.editImages.setOnClickListener {
             val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
-            val listener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 if (position == 0) {
                     if (imageNote != null) {
                         addImageGroupLauncher.launch(
@@ -209,22 +229,39 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
 
         }
 
+        binding.createTopicButton.setOnClickListener {
+            if (textNote == null && imageNote == null) {
+                showError("Please add notes")
+                return@setOnClickListener
+            }
+        }
+
         binding.floatingActionButton.setOnClickListener {
+
             val adapter = NoteTypeAdapter(arrayListOf("Text Note", "Image Group"))
-            val listener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 if (position == 0) {
-                    addTextNoteLauncher.launch(TextNoteActivity.getStartIntent(this@AddNotesActivity))
+                    if (textNote == null) {
+                        addTextNoteLauncher.launch(TextNoteActivity.getStartIntent(this@AddNotesActivity))
+                    } else {
+                        showError("Not allowed")
+                    }
                 } else {
-                    val createImageGroupBottomSheetDialog = CreateImageGroupBottomSheetDialog()
-                    createImageGroupBottomSheetDialog.show(
-                        supportFragmentManager,
-                        CreateTagBottomSheetDialog.TAG
-                    )
-                    createImageGroupBottomSheetDialog.setCallback(this@AddNotesActivity)
+                    if (imageNote == null) {
+                        val createImageGroupBottomSheetDialog = CreateImageGroupBottomSheetDialog()
+                        createImageGroupBottomSheetDialog.show(
+                            supportFragmentManager,
+                            CreateTagBottomSheetDialog.TAG
+                        )
+                        createImageGroupBottomSheetDialog.setCallback(this@AddNotesActivity)
+                    } else {
+                        showError("Not allowed")
+                    }
                 }
                 listPopupWindow.dismiss()
             }
             showMenu(it, adapter, listener)
+
         }
     }
 
