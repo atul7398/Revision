@@ -1,6 +1,7 @@
 package com.app.rivisio.data.network
 
 const val EMAIL = "email"
+const val AWS_URL = "awsUrl"
 const val DOB = "dob"
 const val FIRST_NAME = "firstName"
 const val LAST_NAME = "lastName"

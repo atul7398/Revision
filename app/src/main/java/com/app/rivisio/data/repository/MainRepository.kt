@@ -1,10 +1,15 @@
 package com.app.rivisio.data.repository
 
-import com.app.rivisio.data.network.ApiHelper
-import com.app.rivisio.data.network.USER_ID
+import com.app.rivisio.data.network.*
 import com.app.rivisio.data.prefs.PreferencesHelper
 import com.app.rivisio.data.prefs.UserState
+import com.app.rivisio.ui.add_topic.Topic
+import com.google.gson.JsonElement
 import dagger.hilt.android.scopes.ViewModelScoped
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Response
+import retrofit2.http.Part
 import retrofit2.http.Query
 import javax.inject.Inject
 
@@ -103,4 +108,17 @@ class MainRepository @Inject constructor(
         userId: Int,
         body: Map<String, String>,
     ) = apiHelper.addTag(token, userId, body)
+
+    suspend fun uploadImages(
+        userId: RequestBody,
+        token: RequestBody,
+        file: MultipartBody.Part,
+        fileName: RequestBody
+    ): Response<JsonElement> = apiHelper.uploadImages(userId, token, file, fileName)
+
+    suspend fun addTopic(
+        token: String?,
+        userId: Int,
+        topic: Topic
+    ) = apiHelper.addTopic(token, userId, topic)
 }

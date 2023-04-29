@@ -1,5 +1,6 @@
 package com.app.rivisio.data.network
 
+import com.app.rivisio.ui.add_topic.Topic
 import com.google.gson.JsonElement
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -33,5 +34,12 @@ interface ApiService {
         @Part(TOKEN) token: RequestBody,
         @Part file: MultipartBody.Part,
         @Part(FILENAME) fileName: RequestBody
+    ): Response<JsonElement>
+
+    @POST("/topics/add")
+    suspend fun addTopic(
+        @Query(TOKEN) token: String?,
+        @Query(USER_ID) userId: Int,
+        @Body topic: Topic
     ): Response<JsonElement>
 }

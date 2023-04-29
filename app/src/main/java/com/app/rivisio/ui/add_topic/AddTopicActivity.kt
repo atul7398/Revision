@@ -70,9 +70,9 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
         binding.selectDate.setOnClickListener {
             val datePicker =
                 MaterialDatePicker.Builder.datePicker()
+                    .setTheme(R.style.ThemeOverlay_App_DatePicker)
                     .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                     .setTitleText("Select dates")
-                    .setTheme(R.style.ThemeOverlay_App_DatePicker)
                     .build()
 
             datePicker.addOnPositiveButtonClickListener {
