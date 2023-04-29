@@ -48,7 +48,7 @@ class AddNotesViewModel @Inject constructor(
                     mainRepository.getAccessToken()!!
                         .toRequestBody("text/plain".toMediaTypeOrNull()),
                     body,
-                    "image_note".toRequestBody("text/plain".toMediaTypeOrNull())
+                    file.name.toRequestBody("text/plain".toMediaTypeOrNull())
                 )
             }
 

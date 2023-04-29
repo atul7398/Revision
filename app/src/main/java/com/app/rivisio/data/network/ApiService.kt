@@ -42,4 +42,10 @@ interface ApiService {
         @Query(USER_ID) userId: Int,
         @Body topic: Topic
     ): Response<JsonElement>
+
+    @GET("/topics/all")
+    suspend fun getTopics(
+        @Query(TOKEN) token: String?,
+        @Query(USER_ID) userId: Int
+    ): Response<JsonElement>
 }

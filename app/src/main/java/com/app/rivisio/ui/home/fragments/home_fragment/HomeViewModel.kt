@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.app.rivisio.data.repository.MainRepository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkHelper
+import com.app.rivisio.utils.NetworkResult
+import com.google.gson.JsonElement
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,9 +23,29 @@ class HomeViewModel @Inject constructor(
     val userName: LiveData<String>
         get() = _userName
 
+    private val _topics = MutableLiveData<NetworkResult<JsonElement>>()
+    val topics: LiveData<NetworkResult<JsonElement>>
+        get() = _topics
+
     fun getUserDetails() {
         viewModelScope.launch {
             _userName.value = mainRepository.getName()
         }
     }
+
+    fun getTopics() {
+        viewModelScope.launch {
+            _topics.value = NetworkResult.Loading
+
+            val response = handleApi {
+                mainRepository.getTopics(
+                    mainRepository.getAccessToken()!!,
+                    mainRepository.getUserId()
+                )
+            }
+
+            _topics.value = response
+        }
+    }
+
 }

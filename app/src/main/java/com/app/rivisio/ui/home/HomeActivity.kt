@@ -91,25 +91,4 @@ class HomeActivity : BaseActivity() {
         binding.bottomNav.selectedItemId = R.id.home_item
 
     }
-
-    fun onDialog(view3: View) {
-
-        var dialog: AlertDialog? = null
-
-        val view =
-            LayoutInflater.from(this).inflate(R.layout.topic_created_dialog, null)
-
-        val dialogBuilder =
-            MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_App_MaterialAlertDialog).setView(
-                view
-            )
-
-
-        view.findViewById<AppCompatButton>(R.id.topic_created_button)?.setOnClickListener {
-            dialog?.dismiss()
-            startActivity(HomeActivity.getStartIntentNewTask(this))
-        }
-
-        dialog = dialogBuilder.show()
-    }
 }

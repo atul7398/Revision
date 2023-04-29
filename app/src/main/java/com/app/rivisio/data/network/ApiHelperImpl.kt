@@ -33,4 +33,9 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
         userId: Int,
         topic: Topic
     ) = apiService.addTopic(token, userId, topic)
+
+    override suspend fun getTopics(
+        token: String?,
+        userId: Int
+    ): Response<JsonElement> = apiService.getTopics(token, userId)
 }
