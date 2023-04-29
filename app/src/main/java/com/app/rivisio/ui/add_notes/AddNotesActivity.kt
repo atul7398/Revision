@@ -175,13 +175,16 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
 
         var dialog: AlertDialog? = null
 
-        val view = LayoutInflater.from(this@AddNotesActivity).inflate(R.layout.topic_created_dialog, null)
+        val view =
+            LayoutInflater.from(this@AddNotesActivity).inflate(R.layout.topic_created_dialog, null)
 
         val dialogBuilder =
             MaterialAlertDialogBuilder(
                 this@AddNotesActivity,
                 R.style.ThemeOverlay_App_MaterialAlertDialog
-            ).setView(view)
+            )
+                .setCancelable(false)
+                .setView(view)
 
 
         view.findViewById<AppCompatButton>(R.id.topic_created_button)?.setOnClickListener {
