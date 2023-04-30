@@ -41,6 +41,8 @@ class AddNotesViewModel @Inject constructor(
             val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
+            val fileName = getFileNameWithoutExtension(file.name)
+
             val response = handleApi {
                 mainRepository.uploadImages(
                     mainRepository.getUserId().toString()
@@ -48,11 +50,19 @@ class AddNotesViewModel @Inject constructor(
                     mainRepository.getAccessToken()!!
                         .toRequestBody("text/plain".toMediaTypeOrNull()),
                     body,
-                    file.name.toRequestBody("text/plain".toMediaTypeOrNull())
+                    fileName.toRequestBody("text/plain".toMediaTypeOrNull())
                 )
             }
 
             _imageUploaded.value = response
+        }
+    }
+
+    private fun getFileNameWithoutExtension(fileName: String): String {
+        return if (fileName.indexOf(".") > 0) {
+            fileName.substring(0, fileName.lastIndexOf("."))
+        } else {
+            fileName
         }
     }
 

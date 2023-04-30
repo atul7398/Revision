@@ -10,7 +10,6 @@ import com.app.rivisio.utils.NetworkResult
 import com.google.gson.JsonElement
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,12 +32,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getTopics() {
+    fun getTopicsData() {
         viewModelScope.launch {
             _topics.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.getTopics(
+                mainRepository.getTopicsData(
                     mainRepository.getAccessToken()!!,
                     mainRepository.getUserId()
                 )

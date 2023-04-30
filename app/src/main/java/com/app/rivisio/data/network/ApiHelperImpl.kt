@@ -37,5 +37,8 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
     override suspend fun getTopics(
         token: String?,
         userId: Int
-    ): Response<JsonElement> = apiService.getTopics(token, userId)
+    ) = apiService.getTopics(token, userId)
+
+    override suspend fun getTopicsData(token: String?, userId: Int) =
+        apiService.getTopicsData(token, userId)
 }

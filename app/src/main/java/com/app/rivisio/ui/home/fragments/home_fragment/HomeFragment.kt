@@ -7,11 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.app.rivisio.R
-import com.app.rivisio.data.network.AWS_URL
 import com.app.rivisio.databinding.FragmentHomeBinding
-import com.app.rivisio.ui.add_topic.TOPIC_NAME
-import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.base.BaseFragment
 import com.app.rivisio.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +58,8 @@ class HomeFragment : BaseFragment() {
             when (it) {
                 is NetworkResult.Success -> {
                     hideLoading()
+                    binding.homeIllustrationContainer.visibility = View.GONE
+                    binding.homeTabs.visibility = View.VISIBLE
                 }
                 is NetworkResult.Loading -> {
                     hideLoading()
@@ -82,6 +80,6 @@ class HomeFragment : BaseFragment() {
             }
         })
 
-        homeViewModel.getTopics()
+        homeViewModel.getTopicsData()
     }
 }

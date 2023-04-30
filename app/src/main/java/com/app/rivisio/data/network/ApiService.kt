@@ -48,4 +48,11 @@ interface ApiService {
         @Query(TOKEN) token: String?,
         @Query(USER_ID) userId: Int
     ): Response<JsonElement>
+
+    // view topics data for today,missed and upcoming
+    @GET("/topics/list/topicdata")
+    suspend fun getTopicsData(
+        @Query(TOKEN) token: String?,
+        @Query(USER_ID) userId: Int
+    ): Response<JsonElement>
 }

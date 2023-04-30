@@ -126,4 +126,9 @@ class MainRepository @Inject constructor(
         token: String?,
         userId: Int
     ) = apiHelper.getTopics(token, userId)
+
+    suspend fun getTopicsData(
+        token: String?,
+        userId: Int
+    ) = apiHelper.getTopicsData(token, userId)
 }

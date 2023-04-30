@@ -107,7 +107,7 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                 is NetworkResult.Success -> {
                     uploadedImages.add(it.data.asJsonObject[AWS_URL].asString)
                     uploadCount++
-                    if (uploadCount < (imageNote!!.selectedImages!!.size - 1)) {
+                    if (uploadCount < imageNote!!.selectedImages!!.size) {
                         uploadImages()
                     } else {
 
@@ -367,6 +367,7 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
     private var addImageGroupLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+                uploadedImages = ArrayList() //clear the old uploaded images, because the user might have changed the images
                 // There are no request codes
                 val data: Intent? = result.data
                 imageNote = ImageNote(
