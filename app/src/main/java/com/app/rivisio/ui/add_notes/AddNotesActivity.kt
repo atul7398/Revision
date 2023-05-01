@@ -105,24 +105,30 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
         addNotesViewModel.imageUploaded.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {
-                    uploadedImages.add(it.data.asJsonObject[AWS_URL].asString)
-                    uploadCount++
-                    if (uploadCount < imageNote!!.selectedImages!!.size) {
-                        uploadImages()
-                    } else {
+                    try {
+                        uploadedImages.add(it.data.asJsonObject[AWS_URL].asString)
+                        uploadCount++
+                        if (uploadCount < imageNote!!.selectedImages!!.size) {
+                            uploadImages()
+                        } else {
 
-                        addNotesViewModel.addTopic(
-                            Topic(
-                                uploadedImages,
-                                intent.getStringExtra(TOPIC_NAME)!!,
-                                getStringifiedJsonNote(textNote!!),
-                                getStudiedOnDateString(),
-                                getTags()
+                            addNotesViewModel.addTopic(
+                                Topic(
+                                    uploadedImages,
+                                    intent.getStringExtra(TOPIC_NAME)!!,
+                                    getStringifiedJsonNote(textNote!!),
+                                    getStudiedOnDateString(),
+                                    getTags()
+                                )
                             )
-                        )
 
-                        hideLoading()
-                        showMessage("Images uploaded successfully")
+                            hideLoading()
+                            showMessage("Images uploaded successfully")
+                        }
+                    } catch (e: Exception) {
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                        showError("Image upload FAILED....")
                     }
                 }
                 is NetworkResult.Loading -> {
@@ -367,7 +373,8 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
     private var addImageGroupLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                uploadedImages = ArrayList() //clear the old uploaded images, because the user might have changed the images
+                uploadedImages =
+                    ArrayList() //clear the old uploaded images, because the user might have changed the images
                 // There are no request codes
                 val data: Intent? = result.data
                 imageNote = ImageNote(

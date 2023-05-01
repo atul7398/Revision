@@ -27,7 +27,6 @@ class ImagesAdapter @Inject constructor() :
 
     fun updateItems(images: List<Image>) {
         this.images = images
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
