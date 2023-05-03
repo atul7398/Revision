@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.graphics.alpha
 import androidx.recyclerview.widget.RecyclerView
 import com.app.rivisio.R
 import com.google.android.material.chip.Chip
@@ -107,12 +108,16 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
         }
 
         private fun getChip(tag: TagFromServer): Chip {
+
+            var hexColor = tag.hexCode!!.removePrefix("#")
+            hexColor = "#1A$hexColor"
+
             return Chip(itemView.context).apply {
                 text = tag.name
                 shapeAppearanceModel =
                     ShapeAppearanceModel().withCornerSize(itemView.context.resources.getDimension(R.dimen.chip_corner_Radius))
                 chipBackgroundColor =
-                    ColorStateList.valueOf(Color.parseColor(if (tag.hexCode!!.startsWith("#")) tag.hexCode else "#" + tag.hexCode))
+                    ColorStateList.valueOf(Color.parseColor(hexColor))
                 isCloseIconVisible = false
                 chipStrokeWidth = 0f
             }
