@@ -56,15 +56,6 @@ class HomeFragment : BaseFragment() {
 
         val homeTabs = HomeTabs(binding)
 
-        homeTabs.setTabClickListener { v ->
-            binding.tabToday.isSelected = false
-            binding.tabMissed.isSelected = false
-            binding.tabUpcoming.isSelected = false
-            (v as AppCompatTextView).isSelected = true
-        }
-
-        homeTabs.setTabSelected(0)
-
         binding.topicsList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding.topicsList.addItemDecoration(
@@ -79,19 +70,115 @@ class HomeFragment : BaseFragment() {
             when (it) {
                 is NetworkResult.Success -> {
                     hideLoading()
+                    try {
 
-                    binding.homeIllustrationContainer.visibility = View.GONE
-                    binding.homeTabs.visibility = View.VISIBLE
-                    binding.topicsList.visibility = View.VISIBLE
+                        val myType = object : TypeToken<ArrayList<TopicFromServer>>() {}.type
 
-                    val myType = object : TypeToken<ArrayList<TopicFromServer>>() {}.type
+                        val topicsMissedList = Gson().fromJson<ArrayList<TopicFromServer>>(
+                            it.data.asJsonObject["topicsMissedList"].asJsonArray,
+                            myType
+                        )
 
-                    val topics = Gson().fromJson<ArrayList<TopicFromServer>>(
-                        it.data.asJsonObject["topicsMissedList"].asJsonArray,
-                        myType
-                    )
+                        val topicsTodayList = Gson().fromJson<ArrayList<TopicFromServer>>(
+                            it.data.asJsonObject["topicsTodayList"].asJsonArray,
+                            myType
+                        )
 
-                    createTopicsList(topics)
+                        val topicsUpcomingList = Gson().fromJson<ArrayList<TopicFromServer>>(
+                            it.data.asJsonObject["topicsUpcomingList"].asJsonArray,
+                            myType
+                        )
+
+                        if (topicsTodayList.isEmpty() && topicsMissedList.isEmpty() && topicsUpcomingList.isEmpty()) {
+                            binding.topicsList.visibility = View.GONE
+                            binding.homeTabs.visibility = View.GONE
+                            binding.homeIllustrationContainer.visibility = View.VISIBLE
+                            binding.homeIllustration.setImageResource(R.drawable.start_journey)
+                            binding.homeIllustrationMessage.text = "Start Your Journey"
+                            binding.homeIllustrationText.text =
+                                "Every big step start with small step. Add your first topic and start your journey!"
+                        } else {
+                            binding.homeTabs.visibility = View.VISIBLE
+                            homeTabs.setTabClickListener { v ->
+                                when (v.id) {
+                                    R.id.tab_today -> {
+                                        homeTabs.setTabSelected(0)
+                                        createTopicsList(topicsTodayList)
+                                        if (topicsTodayList.isEmpty()) {
+                                            binding.topicsList.visibility = View.GONE
+                                            binding.homeTabs.visibility = View.VISIBLE
+                                            binding.homeIllustrationContainer.visibility =
+                                                View.VISIBLE
+                                            binding.homeIllustration.setImageResource(R.drawable.meditation)
+                                            binding.homeIllustrationMessage.text = "No topics here"
+                                            binding.homeIllustrationText.text = ""
+                                        } else {
+                                            binding.topicsList.visibility = View.VISIBLE
+                                            binding.homeTabs.visibility = View.VISIBLE
+                                            binding.homeIllustrationContainer.visibility = View.GONE
+                                        }
+                                    }
+                                    R.id.tab_missed -> {
+                                        homeTabs.setTabSelected(1)
+                                        createTopicsList(topicsMissedList)
+                                        if (topicsMissedList.isEmpty()) {
+                                            binding.topicsList.visibility = View.GONE
+                                            binding.homeTabs.visibility = View.VISIBLE
+                                            binding.homeIllustrationContainer.visibility =
+                                                View.VISIBLE
+                                            binding.homeIllustration.setImageResource(R.drawable.meditation)
+                                            binding.homeIllustrationMessage.text = "No topics here"
+                                            binding.homeIllustrationText.text = ""
+
+                                        } else {
+                                            binding.topicsList.visibility = View.VISIBLE
+                                            binding.homeTabs.visibility = View.VISIBLE
+                                            binding.homeIllustrationContainer.visibility = View.GONE
+                                        }
+                                    }
+                                    R.id.tab_upcoming -> {
+                                        homeTabs.setTabSelected(2)
+                                        createTopicsList(topicsUpcomingList)
+                                        if (topicsUpcomingList.isEmpty()) {
+                                            binding.topicsList.visibility = View.GONE
+                                            binding.homeTabs.visibility = View.VISIBLE
+                                            binding.homeIllustrationContainer.visibility =
+                                                View.VISIBLE
+                                            binding.homeIllustration.setImageResource(R.drawable.meditation)
+                                            binding.homeIllustrationMessage.text = "No topics here"
+                                            binding.homeIllustrationText.text = ""
+
+                                        } else {
+                                            binding.topicsList.visibility = View.VISIBLE
+                                            binding.homeTabs.visibility = View.VISIBLE
+                                            binding.homeIllustrationContainer.visibility = View.GONE
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            homeTabs.setTabSelected(0)
+                            createTopicsList(topicsTodayList)
+                            if (topicsTodayList.isEmpty()) {
+                                binding.topicsList.visibility = View.GONE
+                                binding.homeTabs.visibility = View.VISIBLE
+                                binding.homeIllustrationContainer.visibility = View.VISIBLE
+                                binding.homeIllustration.setImageResource(R.drawable.meditation)
+                                binding.homeIllustrationMessage.text = "No topics here"
+                                binding.homeIllustrationText.text = ""
+                            } else {
+                                binding.topicsList.visibility = View.VISIBLE
+                                binding.homeTabs.visibility = View.VISIBLE
+                                binding.homeIllustrationContainer.visibility = View.GONE
+                            }
+                        }
+
+                    } catch (e: Exception) {
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                        showError("Something went wrong")
+                    }
 
                 }
                 is NetworkResult.Loading -> {

@@ -102,6 +102,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
                     } catch (e: Exception) {
                         Timber.e("Json parsing issue: ")
                         Timber.e(e)
+                        showError("Something went wrong")
                     }
                 }
                 is NetworkResult.Loading -> {
@@ -240,7 +241,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
                 return@setOnItemClickListener
             }
 
-            addPlanetChip(clickedTag)
+            addTagChip(clickedTag)
         }
 
         listPopupWindow.show()
@@ -252,7 +253,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
         createTagBottomSheetDialog.setCallback(this)
     }
 
-    private fun addPlanetChip(tag: Tag) {
+    private fun addTagChip(tag: Tag) {
         selectedTags.add(tag)
         binding.tagsField.setText("")
         listPopupWindow.dismiss()

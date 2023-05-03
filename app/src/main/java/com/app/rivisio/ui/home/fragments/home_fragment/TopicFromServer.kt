@@ -6,10 +6,15 @@ data class TopicFromServer(
     var name: String? = null,
     var status: String? = null,
     var userId: Int? = null,
-    var imageUrls: String? = null,
+    var imageUrls: ArrayList<String> = arrayListOf(),
     var notes: String? = null,
     var createdOn: String? = null,
     var modifiedOn: String? = null,
     var studiedOn: String? = null,
-    var tagsList: String? = null
+    var tagsList: ArrayList<TagFromServer> = arrayListOf(),
+    var rev1Status: String? = null,
+    var rev2Status: String? = null,
+    var rev3Status: String? = null,
+    var rev4Status: String? = null
+
 )

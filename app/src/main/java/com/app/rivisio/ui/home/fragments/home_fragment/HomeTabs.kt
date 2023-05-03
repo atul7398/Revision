@@ -12,9 +12,15 @@ class HomeTabs(private val binding: FragmentHomeBinding) {
         binding.tabUpcoming.isSelected = false
 
         when (position) {
-            0 -> binding.tabToday.isSelected = true
-            1 -> binding.tabToday.isSelected = true
-            2 -> binding.tabToday.isSelected = true
+            0 -> {
+                binding.tabToday.isSelected = true
+            }
+            1 -> {
+                binding.tabMissed.isSelected = true
+            }
+            2 -> {
+                binding.tabUpcoming.isSelected = true
+            }
         }
     }
 
