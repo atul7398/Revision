@@ -4,12 +4,14 @@ import com.app.rivisio.data.network.*
 import com.app.rivisio.data.prefs.PreferencesHelper
 import com.app.rivisio.data.prefs.UserState
 import com.app.rivisio.ui.add_topic.Topic
+import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.google.gson.JsonElement
 import dagger.hilt.android.scopes.ViewModelScoped
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
 
@@ -137,4 +139,11 @@ class MainRepository @Inject constructor(
         token: String?,
         userId: Int
     ) = apiHelper.getTopicDetails(topicId, token, userId)
+
+    suspend fun editTopicDetails(
+        topicId: Int,
+        token: String?,
+        userId: Int,
+        topicFromServer: TopicFromServer
+    ) = apiHelper.editTopicDetails(topicId, token, userId, topicFromServer)
 }

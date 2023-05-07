@@ -1,25 +1,30 @@
 package com.app.rivisio.ui.topic_details
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
+import android.widget.AdapterView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.lifecycle.Observer
 import com.app.rivisio.BuildConfig
-import com.app.rivisio.R
-import com.app.rivisio.data.network.NAME
-import com.app.rivisio.data.network.NOTES
-import com.app.rivisio.data.network.STUDIEDON
 import com.app.rivisio.databinding.ActivityTopicDetailsBinding
+import com.app.rivisio.ui.add_notes.TextNoteOptionsAdapter
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
-import com.app.rivisio.ui.image_group.IMAGE_GROUP_NAME
+import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
+import com.app.rivisio.ui.text_note.CONTENT
+import com.app.rivisio.ui.text_note.HEADING
+import com.app.rivisio.ui.text_note.TextNoteActivity
 import com.app.rivisio.utils.NetworkResult
+import com.app.rivisio.utils.getPopupMenu
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +49,7 @@ class TopicDetailsActivity : BaseActivity() {
     private val topicDetailsViewModel: TopicDetailsViewModel by viewModels()
 
     private lateinit var binding: ActivityTopicDetailsBinding
+    private lateinit var topicFromServer: TopicFromServer
 
     override fun getViewModel(): BaseViewModel {
         return topicDetailsViewModel
@@ -62,79 +68,82 @@ class TopicDetailsActivity : BaseActivity() {
                     hideLoading()
                     showMessage("Network call is successful")
                     try {
-                        binding.topicName.text = it.data.asJsonObject[NAME].asString
-
-                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                        val dateTime = LocalDateTime.parse(
-                            it.data.asJsonObject[STUDIEDON].asString,
-                            formatter
+                        topicFromServer = Gson().fromJson(
+                            it.data.asJsonObject,
+                            TopicFromServer::class.java
                         )
 
-                        binding.date1.text = getFormattedDate(dateTime.plusDays(1))
-                        binding.date2.text = getFormattedDate(dateTime.plusDays(3))
-                        binding.date3.text = getFormattedDate(dateTime.plusDays(7))
-                        binding.date4.text = getFormattedDate(dateTime.plusDays(10))
+                        binding.topicName.text = topicFromServer.name
 
-                        if (!it.data.asJsonObject["rev1Status"].isJsonNull)
-                            binding.circle1.backgroundTintList =
-                                getColorForRevision(it.data.asJsonObject["rev1Status"].asString)
-                        if (!it.data.asJsonObject["rev2Status"].isJsonNull)
-                            binding.circle2.backgroundTintList =
-                                getColorForRevision(it.data.asJsonObject["rev2Status"].asString)
-                        if (!it.data.asJsonObject["rev3Status"].isJsonNull)
-                            binding.circle3.backgroundTintList =
-                                getColorForRevision(it.data.asJsonObject["rev3Status"].asString)
-                        if (!it.data.asJsonObject["rev4Status"].isJsonNull)
-                            binding.circle4.backgroundTintList =
-                                getColorForRevision(it.data.asJsonObject["rev4Status"].asString)
+                        renderRevisionTimeLine(topicFromServer)
 
-                        val noteJsonObject =
-                            JsonParser().parse(it.data.asJsonObject[NOTES].asString).asJsonObject
+                        renderTextNote(topicFromServer)
 
-                        binding.textNoteHeading.text =
-                            noteJsonObject["title"].asString
-                        binding.textNoteContent.text =
-                            noteJsonObject["body"].asString
-
-                        for (i in 0 until it.data.asJsonObject["imageUrls"].asJsonArray.size()) {
-                            when (i) {
-                                0 -> {
-                                    Glide.with(this@TopicDetailsActivity)
-                                        .asBitmap()
-                                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + it.data.asJsonObject["imageUrls"].asJsonArray[i].asString)
-                                        .centerCrop()
-                                        .into(binding.image1)
-                                }
-                                1 -> {
-                                    Glide.with(this@TopicDetailsActivity)
-                                        .asBitmap()
-                                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + it.data.asJsonObject["imageUrls"].asJsonArray[i].asString)
-                                        .centerCrop()
-                                        .into(binding.image2)
-                                }
-                                2 -> {
-                                    Glide.with(this@TopicDetailsActivity)
-                                        .asBitmap()
-                                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + it.data.asJsonObject["imageUrls"].asJsonArray[i].asString)
-                                        .centerCrop()
-                                        .into(binding.image3)
-                                }
-                                3 -> {
-                                    Glide.with(this@TopicDetailsActivity)
-                                        .asBitmap()
-                                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + it.data.asJsonObject["imageUrls"].asJsonArray[i].asString)
-                                        .centerCrop()
-                                        .into(binding.image4)
-                                }
-                            }
-                        }
-
+                        renderImageGroup(topicFromServer)
 
                     } catch (e: Exception) {
-                        Timber.e("JSon Parsing Error:")
+                        Timber.e("Json Parsing Error:")
                         Timber.e(e)
                         showError("Something went wrong")
                     }
+                }
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
+
+        /*binding.editImages.setOnClickListener {
+            var popup: ListPopupWindow? = null
+
+            val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                if (position == 0) {
+                    if (imageNote != null) {
+                        addImageGroupLauncher.launch(
+                            ImageGroupActivity.getStartIntent(
+                                this@AddNotesActivity,
+                                imageNote!!.imageGroupName!!,
+                                imageNote!!.selectedImages!!
+                            )
+                        )
+                    }
+                } else {
+                    imageNote = null
+                    binding.imageNoteContainer.visibility = View.GONE
+                    if (imageNote == null && textNote == null) {
+                        binding.notesIllustrationText.visibility = View.VISIBLE
+                    }
+
+                }
+                popup?.dismiss()
+            }
+            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener)
+
+            popup?.show()
+
+        }*/
+
+        topicDetailsViewModel.update.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    val id = intent.getIntExtra(TOPIC_ID, -1)
+
+                    if (id != -1)
+                        topicDetailsViewModel.getTopicDetails(id)
                 }
                 is NetworkResult.Loading -> {
                     showLoading()
@@ -161,6 +170,108 @@ class TopicDetailsActivity : BaseActivity() {
 
     }
 
+    private fun renderImageGroup(topicFromServer: TopicFromServer) {
+        for (i in 0 until topicFromServer.imageUrls.size) {
+            when (i) {
+                0 -> {
+                    Glide.with(this@TopicDetailsActivity)
+                        .asBitmap()
+                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + topicFromServer.imageUrls[0])
+                        .centerCrop()
+                        .into(binding.image1)
+                }
+                1 -> {
+                    Glide.with(this@TopicDetailsActivity)
+                        .asBitmap()
+                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + topicFromServer.imageUrls[1])
+                        .centerCrop()
+                        .into(binding.image2)
+                }
+                2 -> {
+                    Glide.with(this@TopicDetailsActivity)
+                        .asBitmap()
+                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + topicFromServer.imageUrls[2])
+                        .centerCrop()
+                        .into(binding.image3)
+                }
+                3 -> {
+                    Glide.with(this@TopicDetailsActivity)
+                        .asBitmap()
+                        .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + topicFromServer.imageUrls[3])
+                        .centerCrop()
+                        .into(binding.image4)
+                }
+            }
+        }
+    }
+
+    private fun renderTextNote(topicFromServer: TopicFromServer) {
+        val noteJsonObject = JsonParser().parse(topicFromServer.notes).asJsonObject
+
+        binding.textNoteHeading.text = noteJsonObject["title"].asString
+        binding.textNoteContent.text = noteJsonObject["body"].asString
+
+
+        binding.editNote.setOnClickListener {
+
+            var popup: ListPopupWindow? = null
+
+            val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                if (position == 0) {
+                    addTextNoteLauncher.launch(
+                        TextNoteActivity.getStartIntent(
+                            this@TopicDetailsActivity,
+                            noteJsonObject["title"].asString,
+                            noteJsonObject["body"].asString
+                        )
+                    )
+                } else {
+                    /*textNote = null
+                    binding.textNoteContainer.visibility = View.GONE
+                    if (imageNote == null && textNote == null) {
+                        binding.notesIllustrationText.visibility = View.VISIBLE
+                    }*/
+                }
+                popup?.dismiss()
+            }
+
+            popup = getPopupMenu(this@TopicDetailsActivity, it, adapter, listener)
+
+            popup.show()
+
+        }
+    }
+
+    private fun renderRevisionTimeLine(topicFromServer: TopicFromServer) {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTime = LocalDateTime.parse(
+            topicFromServer.studiedOn,
+            formatter
+        )
+
+        binding.date1.text = getFormattedDate(dateTime.plusDays(1))
+        binding.date2.text = getFormattedDate(dateTime.plusDays(3))
+        binding.date3.text = getFormattedDate(dateTime.plusDays(7))
+        binding.date4.text = getFormattedDate(dateTime.plusDays(10))
+
+        if (!topicFromServer.rev1Status.isNullOrEmpty())
+            binding.circle1.backgroundTintList =
+                getColorForRevision(topicFromServer.rev1Status)
+
+        if (!topicFromServer.rev2Status.isNullOrEmpty())
+            binding.circle2.backgroundTintList =
+                getColorForRevision(topicFromServer.rev2Status)
+
+        if (!topicFromServer.rev3Status.isNullOrEmpty())
+            binding.circle3.backgroundTintList =
+                getColorForRevision(topicFromServer.rev3Status)
+
+        if (!topicFromServer.rev4Status.isNullOrEmpty())
+            binding.circle4.backgroundTintList =
+                getColorForRevision(topicFromServer.rev4Status)
+    }
+
     private fun getFormattedDate(dateTime: LocalDateTime): String {
         val formatter2 = DateTimeFormatter.ofPattern("dd/MM")
         return dateTime.format(formatter2)
@@ -180,4 +291,27 @@ class TopicDetailsActivity : BaseActivity() {
 
         }
     }
+
+    private var addTextNoteLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                data?.let {
+                    Timber.e(it.getStringExtra(HEADING))
+                    Timber.e(it.getStringExtra(CONTENT))
+
+                    val id = intent.getIntExtra(TOPIC_ID, -1)
+
+                    val jsonNote = JsonObject()
+                    jsonNote.addProperty("title", it.getStringExtra(HEADING))
+                    jsonNote.addProperty("body", it.getStringExtra(CONTENT))
+                    topicFromServer.notes = jsonNote.toString()
+
+                    topicDetailsViewModel.updateTextNote(
+                        id,
+                        topicFromServer
+                    )
+                }
+            }
+        }
 }

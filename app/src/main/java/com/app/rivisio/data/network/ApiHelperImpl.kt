@@ -1,6 +1,7 @@
 package com.app.rivisio.data.network
 
 import com.app.rivisio.ui.add_topic.Topic
+import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.google.gson.JsonElement
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -48,4 +49,11 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
         token: String?,
         userId: Int
     ) = apiService.getTopicDetails(topicId, token, userId)
+
+    override suspend fun editTopicDetails(
+        topicId: Int,
+        token: String?,
+        userId: Int,
+        topicFromServer: TopicFromServer
+    ) = apiService.editTopicDetails(topicId, token, userId, topicFromServer)
 }
