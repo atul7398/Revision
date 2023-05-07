@@ -27,6 +27,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="20dp"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:srcCompat="@drawable/vert_dots" />
 
     </LinearLayout>

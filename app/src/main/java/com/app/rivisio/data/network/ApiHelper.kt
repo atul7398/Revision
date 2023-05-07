@@ -40,4 +40,10 @@ interface ApiHelper {
         token: String?,
         userId: Int
     ): Response<JsonElement>
+
+    suspend fun getTopicDetails(
+        topicId: Int,
+        token: String?,
+        userId: Int
+    ) : Response<JsonElement>
 }

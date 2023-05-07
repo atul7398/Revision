@@ -8,6 +8,7 @@ import com.app.rivisio.utils.NetworkResult
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.Response
+import timber.log.Timber
 
 open class BaseViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
@@ -25,8 +26,10 @@ open class BaseViewModel(private val mainRepository: MainRepository) : ViewModel
                 NetworkResult.Error(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
+            Timber.e(e)
             NetworkResult.Error(code = e.code(), message = e.message())
         } catch (e: Throwable) {
+            Timber.e(e)
             NetworkResult.Exception(e)
         }
     }

@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.graphics.alpha
 import androidx.recyclerview.widget.RecyclerView
 import com.app.rivisio.R
+import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -18,6 +18,15 @@ import java.time.format.DateTimeFormatter
 class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    interface Callback {
+        fun onTopicClick(topicFromServer: TopicFromServer)
+    }
+
+    private lateinit var callback: Callback
+
+    fun setCallback(callback: Callback) {
+        this.callback = callback
+    }
 
     fun updateItems(topic: ArrayList<TopicFromServer>) {
         this.topic = topic
@@ -25,14 +34,21 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view =
+        val topicViewHolder = TopicViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.topic_list_item, parent, false)
+        )
 
-        return TopicViewHolder(view)
+        topicViewHolder.itemView.setOnClickListener {
+            if (callback != null) {
+                val position = topicViewHolder.bindingAdapterPosition
+               callback.onTopicClick(topic[position])
+            }
+        }
+
+        return topicViewHolder
     }
 
     override fun getItemCount() = topic.size
-
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as TopicViewHolder).onBind(topic[position])

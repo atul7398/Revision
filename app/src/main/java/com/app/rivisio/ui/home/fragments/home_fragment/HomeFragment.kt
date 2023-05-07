@@ -4,24 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.rivisio.R
 import com.app.rivisio.databinding.FragmentHomeBinding
 import com.app.rivisio.ui.base.BaseFragment
-import com.app.rivisio.ui.image_group.ItemOffsetDecoration
+import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
     private var _binding: FragmentHomeBinding? = null
     private val homeViewModel: HomeViewModel by viewModels()
@@ -65,6 +62,7 @@ class HomeFragment : BaseFragment() {
             )
         )
         binding.topicsList.adapter = topicsAdapter
+        topicsAdapter.setCallback(this)
 
         homeViewModel.topics.observe(this, Observer {
             when (it) {
@@ -210,5 +208,9 @@ class HomeFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onTopicClick(topicFromServer: TopicFromServer) {
+        startActivity(TopicDetailsActivity.getStartIntent(requireContext(), topicFromServer.id))
     }
 }

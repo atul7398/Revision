@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
 
@@ -41,4 +42,10 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
 
     override suspend fun getTopicsData(token: String?, userId: Int) =
         apiService.getTopicsData(token, userId)
+
+    override suspend fun getTopicDetails(
+        topicId: Int,
+        token: String?,
+        userId: Int
+    ) = apiService.getTopicDetails(topicId, token, userId)
 }
