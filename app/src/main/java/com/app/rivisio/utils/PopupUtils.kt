@@ -13,7 +13,9 @@ fun getPopupMenu(
     context: Context,
     anchor: View,
     adapter: BaseAdapter,
-    clickListener: AdapterView.OnItemClickListener
+    clickListener: AdapterView.OnItemClickListener,
+    verticalOffset: Int,
+    horizontalOffset: Int
 ): ListPopupWindow {
 
     val listPopupWindow = ListPopupWindow(context)
@@ -24,10 +26,8 @@ fun getPopupMenu(
     listPopupWindow.width = context.resources.getDimension(R.dimen.popup_width).toInt()
     listPopupWindow.height = ListPopupWindow.WRAP_CONTENT
 
-    listPopupWindow.verticalOffset =
-        context.resources.getDimension(R.dimen.popup_vertical_offset).toInt()
-    listPopupWindow.horizontalOffset =
-        context.resources.getDimension(R.dimen.popup_horizontal_offset).toInt()
+    listPopupWindow.verticalOffset = verticalOffset
+    listPopupWindow.horizontalOffset = horizontalOffset
 
     listPopupWindow.isModal = true
 

@@ -246,7 +246,7 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                 popup?.dismiss()
             }
 
-            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener)
+            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener, 0, 0)
 
             popup.show()
 
@@ -277,7 +277,7 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                 }
                 popup?.dismiss()
             }
-            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener)
+            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener, 0, 0)
 
             popup?.show()
 
@@ -309,7 +309,14 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                 }
                 popup?.dismiss()
             }
-            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener)
+            popup = getPopupMenu(
+                this@AddNotesActivity,
+                it,
+                adapter,
+                listener,
+                resources.getDimension(R.dimen.popup_vertical_offset).toInt(),
+                resources.getDimension(R.dimen.popup_horizontal_offset).toInt()
+            )
 
             popup?.show()
 

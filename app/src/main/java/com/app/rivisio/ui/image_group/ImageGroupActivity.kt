@@ -83,11 +83,11 @@ class ImageGroupActivity : BaseActivity(), ImagesAdapter.Callback {
         fun getStartIntent(
             context: Context,
             imageGroupName: String,
-            selectedImages: ArrayList<Image>
+            images: ArrayList<Image>
         ): Intent {
             val intent = Intent(context, ImageGroupActivity::class.java)
             intent.putExtra(IMAGE_GROUP_NAME, imageGroupName)
-            intent.putParcelableArrayListExtra(IMAGE_LIST, selectedImages)
+            intent.putParcelableArrayListExtra(IMAGE_LIST, images)
             return intent
         }
     }

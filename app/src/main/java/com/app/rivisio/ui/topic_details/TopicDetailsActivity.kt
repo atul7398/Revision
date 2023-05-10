@@ -7,7 +7,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.AdapterView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.ListPopupWindow
@@ -23,6 +22,8 @@ import com.app.rivisio.ui.text_note.HEADING
 import com.app.rivisio.ui.text_note.TextNoteActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.getPopupMenu
+import com.app.rivisio.utils.makeGone
+import com.app.rivisio.utils.makeVisible
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -105,37 +106,6 @@ class TopicDetailsActivity : BaseActivity() {
             }
         })
 
-        /*binding.editImages.setOnClickListener {
-            var popup: ListPopupWindow? = null
-
-            val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
-            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                if (position == 0) {
-                    if (imageNote != null) {
-                        addImageGroupLauncher.launch(
-                            ImageGroupActivity.getStartIntent(
-                                this@AddNotesActivity,
-                                imageNote!!.imageGroupName!!,
-                                imageNote!!.selectedImages!!
-                            )
-                        )
-                    }
-                } else {
-                    imageNote = null
-                    binding.imageNoteContainer.visibility = View.GONE
-                    if (imageNote == null && textNote == null) {
-                        binding.notesIllustrationText.visibility = View.VISIBLE
-                    }
-
-                }
-                popup?.dismiss()
-            }
-            popup = getPopupMenu(this@AddNotesActivity, it, adapter, listener)
-
-            popup?.show()
-
-        }*/
-
         topicDetailsViewModel.update.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {
@@ -171,6 +141,15 @@ class TopicDetailsActivity : BaseActivity() {
     }
 
     private fun renderImageGroup(topicFromServer: TopicFromServer) {
+
+        if (topicFromServer.imageUrls.size == 0) {
+            binding.addButton.makeVisible()
+            binding.imageNoteContainer.makeGone()
+            return
+        }
+
+        binding.imageGroupName.text = "Image Notes"
+
         for (i in 0 until topicFromServer.imageUrls.size) {
             when (i) {
                 0 -> {
@@ -203,10 +182,40 @@ class TopicDetailsActivity : BaseActivity() {
                 }
             }
         }
+
+        binding.editImages.setOnClickListener {
+            var popup: ListPopupWindow? = null
+
+            val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                if (position == 0) {
+                    //todo create edit image groupd activity
+
+                } else {
+                    /*imageNote = null
+                    binding.imageNoteContainer.visibility = View.GONE
+                    if (imageNote == null && textNote == null) {
+                        binding.notesIllustrationText.visibility = View.VISIBLE
+                    }*/
+
+                }
+                popup?.dismiss()
+            }
+            popup = getPopupMenu(this@TopicDetailsActivity, it, adapter, listener, 0, 0)
+
+            popup.show()
+
+        }
     }
 
     private fun renderTextNote(topicFromServer: TopicFromServer) {
         val noteJsonObject = JsonParser().parse(topicFromServer.notes).asJsonObject
+
+        if (noteJsonObject["title"].asString.isEmpty() && noteJsonObject["body"].asString.isEmpty()) {
+            binding.addButton.makeVisible()
+            binding.textNoteContainer.makeGone()
+            return
+        }
 
         binding.textNoteHeading.text = noteJsonObject["title"].asString
         binding.textNoteContent.text = noteJsonObject["body"].asString
@@ -227,16 +236,23 @@ class TopicDetailsActivity : BaseActivity() {
                         )
                     )
                 } else {
-                    /*textNote = null
-                    binding.textNoteContainer.visibility = View.GONE
-                    if (imageNote == null && textNote == null) {
-                        binding.notesIllustrationText.visibility = View.VISIBLE
-                    }*/
+
+                    val id = intent.getIntExtra(TOPIC_ID, -1)
+
+                    val jsonNote = JsonObject()
+                    jsonNote.addProperty("title", "")
+                    jsonNote.addProperty("body", "")
+                    topicFromServer.notes = jsonNote.toString()
+
+                    topicDetailsViewModel.updateTextNote(
+                        id,
+                        topicFromServer
+                    )
                 }
                 popup?.dismiss()
             }
 
-            popup = getPopupMenu(this@TopicDetailsActivity, it, adapter, listener)
+            popup = getPopupMenu(this@TopicDetailsActivity, it, adapter, listener, 0, 0)
 
             popup.show()
 
