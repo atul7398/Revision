@@ -94,12 +94,25 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
         setupButtonClicks()
 
         binding.createTopicButton.setOnClickListener {
-            if (textNote == null && imageNote == null) {
+            //allow creating topic wihtout text or image note as well
+            /*if (textNote == null && imageNote == null) {
                 showError("Please add notes")
                 return@setOnClickListener
-            }
+            }*/
 
-            uploadImages()
+            if (imageNote != null && imageNote!!.selectedImages != null)
+                uploadImages()
+            else {
+                addNotesViewModel.addTopic(
+                    Topic(
+                        uploadedImages,
+                        intent.getStringExtra(TOPIC_NAME)!!,
+                        getStringifiedJsonNote(textNote),
+                        getStudiedOnDateString(),
+                        getTags()
+                    )
+                )
+            }
         }
 
         addNotesViewModel.imageUploaded.observe(this, Observer {
@@ -138,16 +151,19 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                     hideLoading()
                     showError(it.message)
                     uploadCount = 0
+                    uploadedImages.clear()
                 }
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                     uploadCount = 0
+                    uploadedImages.clear()
                 }
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
                     uploadCount = 0
+                    uploadedImages.clear()
                 }
             }
         })
@@ -332,10 +348,15 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
         return tagsList
     }
 
-    private fun getStringifiedJsonNote(textNote: TextNote): String {
+    private fun getStringifiedJsonNote(textNote: TextNote?): String {
         val jsonNote = JsonObject()
-        jsonNote.addProperty("title", textNote.heading!!)
-        jsonNote.addProperty("body", textNote.content!!)
+        if (textNote == null) {
+            jsonNote.addProperty("title", "")
+            jsonNote.addProperty("body", "")
+        } else {
+            jsonNote.addProperty("title", textNote.heading!!)
+            jsonNote.addProperty("body", textNote.content!!)
+        }
         return jsonNote.toString()
     }
 
@@ -380,9 +401,9 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
     private var addImageGroupLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                uploadedImages =
-                    ArrayList() //clear the old uploaded images, because the user might have changed the images
-                // There are no request codes
+                //clear the old uploaded images, because the user might have changed the images
+                uploadedImages.clear()
+
                 val data: Intent? = result.data
                 imageNote = ImageNote(
                     data?.getStringExtra(IMAGE_GROUP_NAME),
