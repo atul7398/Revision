@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.edit_image_note.EditImageNoteActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.topic_details.TopicDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"

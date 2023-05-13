@@ -16,6 +16,7 @@ import com.app.rivisio.databinding.ActivityTopicDetailsBinding
 import com.app.rivisio.ui.add_notes.TextNoteOptionsAdapter
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
+import com.app.rivisio.ui.edit_image_note.EditImageNoteActivity
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.text_note.CONTENT
 import com.app.rivisio.ui.text_note.HEADING
@@ -189,7 +190,7 @@ class TopicDetailsActivity : BaseActivity() {
             val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
             val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 if (position == 0) {
-                    //todo create edit image groupd activity
+                    startActivity(EditImageNoteActivity.getStartIntent(this@TopicDetailsActivity, topicFromServer.id ))
 
                 } else {
                     /*imageNote = null

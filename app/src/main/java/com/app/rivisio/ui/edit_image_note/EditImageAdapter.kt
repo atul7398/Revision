@@ -1,22 +1,23 @@
-package com.app.rivisio.ui.image_group
+package com.app.rivisio.ui.edit_image_note
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.app.rivisio.BuildConfig
 import com.app.rivisio.R
 import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.model.Image
 import javax.inject.Inject
 
-class ImagesAdapter @Inject constructor() :
+class EditImageAdapter @Inject constructor() :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private lateinit var images: List<Image>
+    private lateinit var imageUrls: List<String>
 
     interface Callback {
-        fun onDeleteImageClick(image: Image)
+        fun onDeleteImageClick(imageUrl: String)
     }
 
     private lateinit var callback: Callback
@@ -25,40 +26,41 @@ class ImagesAdapter @Inject constructor() :
         this.callback = callback
     }
 
-    fun updateItems(images: List<Image>) {
-        this.images = images
+    fun updateItems(imageUrls: List<String>) {
+        this.imageUrls = imageUrls
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val imageViewHolder = ImageViewHolder(
+        val serverImageViewHolder = ServerImageViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.image_item, parent, false)
         )
 
-        imageViewHolder.itemView.findViewById<AppCompatImageView>(R.id.delete_image)
+        serverImageViewHolder.itemView.findViewById<AppCompatImageView>(R.id.delete_image)
             .setOnClickListener {
-                val position = imageViewHolder.bindingAdapterPosition
+                val position = serverImageViewHolder.bindingAdapterPosition
                 if (this::callback.isInitialized) {
-                    callback.onDeleteImageClick(images[position])
+                    callback.onDeleteImageClick(imageUrls[position])
                 }
             }
 
-        return imageViewHolder
+        return serverImageViewHolder
     }
 
     override fun getItemCount(): Int {
-        return images.size
+        return imageUrls.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ImageViewHolder).onBind(images[position])
+        (holder as ServerImageViewHolder).onBind(imageUrls[position])
     }
 
-    inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ServerImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun onBind(image: Image) {
+        fun onBind(imageUrl: String) {
             Glide
                 .with(itemView.context)
-                .load(image.path)
+                .asBitmap()
+                .load(BuildConfig.BASE_URL + "/users/getfile?awsUrl=" + imageUrl)
                 .centerCrop()
                 .into(itemView.findViewById<AppCompatImageView>(R.id.image_note))
 
