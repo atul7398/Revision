@@ -3,8 +3,6 @@ package com.app.rivisio.ui.topic_details
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.AdapterView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +10,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.lifecycle.Observer
 import com.app.rivisio.BuildConfig
+import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityTopicDetailsBinding
+import com.app.rivisio.ui.add_notes.NoteTypeAdapter
 import com.app.rivisio.ui.add_notes.TextNoteOptionsAdapter
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
@@ -64,6 +64,45 @@ class TopicDetailsActivity : BaseActivity() {
         setContentView(binding.root)
 
         binding.backButton.setOnClickListener { finish() }
+
+        binding.addButton.setOnClickListener {
+            var popup: ListPopupWindow? = null
+
+            val adapter = NoteTypeAdapter(arrayListOf("Text Note", "Image Group"))
+            val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                if (position == 0) {
+                    val noteJsonObject = JsonParser().parse(topicFromServer.notes).asJsonObject
+
+                    if (noteJsonObject["title"].asString.isEmpty() && noteJsonObject["body"].asString.isEmpty()) {
+                        addTextNoteLauncher.launch(TextNoteActivity.getStartIntent(this@TopicDetailsActivity))
+                    } else {
+                        showError("Not allowed")
+                    }
+                } else {
+                    if (topicFromServer.imageUrls.size == 0) {
+                        startActivity(
+                            EditImageNoteActivity.getStartIntent(
+                                this@TopicDetailsActivity,
+                                topicFromServer.id
+                            )
+                        )
+                    } else {
+                        showError("Not allowed")
+                    }
+                }
+                popup?.dismiss()
+            }
+            popup = getPopupMenu(
+                this@TopicDetailsActivity,
+                it,
+                adapter,
+                listener,
+                resources.getDimension(R.dimen.popup_vertical_offset).toInt(),
+                resources.getDimension(R.dimen.popup_horizontal_offset).toInt()
+            )
+
+            popup?.show()
+        }
 
         topicDetailsViewModel.topicData.observe(this, Observer {
             when (it) {
@@ -158,6 +197,8 @@ class TopicDetailsActivity : BaseActivity() {
             return
         }
 
+        binding.imageNoteContainer.makeVisible()
+
         binding.imageGroupName.text = "Image Notes"
 
         for (i in 0 until topicFromServer.imageUrls.size) {
@@ -237,6 +278,8 @@ class TopicDetailsActivity : BaseActivity() {
             binding.textNoteContainer.makeGone()
             return
         }
+
+        binding.textNoteContainer.makeVisible()
 
         binding.textNoteHeading.text = noteJsonObject["title"].asString
         binding.textNoteContent.text = noteJsonObject["body"].asString

@@ -3,15 +3,12 @@ package com.app.rivisio.ui.edit_image_note
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.rivisio.RivisioApp
 import com.app.rivisio.data.network.AWS_URL
 import com.app.rivisio.databinding.ActivityEditImageNoteBinding
-import com.app.rivisio.ui.add_topic.TOPIC_NAME
-import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.topic_details.TOPIC_ID
@@ -98,12 +95,16 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
                             TopicFromServer::class.java
                         )
 
-                        binding.imageGroupIllustration.makeGone()
-                        binding.imageGrid.makeVisible()
+                        if (topicFromServer.imageUrls.size > 0) {
+                            binding.imageGroupIllustration.makeGone()
+                            binding.imageGrid.makeVisible()
 
-                        editImageAdapter.updateItems(topicFromServer.imageUrls)
-                        editImageAdapter.notifyDataSetChanged()
-
+                            editImageAdapter.updateItems(topicFromServer.imageUrls)
+                            editImageAdapter.notifyDataSetChanged()
+                        } else {
+                            binding.imageGroupIllustration.makeVisible()
+                            binding.imageGrid.makeGone()
+                        }
                     } catch (e: Exception) {
                         Timber.e("Json Parsing Error:")
                         Timber.e(e)
