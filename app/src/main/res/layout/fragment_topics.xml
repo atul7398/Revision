@@ -33,7 +33,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/topics_illustration"
+            android:id="@+id/topics_illustration_image"
             android:layout_width="240dp"
             android:layout_height="230dp"
             android:layout_gravity="center"
@@ -58,7 +58,7 @@
             android:gravity="center_horizontal"
             android:text="@string/topics_message"
             android:textColor="@color/gray_text"
-            android:textSize="16sp" />
+            android:textSize="12sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/topic_list"

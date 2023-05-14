@@ -6,10 +6,6 @@ import com.google.gson.JsonElement
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface ApiHelper {
     suspend fun signup(body: Map<String, String>): Response<JsonElement>
@@ -54,5 +50,10 @@ interface ApiHelper {
         token: String?,
         userId: Int,
         topicFromServer: TopicFromServer
+    ): Response<JsonElement>
+
+    suspend fun getAllTopics(
+        token: String?,
+        userId: Int
     ): Response<JsonElement>
 }

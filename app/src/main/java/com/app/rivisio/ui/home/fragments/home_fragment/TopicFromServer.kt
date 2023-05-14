@@ -16,5 +16,4 @@ data class TopicFromServer(
     var rev2Status: String? = null,
     var rev3Status: String? = null,
     var rev4Status: String? = null
-
 )

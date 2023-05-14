@@ -100,6 +100,33 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
             }
         })
 
+        editImageNoteViewModel.update.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    val id = intent.getIntExtra(TOPIC_ID, -1)
+
+                    if (id != -1)
+                        editImageNoteViewModel.getTopicDetails(id)
+                }
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
+
         val id = intent.getIntExtra(TOPIC_ID, -1)
 
         if (id != -1)

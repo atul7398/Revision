@@ -103,53 +103,29 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                                         homeTabs.setTabSelected(0)
                                         createTopicsList(topicsTodayList)
                                         if (topicsTodayList.isEmpty()) {
-                                            binding.topicsList.visibility = View.GONE
-                                            binding.homeTabs.visibility = View.VISIBLE
-                                            binding.homeIllustrationContainer.visibility =
-                                                View.VISIBLE
-                                            binding.homeIllustration.setImageResource(R.drawable.meditation)
-                                            binding.homeIllustrationMessage.text = "No topics here"
-                                            binding.homeIllustrationText.text = ""
+                                            renderEmptyListIllustration()
                                         } else {
-                                            binding.topicsList.visibility = View.VISIBLE
-                                            binding.homeTabs.visibility = View.VISIBLE
-                                            binding.homeIllustrationContainer.visibility = View.GONE
+                                            renderList()
                                         }
                                     }
                                     R.id.tab_missed -> {
                                         homeTabs.setTabSelected(1)
                                         createTopicsList(topicsMissedList)
                                         if (topicsMissedList.isEmpty()) {
-                                            binding.topicsList.visibility = View.GONE
-                                            binding.homeTabs.visibility = View.VISIBLE
-                                            binding.homeIllustrationContainer.visibility =
-                                                View.VISIBLE
-                                            binding.homeIllustration.setImageResource(R.drawable.meditation)
-                                            binding.homeIllustrationMessage.text = "No topics here"
-                                            binding.homeIllustrationText.text = ""
+                                            renderEmptyListIllustration()
 
                                         } else {
-                                            binding.topicsList.visibility = View.VISIBLE
-                                            binding.homeTabs.visibility = View.VISIBLE
-                                            binding.homeIllustrationContainer.visibility = View.GONE
+                                            renderList()
                                         }
                                     }
                                     R.id.tab_upcoming -> {
                                         homeTabs.setTabSelected(2)
                                         createTopicsList(topicsUpcomingList)
                                         if (topicsUpcomingList.isEmpty()) {
-                                            binding.topicsList.visibility = View.GONE
-                                            binding.homeTabs.visibility = View.VISIBLE
-                                            binding.homeIllustrationContainer.visibility =
-                                                View.VISIBLE
-                                            binding.homeIllustration.setImageResource(R.drawable.meditation)
-                                            binding.homeIllustrationMessage.text = "No topics here"
-                                            binding.homeIllustrationText.text = ""
+                                            renderEmptyListIllustration()
 
                                         } else {
-                                            binding.topicsList.visibility = View.VISIBLE
-                                            binding.homeTabs.visibility = View.VISIBLE
-                                            binding.homeIllustrationContainer.visibility = View.GONE
+                                            renderList()
                                         }
                                     }
                                 }
@@ -159,16 +135,9 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                             homeTabs.setTabSelected(0)
                             createTopicsList(topicsTodayList)
                             if (topicsTodayList.isEmpty()) {
-                                binding.topicsList.visibility = View.GONE
-                                binding.homeTabs.visibility = View.VISIBLE
-                                binding.homeIllustrationContainer.visibility = View.VISIBLE
-                                binding.homeIllustration.setImageResource(R.drawable.meditation)
-                                binding.homeIllustrationMessage.text = "No topics here"
-                                binding.homeIllustrationText.text = ""
+                                renderEmptyListIllustration()
                             } else {
-                                binding.topicsList.visibility = View.VISIBLE
-                                binding.homeTabs.visibility = View.VISIBLE
-                                binding.homeIllustrationContainer.visibility = View.GONE
+                                renderList()
                             }
                         }
 
@@ -199,6 +168,22 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         })
 
         homeViewModel.getTopicsData()
+    }
+
+    private fun renderList() {
+        binding.topicsList.visibility = View.VISIBLE
+        binding.homeTabs.visibility = View.VISIBLE
+        binding.homeIllustrationContainer.visibility = View.GONE
+    }
+
+    private fun renderEmptyListIllustration() {
+        binding.topicsList.visibility = View.GONE
+        binding.homeTabs.visibility = View.VISIBLE
+        binding.homeIllustrationContainer.visibility =
+            View.VISIBLE
+        binding.homeIllustration.setImageResource(R.drawable.meditation)
+        binding.homeIllustrationMessage.text = "No topics here"
+        binding.homeIllustrationText.text = "You have revised all the topics, add new to create more."
     }
 
     private fun createTopicsList(topics: ArrayList<TopicFromServer>) {

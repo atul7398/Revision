@@ -125,6 +125,9 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                             uploadImages()
                         } else {
 
+                            hideLoading()
+                            showMessage("Images uploaded successfully")
+
                             addNotesViewModel.addTopic(
                                 Topic(
                                     uploadedImages,
@@ -135,8 +138,6 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                                 )
                             )
 
-                            hideLoading()
-                            showMessage("Images uploaded successfully")
                         }
                     } catch (e: Exception) {
                         Timber.e("Json parsing issue: ")

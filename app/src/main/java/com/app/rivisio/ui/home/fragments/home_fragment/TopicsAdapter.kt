@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.rivisio.R
-import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -41,7 +40,7 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
         topicViewHolder.itemView.setOnClickListener {
             if (callback != null) {
                 val position = topicViewHolder.bindingAdapterPosition
-               callback.onTopicClick(topic[position])
+                callback.onTopicClick(topic[position])
             }
         }
 
@@ -61,8 +60,10 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
 
             itemView.findViewById<ChipGroup>(R.id.selected_tags).removeAllViews()
 
-            topicFromServer.tagsList.forEach {
-                addTagChip(it)
+            if (topicFromServer.tagsList != null) {
+                topicFromServer.tagsList!!.forEach {
+                    addTagChip(it)
+                }
             }
 
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -105,9 +106,11 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
                 "stop" -> {
                     ColorStateList.valueOf(Color.parseColor("#F69032"))
                 }
+
                 "wait" -> {
                     ColorStateList.valueOf(Color.parseColor("#FFB904"))
                 }
+
                 else -> { //done
                     ColorStateList.valueOf(Color.parseColor("#0E965E"))
                 }
