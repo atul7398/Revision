@@ -84,6 +84,11 @@ class TopicsFragment : BaseFragment(), TopicsAdapter.Callback {
                             binding.topicsIllustrationText.makeGone()
                             binding.topicList.makeVisible()
                             topicsAdapter.updateItems(topics)
+                        } else{
+                            binding.topicsIllustrationImage.makeVisible()
+                            binding.topicsIllustrationMessage.makeVisible()
+                            binding.topicsIllustrationText.makeVisible()
+                            binding.topicList.makeGone()
                         }
                     } catch (e: Exception) {
                         Timber.e("Json parsing issue: ")

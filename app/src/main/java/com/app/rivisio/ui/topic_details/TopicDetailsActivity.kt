@@ -260,6 +260,15 @@ class TopicDetailsActivity : BaseActivity() {
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+
+        val id = intent.getIntExtra(TOPIC_ID, -1)
+
+        if (id != -1)
+            topicDetailsViewModel.getTopicDetails(id)
+    }
+
     private fun renderRevisionTimeLine(topicFromServer: TopicFromServer) {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val dateTime = LocalDateTime.parse(

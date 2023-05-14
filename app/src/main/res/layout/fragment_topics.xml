@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:fontFamily="@font/poppins_semi_bold"
-            android:text="Add Notes"
+            android:text="Topics"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -37,6 +37,7 @@
             android:layout_width="240dp"
             android:layout_height="230dp"
             android:layout_gravity="center"
+            android:visibility="gone"
             app:srcCompat="@drawable/topics_img" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -49,7 +50,8 @@
             android:inputType="textMultiLine"
             android:text="All your Topics will appear here"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/topics_illustration_text"
@@ -58,7 +60,8 @@
             android:gravity="center_horizontal"
             android:text="@string/topics_message"
             android:textColor="@color/gray_text"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/topic_list"
