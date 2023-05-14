@@ -21,6 +21,7 @@ import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.text_note.CONTENT
 import com.app.rivisio.ui.text_note.HEADING
 import com.app.rivisio.ui.text_note.TextNoteActivity
+import com.app.rivisio.utils.CommonUtils
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.getPopupMenu
 import com.app.rivisio.utils.makeGone
@@ -89,17 +90,21 @@ class TopicDetailsActivity : BaseActivity() {
                         showError("Something went wrong")
                     }
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -116,17 +121,21 @@ class TopicDetailsActivity : BaseActivity() {
                     if (id != -1)
                         topicDetailsViewModel.getTopicDetails(id)
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -160,6 +169,7 @@ class TopicDetailsActivity : BaseActivity() {
                         .centerCrop()
                         .into(binding.image1)
                 }
+
                 1 -> {
                     Glide.with(this@TopicDetailsActivity)
                         .asBitmap()
@@ -167,6 +177,7 @@ class TopicDetailsActivity : BaseActivity() {
                         .centerCrop()
                         .into(binding.image2)
                 }
+
                 2 -> {
                     Glide.with(this@TopicDetailsActivity)
                         .asBitmap()
@@ -174,6 +185,7 @@ class TopicDetailsActivity : BaseActivity() {
                         .centerCrop()
                         .into(binding.image3)
                 }
+
                 3 -> {
                     Glide.with(this@TopicDetailsActivity)
                         .asBitmap()
@@ -190,14 +202,22 @@ class TopicDetailsActivity : BaseActivity() {
             val adapter = TextNoteOptionsAdapter(arrayListOf("Edit", "Delete"))
             val listener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 if (position == 0) {
-                    startActivity(EditImageNoteActivity.getStartIntent(this@TopicDetailsActivity, topicFromServer.id ))
+                    startActivity(
+                        EditImageNoteActivity.getStartIntent(
+                            this@TopicDetailsActivity,
+                            topicFromServer.id
+                        )
+                    )
 
                 } else {
-                    /*imageNote = null
-                    binding.imageNoteContainer.visibility = View.GONE
-                    if (imageNote == null && textNote == null) {
-                        binding.notesIllustrationText.visibility = View.VISIBLE
-                    }*/
+                    val id = intent.getIntExtra(TOPIC_ID, -1)
+
+                    topicFromServer.imageUrls = arrayListOf()
+
+                    topicDetailsViewModel.updateTextNote(
+                        id,
+                        topicFromServer
+                    )
 
                 }
                 popup?.dismiss()
@@ -283,39 +303,24 @@ class TopicDetailsActivity : BaseActivity() {
 
         if (!topicFromServer.rev1Status.isNullOrEmpty())
             binding.circle1.backgroundTintList =
-                getColorForRevision(topicFromServer.rev1Status)
+                CommonUtils.getColorForRevision(topicFromServer.rev1Status)
 
         if (!topicFromServer.rev2Status.isNullOrEmpty())
             binding.circle2.backgroundTintList =
-                getColorForRevision(topicFromServer.rev2Status)
+                CommonUtils.getColorForRevision(topicFromServer.rev2Status)
 
         if (!topicFromServer.rev3Status.isNullOrEmpty())
             binding.circle3.backgroundTintList =
-                getColorForRevision(topicFromServer.rev3Status)
+                CommonUtils.getColorForRevision(topicFromServer.rev3Status)
 
         if (!topicFromServer.rev4Status.isNullOrEmpty())
             binding.circle4.backgroundTintList =
-                getColorForRevision(topicFromServer.rev4Status)
+                CommonUtils.getColorForRevision(topicFromServer.rev4Status)
     }
 
     private fun getFormattedDate(dateTime: LocalDateTime): String {
         val formatter2 = DateTimeFormatter.ofPattern("dd/MM")
         return dateTime.format(formatter2)
-    }
-
-    private fun getColorForRevision(revStatus: String?): ColorStateList {
-        return when (revStatus) {
-            "stop" -> {
-                ColorStateList.valueOf(Color.parseColor("#F69032"))
-            }
-            "wait" -> {
-                ColorStateList.valueOf(Color.parseColor("#FFB904"))
-            }
-            else -> { //done
-                ColorStateList.valueOf(Color.parseColor("#0E965E"))
-            }
-
-        }
     }
 
     private var addTextNoteLauncher =

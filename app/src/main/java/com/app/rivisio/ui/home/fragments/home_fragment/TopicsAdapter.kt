@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.rivisio.R
+import com.app.rivisio.utils.CommonUtils
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -86,35 +87,19 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
 
             if (!topicFromServer.rev1Status.isNullOrEmpty())
                 itemView.findViewById<View>(R.id.circle_1).backgroundTintList =
-                    getColorForRevision(topicFromServer.rev1Status)
+                    CommonUtils.getColorForRevision(topicFromServer.rev1Status)
 
             if (!topicFromServer.rev2Status.isNullOrEmpty())
                 itemView.findViewById<View>(R.id.circle_2).backgroundTintList =
-                    getColorForRevision(topicFromServer.rev2Status)
+                    CommonUtils.getColorForRevision(topicFromServer.rev2Status)
 
             if (!topicFromServer.rev3Status.isNullOrEmpty())
                 itemView.findViewById<View>(R.id.circle_3).backgroundTintList =
-                    getColorForRevision(topicFromServer.rev3Status)
+                    CommonUtils.getColorForRevision(topicFromServer.rev3Status)
 
             if (!topicFromServer.rev4Status.isNullOrEmpty())
                 itemView.findViewById<View>(R.id.circle_4).backgroundTintList =
-                    getColorForRevision(topicFromServer.rev4Status)
-        }
-
-        private fun getColorForRevision(revStatus: String?): ColorStateList {
-            return when (revStatus) {
-                "stop" -> {
-                    ColorStateList.valueOf(Color.parseColor("#F69032"))
-                }
-
-                "wait" -> {
-                    ColorStateList.valueOf(Color.parseColor("#FFB904"))
-                }
-
-                else -> { //done
-                    ColorStateList.valueOf(Color.parseColor("#0E965E"))
-                }
-            }
+                    CommonUtils.getColorForRevision(topicFromServer.rev4Status)
         }
 
         private fun getFormattedDate(dateTime: LocalDateTime): String {

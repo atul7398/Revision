@@ -2,6 +2,7 @@ package com.app.rivisio.utils
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import com.app.rivisio.R
@@ -54,5 +55,21 @@ object CommonUtils {
         }
 
         return ord
+    }
+
+    fun getColorForRevision(revStatus: String?): ColorStateList {
+        return when (revStatus) {
+            "stop" -> {
+                ColorStateList.valueOf(Color.parseColor("#F69032"))
+            }
+
+            "wait" -> {
+                ColorStateList.valueOf(Color.parseColor("#FFB904"))
+            }
+
+            else -> { //done
+                ColorStateList.valueOf(Color.parseColor("#0E965E"))
+            }
+        }
     }
 }
