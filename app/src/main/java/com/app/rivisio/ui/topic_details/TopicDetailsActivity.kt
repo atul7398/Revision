@@ -23,6 +23,7 @@ import com.app.rivisio.ui.text_note.HEADING
 import com.app.rivisio.ui.text_note.TextNoteActivity
 import com.app.rivisio.utils.CommonUtils
 import com.app.rivisio.utils.NetworkResult
+import com.app.rivisio.utils.RevisionInterval
 import com.app.rivisio.utils.getPopupMenu
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
@@ -339,10 +340,10 @@ class TopicDetailsActivity : BaseActivity() {
             formatter
         )
 
-        binding.date1.text = getFormattedDate(dateTime.plusDays(1))
-        binding.date2.text = getFormattedDate(dateTime.plusDays(3))
-        binding.date3.text = getFormattedDate(dateTime.plusDays(7))
-        binding.date4.text = getFormattedDate(dateTime.plusDays(10))
+        binding.date1.text = getFormattedDate(dateTime.plusDays(RevisionInterval.ONE.days))
+        binding.date2.text = getFormattedDate(dateTime.plusDays(RevisionInterval.SEVEN.days))
+        binding.date3.text = getFormattedDate(dateTime.plusDays(RevisionInterval.THIRTY.days))
+        binding.date4.text = getFormattedDate(dateTime.plusDays(RevisionInterval.NINETY.days))
 
         if (!topicFromServer.rev1Status.isNullOrEmpty())
             binding.circle1.backgroundTintList =

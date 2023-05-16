@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.rivisio.R
 import com.app.rivisio.utils.CommonUtils
+import com.app.rivisio.utils.RevisionInterval
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -74,16 +75,16 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
                 "Started on : ${getFormattedDate(dateTime)}"
 
             itemView.findViewById<AppCompatTextView>(R.id.date_1).text =
-                getFormattedDate(dateTime.plusDays(1))
+                getFormattedDate(dateTime.plusDays(RevisionInterval.ONE.days))
 
             itemView.findViewById<AppCompatTextView>(R.id.date_2).text =
-                getFormattedDate(dateTime.plusDays(3))
+                getFormattedDate(dateTime.plusDays(RevisionInterval.SEVEN.days))
 
             itemView.findViewById<AppCompatTextView>(R.id.date_3).text =
-                getFormattedDate(dateTime.plusDays(7))
+                getFormattedDate(dateTime.plusDays(RevisionInterval.THIRTY.days))
 
             itemView.findViewById<AppCompatTextView>(R.id.date_4).text =
-                getFormattedDate(dateTime.plusDays(10))
+                getFormattedDate(dateTime.plusDays(RevisionInterval.NINETY.days))
 
             if (!topicFromServer.rev1Status.isNullOrEmpty())
                 itemView.findViewById<View>(R.id.circle_1).backgroundTintList =
