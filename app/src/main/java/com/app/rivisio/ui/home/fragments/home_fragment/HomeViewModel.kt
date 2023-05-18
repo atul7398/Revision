@@ -26,6 +26,10 @@ class HomeViewModel @Inject constructor(
     val topics: LiveData<NetworkResult<JsonElement>>
         get() = _topics
 
+    private val _update = MutableLiveData<NetworkResult<JsonElement>>()
+    val update: LiveData<NetworkResult<JsonElement>>
+        get() = _update
+
     fun getUserDetails() {
         viewModelScope.launch {
             _userName.value = mainRepository.getName()
@@ -45,6 +49,24 @@ class HomeViewModel @Inject constructor(
 
             _topics.value = response
         }
+    }
+
+    fun reviseTopic(id: Int?, revsion: Map<String, String>) {
+
+        viewModelScope.launch {
+
+            _update.value = NetworkResult.Loading
+
+            val response = handleApi {
+                mainRepository.reviseTopic(
+                    id!!,
+                    revsion
+                )
+            }
+            _update.value = response
+
+        }
+
     }
 
 }

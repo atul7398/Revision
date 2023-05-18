@@ -148,4 +148,9 @@ class MainRepository @Inject constructor(
         userId: Int,
         topicFromServer: TopicFromServer
     ) = apiHelper.editTopicDetails(topicId, token, userId, topicFromServer)
+
+    suspend fun reviseTopic(
+        topicId: Int,
+        body: Map<String, String>
+    ) = apiHelper.reviseTopic(topicId, body)
 }

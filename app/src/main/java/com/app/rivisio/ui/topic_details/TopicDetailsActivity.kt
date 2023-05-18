@@ -124,6 +124,8 @@ class TopicDetailsActivity : BaseActivity() {
 
                         renderImageGroup(topicFromServer)
 
+                        renderReviseButton(topicFromServer)
+
                     } catch (e: Exception) {
                         Timber.e("Json Parsing Error:")
                         Timber.e(e)
@@ -188,6 +190,52 @@ class TopicDetailsActivity : BaseActivity() {
         if (id != -1)
             topicDetailsViewModel.getTopicDetails(id)
 
+    }
+
+    private fun renderReviseButton(topicFromServer: TopicFromServer) {
+
+        binding.horizontalRule.makeGone()
+        binding.markRevised.makeGone()
+
+        if (topicFromServer.rev1Status == "wait") {
+            binding.horizontalRule.makeVisible()
+            binding.markRevised.makeVisible()
+            val revsion = mapOf("rev1" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            binding.markRevised.setOnClickListener {
+                topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
+            }
+            return
+        }
+
+        if (topicFromServer.rev2Status == "wait") {
+            binding.horizontalRule.makeVisible()
+            binding.markRevised.makeVisible()
+            val revsion = mapOf("rev2" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            binding.markRevised.setOnClickListener {
+                topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
+            }
+            return
+        }
+
+        if (topicFromServer.rev3Status == "wait") {
+            binding.horizontalRule.makeVisible()
+            binding.markRevised.makeVisible()
+            val revsion = mapOf("rev3" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            binding.markRevised.setOnClickListener {
+                topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
+            }
+            return
+        }
+
+        if (topicFromServer.rev4Status == "wait") {
+            binding.horizontalRule.makeVisible()
+            binding.markRevised.makeVisible()
+            val revsion = mapOf("rev4" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            binding.markRevised.setOnClickListener {
+                topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
+            }
+            return
+        }
     }
 
     private fun renderImageGroup(topicFromServer: TopicFromServer) {
@@ -345,21 +393,17 @@ class TopicDetailsActivity : BaseActivity() {
         binding.date3.text = getFormattedDate(dateTime.plusDays(RevisionInterval.THIRTY.days))
         binding.date4.text = getFormattedDate(dateTime.plusDays(RevisionInterval.NINETY.days))
 
-        if (!topicFromServer.rev1Status.isNullOrEmpty())
-            binding.circle1.backgroundTintList =
-                CommonUtils.getColorForRevision(topicFromServer.rev1Status)
+        binding.circle1.backgroundTintList =
+            CommonUtils.getColorForRevision(topicFromServer.rev1Status)
 
-        if (!topicFromServer.rev2Status.isNullOrEmpty())
-            binding.circle2.backgroundTintList =
-                CommonUtils.getColorForRevision(topicFromServer.rev2Status)
+        binding.circle2.backgroundTintList =
+            CommonUtils.getColorForRevision(topicFromServer.rev2Status)
 
-        if (!topicFromServer.rev3Status.isNullOrEmpty())
-            binding.circle3.backgroundTintList =
-                CommonUtils.getColorForRevision(topicFromServer.rev3Status)
+        binding.circle3.backgroundTintList =
+            CommonUtils.getColorForRevision(topicFromServer.rev3Status)
 
-        if (!topicFromServer.rev4Status.isNullOrEmpty())
-            binding.circle4.backgroundTintList =
-                CommonUtils.getColorForRevision(topicFromServer.rev4Status)
+        binding.circle4.backgroundTintList =
+            CommonUtils.getColorForRevision(topicFromServer.rev4Status)
     }
 
     private fun getFormattedDate(dateTime: LocalDateTime): String {

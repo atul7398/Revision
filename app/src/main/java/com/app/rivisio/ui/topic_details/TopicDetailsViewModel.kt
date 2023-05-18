@@ -68,4 +68,22 @@ class TopicDetailsViewModel @Inject constructor(
         }
 
     }
+
+    fun reviseTopic(id: Int?, revsion: Map<String, String>) {
+
+        viewModelScope.launch {
+
+            _update.value = NetworkResult.Loading
+
+            val response = handleApi {
+                mainRepository.reviseTopic(
+                    id!!,
+                    revsion
+                )
+            }
+            _update.value = response
+
+        }
+
+    }
 }

@@ -56,4 +56,9 @@ interface ApiHelper {
         token: String?,
         userId: Int
     ): Response<JsonElement>
+
+    suspend fun reviseTopic(
+        topicId: Int,
+        body: Map<String, String>
+    ): Response<JsonElement>
 }

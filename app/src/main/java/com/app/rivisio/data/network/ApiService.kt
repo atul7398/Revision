@@ -77,4 +77,11 @@ interface ApiService {
         @Query(USER_ID) userId: Int,
         @Body topicFromServer: TopicFromServer
     ): Response<JsonElement>
+
+    @PUT("/topicrevision/{topicId}")
+    suspend fun reviseTopic(
+        @Path(TOPIC_ID) topicId: Int,
+        @Body body: Map<String, String>
+    ): Response<JsonElement>
+
 }

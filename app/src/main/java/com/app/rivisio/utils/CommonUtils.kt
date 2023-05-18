@@ -67,9 +67,14 @@ object CommonUtils {
                 ColorStateList.valueOf(Color.parseColor("#FFB904"))
             }
 
-            else -> { //done
+            "done" -> {
                 ColorStateList.valueOf(Color.parseColor("#0E965E"))
+            }
+
+            else -> {
+                ColorStateList.valueOf(Color.parseColor("#E8ECEF"))
             }
         }
     }
+
 }

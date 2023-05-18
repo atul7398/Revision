@@ -12,10 +12,15 @@ import com.app.rivisio.databinding.FragmentHomeBinding
 import com.app.rivisio.ui.base.BaseFragment
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
+import com.app.rivisio.utils.makeGone
+import com.app.rivisio.utils.makeVisible
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
@@ -64,6 +69,37 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         binding.topicsList.adapter = topicsAdapter
         topicsAdapter.setCallback(this)
 
+        homeViewModel.update.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+
+                    homeViewModel.getTopicsData()
+
+                }
+
+                is NetworkResult.Loading -> {
+                    hideLoading()
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
+
         homeViewModel.topics.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {
@@ -101,16 +137,17 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                                 when (v.id) {
                                     R.id.tab_today -> {
                                         homeTabs.setTabSelected(0)
-                                        createTopicsList(topicsTodayList)
+                                        showTopicsList(topicsTodayList, true)
                                         if (topicsTodayList.isEmpty()) {
                                             renderEmptyListIllustration()
                                         } else {
                                             renderList()
                                         }
                                     }
+
                                     R.id.tab_missed -> {
                                         homeTabs.setTabSelected(1)
-                                        createTopicsList(topicsMissedList)
+                                        showTopicsList(topicsMissedList)
                                         if (topicsMissedList.isEmpty()) {
                                             renderEmptyListIllustration()
 
@@ -118,9 +155,10 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                                             renderList()
                                         }
                                     }
+
                                     R.id.tab_upcoming -> {
                                         homeTabs.setTabSelected(2)
-                                        createTopicsList(topicsUpcomingList)
+                                        showTopicsList(topicsUpcomingList)
                                         if (topicsUpcomingList.isEmpty()) {
                                             renderEmptyListIllustration()
 
@@ -133,7 +171,7 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
 
                             homeTabs.setTabSelected(0)
-                            createTopicsList(topicsTodayList)
+                            showTopicsList(topicsTodayList, true)
                             if (topicsTodayList.isEmpty()) {
                                 renderEmptyListIllustration()
                             } else {
@@ -148,18 +186,22 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                     }
 
                 }
+
                 is NetworkResult.Loading -> {
                     hideLoading()
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -171,23 +213,23 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     }
 
     private fun renderList() {
-        binding.topicsList.visibility = View.VISIBLE
-        binding.homeTabs.visibility = View.VISIBLE
-        binding.homeIllustrationContainer.visibility = View.GONE
+        binding.topicsList.makeVisible()
+        binding.homeTabs.makeVisible()
+        binding.homeIllustrationContainer.makeGone()
     }
 
     private fun renderEmptyListIllustration() {
-        binding.topicsList.visibility = View.GONE
-        binding.homeTabs.visibility = View.VISIBLE
-        binding.homeIllustrationContainer.visibility =
-            View.VISIBLE
+        binding.topicsList.makeGone()
+        binding.homeTabs.makeVisible()
+        binding.homeIllustrationContainer.makeVisible()
         binding.homeIllustration.setImageResource(R.drawable.meditation)
         binding.homeIllustrationMessage.text = "No topics here"
-        binding.homeIllustrationText.text = "You have revised all the topics, add new to create more."
+        binding.homeIllustrationText.text =
+            "You have revised all the topics, add new to create more."
     }
 
-    private fun createTopicsList(topics: ArrayList<TopicFromServer>) {
-        topicsAdapter.updateItems(topics)
+    private fun showTopicsList(topics: ArrayList<TopicFromServer>, isTodaysTopic: Boolean = false) {
+        topicsAdapter.updateItems(topics, isTodaysTopic)
     }
 
     override fun onDestroyView() {
@@ -197,5 +239,31 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
     override fun onTopicClick(topicFromServer: TopicFromServer) {
         startActivity(TopicDetailsActivity.getStartIntent(requireContext(), topicFromServer.id))
+    }
+
+    override fun onTopicReviseButtonClick(topicFromServer: TopicFromServer) {
+        if (topicFromServer.rev1Status == "wait") {
+            val revsion = mapOf("rev1" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+            return
+        }
+
+        if (topicFromServer.rev2Status == "wait") {
+            val revsion = mapOf("rev2" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+            return
+        }
+
+        if (topicFromServer.rev3Status == "wait") {
+            val revsion = mapOf("rev3" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+            return
+        }
+
+        if (topicFromServer.rev4Status == "wait") {
+            val revsion = mapOf("rev4" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+            return
+        }
     }
 }

@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.rivisio.R
 import com.app.rivisio.utils.CommonUtils
 import com.app.rivisio.utils.RevisionInterval
+import com.app.rivisio.utils.makeGone
+import com.app.rivisio.utils.makeVisible
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -19,8 +22,11 @@ import java.time.format.DateTimeFormatter
 class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var isTodaysTopic: Boolean = false
+
     interface Callback {
         fun onTopicClick(topicFromServer: TopicFromServer)
+        fun onTopicReviseButtonClick(topicFromServer: TopicFromServer)
     }
 
     private lateinit var callback: Callback
@@ -29,8 +35,9 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
         this.callback = callback
     }
 
-    fun updateItems(topic: ArrayList<TopicFromServer>) {
+    fun updateItems(topic: ArrayList<TopicFromServer>, isTodaysTopic: Boolean) {
         this.topic = topic
+        this.isTodaysTopic = isTodaysTopic
         notifyDataSetChanged()
     }
 
@@ -45,6 +52,14 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
                 callback.onTopicClick(topic[position])
             }
         }
+
+        topicViewHolder.itemView.findViewById<MaterialButton>(R.id.revision_button)
+            .setOnClickListener {
+                if (callback != null) {
+                    val position = topicViewHolder.bindingAdapterPosition
+                    callback.onTopicReviseButtonClick(topic[position])
+                }
+            }
 
         return topicViewHolder
     }
@@ -68,6 +83,12 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
                 }
             }
 
+            if (isTodaysTopic && topicFromServer.status != "stop") {
+                itemView.findViewById<MaterialButton>(R.id.revision_button).makeVisible()
+            } else {
+                itemView.findViewById<MaterialButton>(R.id.revision_button).makeGone()
+            }
+
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val dateTime = LocalDateTime.parse(topicFromServer.studiedOn, formatter)
 
@@ -86,21 +107,17 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
             itemView.findViewById<AppCompatTextView>(R.id.date_4).text =
                 getFormattedDate(dateTime.plusDays(RevisionInterval.NINETY.days))
 
-            if (!topicFromServer.rev1Status.isNullOrEmpty())
-                itemView.findViewById<View>(R.id.circle_1).backgroundTintList =
-                    CommonUtils.getColorForRevision(topicFromServer.rev1Status)
+            itemView.findViewById<View>(R.id.circle_1).backgroundTintList =
+                CommonUtils.getColorForRevision(topicFromServer.rev1Status)
 
-            if (!topicFromServer.rev2Status.isNullOrEmpty())
-                itemView.findViewById<View>(R.id.circle_2).backgroundTintList =
-                    CommonUtils.getColorForRevision(topicFromServer.rev2Status)
+            itemView.findViewById<View>(R.id.circle_2).backgroundTintList =
+                CommonUtils.getColorForRevision(topicFromServer.rev2Status)
 
-            if (!topicFromServer.rev3Status.isNullOrEmpty())
-                itemView.findViewById<View>(R.id.circle_3).backgroundTintList =
-                    CommonUtils.getColorForRevision(topicFromServer.rev3Status)
+            itemView.findViewById<View>(R.id.circle_3).backgroundTintList =
+                CommonUtils.getColorForRevision(topicFromServer.rev3Status)
 
-            if (!topicFromServer.rev4Status.isNullOrEmpty())
-                itemView.findViewById<View>(R.id.circle_4).backgroundTintList =
-                    CommonUtils.getColorForRevision(topicFromServer.rev4Status)
+            itemView.findViewById<View>(R.id.circle_4).backgroundTintList =
+                CommonUtils.getColorForRevision(topicFromServer.rev4Status)
         }
 
         private fun getFormattedDate(dateTime: LocalDateTime): String {

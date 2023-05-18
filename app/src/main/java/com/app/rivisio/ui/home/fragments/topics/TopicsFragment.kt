@@ -4,23 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.rivisio.R
-import com.app.rivisio.databinding.FragmentHomeBinding
 import com.app.rivisio.databinding.FragmentTopicsBinding
 import com.app.rivisio.ui.base.BaseFragment
-import com.app.rivisio.ui.home.fragments.home_fragment.HomeFragment
-import com.app.rivisio.ui.home.fragments.home_fragment.HomeViewModel
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicsAdapter
 import com.app.rivisio.ui.home.fragments.home_fragment.VerticalSpaceItemDecoration
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
-import com.app.rivisio.utils.makeInVisible
 import com.app.rivisio.utils.makeVisible
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -83,8 +78,8 @@ class TopicsFragment : BaseFragment(), TopicsAdapter.Callback {
                             binding.topicsIllustrationMessage.makeGone()
                             binding.topicsIllustrationText.makeGone()
                             binding.topicList.makeVisible()
-                            topicsAdapter.updateItems(topics)
-                        } else{
+                            topicsAdapter.updateItems(topics, false)
+                        } else {
                             binding.topicsIllustrationImage.makeVisible()
                             binding.topicsIllustrationMessage.makeVisible()
                             binding.topicsIllustrationText.makeVisible()
@@ -125,6 +120,10 @@ class TopicsFragment : BaseFragment(), TopicsAdapter.Callback {
 
     override fun onTopicClick(topicFromServer: TopicFromServer) {
         startActivity(TopicDetailsActivity.getStartIntent(requireContext(), topicFromServer.id))
+    }
+
+    override fun onTopicReviseButtonClick(topicFromServer: TopicFromServer) {
+        //Do nothing here
     }
 
     override fun onDestroyView() {
