@@ -61,4 +61,9 @@ interface ApiHelper {
         topicId: Int,
         body: Map<String, String>
     ): Response<JsonElement>
+
+    suspend fun getUser(
+        token: String?,
+        userId: Int
+    ): Response<JsonElement>
 }

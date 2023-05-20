@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.app.rivisio.databinding.FragmentAccountBinding
 import com.app.rivisio.ui.base.BaseFragment
+import com.app.rivisio.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +41,10 @@ class AccountFragment : BaseFragment() {
         accountViewModel.userName.observe(this, Observer {
             binding.accountName.text = it
         })
+
+        binding.profileContainer.setOnClickListener {
+            startActivity(ProfileActivity.getStartIntent(requireContext()))
+        }
 
         accountViewModel.getUserDetails()
 

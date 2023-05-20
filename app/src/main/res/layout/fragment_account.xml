@@ -17,13 +17,15 @@
         android:textColor="@color/black"
         android:textSize="24sp" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/account_image"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        app:srcCompat="@drawable/account_image_dummy" />
+        android:src="@drawable/profile_dummy"
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="2dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/account_name"

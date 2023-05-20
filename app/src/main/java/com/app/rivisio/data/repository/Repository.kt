@@ -150,4 +150,9 @@ class Repository constructor(
         topicId: Int,
         body: Map<String, String>
     ) = apiHelper.reviseTopic(topicId, body)
+
+    suspend fun getUser(
+        token: String?,
+        userId: Int
+    ) = apiHelper.getUser(token, userId)
 }
