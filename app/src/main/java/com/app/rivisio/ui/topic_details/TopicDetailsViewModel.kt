@@ -3,22 +3,21 @@ package com.app.rivisio.ui.topic_details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.utils.NetworkHelper
 import com.app.rivisio.utils.NetworkResult
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TopicDetailsViewModel @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val repository: Repository,
     private val networkHelper: NetworkHelper
-) : BaseViewModel(mainRepository) {
+) : BaseViewModel(repository) {
 
     private val _topicData = MutableLiveData<NetworkResult<JsonElement>>()
     val topicData: LiveData<NetworkResult<JsonElement>>
@@ -36,10 +35,10 @@ class TopicDetailsViewModel @Inject constructor(
             _topicData.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.getTopicDetails(
+                repository.getTopicDetails(
                     topicId,
-                    mainRepository.getAccessToken(),
-                    mainRepository.getUserId()
+                    repository.getAccessToken(),
+                    repository.getUserId()
                 )
             }
 
@@ -55,10 +54,10 @@ class TopicDetailsViewModel @Inject constructor(
             _update.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.editTopicDetails(
+                repository.editTopicDetails(
                     topicId,
-                    mainRepository.getAccessToken(),
-                    mainRepository.getUserId(),
+                    repository.getAccessToken(),
+                    repository.getUserId(),
                     topicFromServer
                 )
             }
@@ -76,7 +75,7 @@ class TopicDetailsViewModel @Inject constructor(
             _update.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.reviseTopic(
+                repository.reviseTopic(
                     id!!,
                     revsion
                 )

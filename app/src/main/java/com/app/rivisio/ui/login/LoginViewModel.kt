@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.rivisio.data.network.*
 import com.app.rivisio.data.prefs.UserState
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkHelper
 import com.app.rivisio.utils.NetworkResult
@@ -18,9 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val repository: Repository,
     private val networkHelper: NetworkHelper
-) : BaseViewModel(mainRepository) {
+) : BaseViewModel(repository) {
 
     private val _isUserLoggedIn = MutableLiveData<NetworkResult<JsonElement>>()
     val isUserLoggedIn: LiveData<NetworkResult<JsonElement>>
@@ -33,14 +33,14 @@ class LoginViewModel @Inject constructor(
 
             val requestBody = createRequestBody(user)
 
-            val networkResponse = handleApi { mainRepository.signup(requestBody) }
+            val networkResponse = handleApi { repository.signup(requestBody) }
 
             if (networkResponse is NetworkResult.Success) {
 
                 try {
                     saveUserData(networkResponse, user)
-                    mainRepository.setUserState(UserState.LOGGED_IN)
-                    mainRepository.setUserLoggedIn()
+                    repository.setUserState(UserState.LOGGED_IN)
+                    repository.setUserLoggedIn()
 
                     _isUserLoggedIn.value = networkResponse
 
@@ -60,25 +60,25 @@ class LoginViewModel @Inject constructor(
         networkResponse: NetworkResult.Success<JsonElement>,
         user: User
     ) {
-        mainRepository.setUserEmail(networkResponse.data.asJsonObject[EMAIL].asString)
-        mainRepository.setName(
+        repository.setUserEmail(networkResponse.data.asJsonObject[EMAIL].asString)
+        repository.setName(
             networkResponse.data.asJsonObject[FIRST_NAME].asString
                     + " "
                     + networkResponse.data.asJsonObject[LAST_NAME].asString
         )
-        mainRepository.setFirstName(networkResponse.data.asJsonObject[FIRST_NAME].asString)
-        mainRepository.setLastName(networkResponse.data.asJsonObject[LAST_NAME].asString)
-        mainRepository.setMobile(networkResponse.data.asJsonObject[MOBILE].asString)
-        mainRepository.setUserId(networkResponse.data.asJsonObject[ID].asInt)
+        repository.setFirstName(networkResponse.data.asJsonObject[FIRST_NAME].asString)
+        repository.setLastName(networkResponse.data.asJsonObject[LAST_NAME].asString)
+        repository.setMobile(networkResponse.data.asJsonObject[MOBILE].asString)
+        repository.setUserId(networkResponse.data.asJsonObject[ID].asInt)
 
         if (!networkResponse.data.asJsonObject[PROFILE_IMAGE_URL].isJsonNull) {
-            mainRepository.setProfilePicture(networkResponse.data.asJsonObject[PROFILE_IMAGE_URL].asString)
+            repository.setProfilePicture(networkResponse.data.asJsonObject[PROFILE_IMAGE_URL].asString)
         } else {
             //to remove in future, since the API is returning null for profileImageUrl
-            user.profilePictureUrl?.let { mainRepository.setProfilePicture(it) }
+            user.profilePictureUrl?.let { repository.setProfilePicture(it) }
         }
 
-        mainRepository.setAccessToken(networkResponse.data.asJsonObject[TOKEN].asString)
+        repository.setAccessToken(networkResponse.data.asJsonObject[TOKEN].asString)
     }
 
     private fun createRequestBody(user: User): MutableMap<String, String> {

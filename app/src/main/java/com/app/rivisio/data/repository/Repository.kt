@@ -6,14 +6,11 @@ import com.app.rivisio.data.prefs.UserState
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.google.gson.JsonElement
-import dagger.hilt.android.scopes.ViewModelScoped
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
-import javax.inject.Inject
 
-@ViewModelScoped
-class MainRepository @Inject constructor(
+class Repository constructor(
     private val apiHelper: ApiHelper,
     private val preferencesHelper: PreferencesHelper
 ) {

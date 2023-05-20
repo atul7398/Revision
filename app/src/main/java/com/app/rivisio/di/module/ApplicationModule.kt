@@ -6,6 +6,7 @@ import com.app.rivisio.data.network.ApiHelperImpl
 import com.app.rivisio.data.network.ApiService
 import com.app.rivisio.data.prefs.PreferencesHelper
 import com.app.rivisio.data.prefs.PreferencesHelperImpl
+import com.app.rivisio.data.repository.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -101,4 +102,12 @@ class ApplicationModule {
     fun providePreferenceHelper(preferencesHelper: PreferencesHelperImpl): PreferencesHelper =
         preferencesHelper
 
+    @Provides
+    @Singleton
+    fun provideRepository(
+        apiHelper: ApiHelper,
+        preferencesHelper: PreferencesHelper
+    ): Repository {
+        return Repository(apiHelper, preferencesHelper)
+    }
 }

@@ -3,7 +3,7 @@ package com.app.rivisio.ui.add_notes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkHelper
@@ -21,9 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNotesViewModel @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val repository: Repository,
     private val networkHelper: NetworkHelper
-) : BaseViewModel(mainRepository) {
+) : BaseViewModel(repository) {
 
     private val _imageUploaded = MutableLiveData<NetworkResult<JsonElement>>()
     val imageUploaded: LiveData<NetworkResult<JsonElement>>
@@ -44,10 +44,10 @@ class AddNotesViewModel @Inject constructor(
             val fileName = getFileNameWithoutExtension(file.name)
 
             val response = handleApi {
-                mainRepository.uploadImages(
-                    mainRepository.getUserId().toString()
+                repository.uploadImages(
+                    repository.getUserId().toString()
                         .toRequestBody("text/plain".toMediaTypeOrNull()),
-                    mainRepository.getAccessToken()!!
+                    repository.getAccessToken()!!
                         .toRequestBody("text/plain".toMediaTypeOrNull()),
                     body,
                     fileName.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -71,9 +71,9 @@ class AddNotesViewModel @Inject constructor(
             _topicAdded.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.addTopic(
-                    mainRepository.getAccessToken()!!,
-                    mainRepository.getUserId(),
+                repository.addTopic(
+                    repository.getAccessToken()!!,
+                    repository.getUserId(),
                     topic
                 )
             }

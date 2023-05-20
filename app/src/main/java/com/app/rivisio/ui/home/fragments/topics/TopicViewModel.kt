@@ -3,7 +3,7 @@ package com.app.rivisio.ui.home.fragments.topics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkHelper
 import com.app.rivisio.utils.NetworkResult
@@ -14,9 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopicViewModel @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val repository: Repository,
     private val networkHelper: NetworkHelper
-) : BaseViewModel(mainRepository) {
+) : BaseViewModel(repository) {
 
     private val _topics = MutableLiveData<NetworkResult<JsonElement>>()
     val topics: LiveData<NetworkResult<JsonElement>>
@@ -27,9 +27,9 @@ class TopicViewModel @Inject constructor(
             _topics.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.getAllTopics(
-                    mainRepository.getAccessToken()!!,
-                    mainRepository.getUserId()
+                repository.getAllTopics(
+                    repository.getAccessToken()!!,
+                    repository.getUserId()
                 )
             }
 

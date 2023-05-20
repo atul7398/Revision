@@ -3,14 +3,14 @@ package com.app.rivisio.ui.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.utils.NetworkResult
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
 
-open class BaseViewModel(private val mainRepository: MainRepository) : ViewModel() {
+open class BaseViewModel(private val repository: Repository) : ViewModel() {
 
     var loggedOut = MutableLiveData<Boolean>()
 

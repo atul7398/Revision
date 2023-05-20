@@ -3,7 +3,7 @@ package com.app.rivisio.ui.home.fragments.account
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val repository: Repository,
     private val networkHelper: NetworkHelper
-) : BaseViewModel(mainRepository) {
+) : BaseViewModel(repository) {
 
     private val _userName = MutableLiveData<String>()
     val userName: LiveData<String>
@@ -26,8 +26,8 @@ class AccountViewModel @Inject constructor(
 
     fun getUserDetails() {
         viewModelScope.launch {
-            _userName.value = mainRepository.getName()
-            _userEmail.value = mainRepository.getUserEmail()
+            _userName.value = repository.getName()
+            _userEmail.value = repository.getUserEmail()
         }
     }
 }

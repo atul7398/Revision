@@ -3,7 +3,7 @@ package com.app.rivisio.ui.edit_image_note
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.rivisio.data.repository.MainRepository
+import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.utils.NetworkHelper
@@ -21,9 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditImageNoteViewModel @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val repository: Repository,
     private val networkHelper: NetworkHelper
-) : BaseViewModel(mainRepository) {
+) : BaseViewModel(repository) {
 
     private val _topicData = MutableLiveData<NetworkResult<JsonElement>>()
     val topicData: LiveData<NetworkResult<JsonElement>>
@@ -44,10 +44,10 @@ class EditImageNoteViewModel @Inject constructor(
             _topicData.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.getTopicDetails(
+                repository.getTopicDetails(
                     topicId,
-                    mainRepository.getAccessToken(),
-                    mainRepository.getUserId()
+                    repository.getAccessToken(),
+                    repository.getUserId()
                 )
             }
 
@@ -63,10 +63,10 @@ class EditImageNoteViewModel @Inject constructor(
             _update.value = NetworkResult.Loading
 
             val response = handleApi {
-                mainRepository.editTopicDetails(
+                repository.editTopicDetails(
                     topicId,
-                    mainRepository.getAccessToken(),
-                    mainRepository.getUserId(),
+                    repository.getAccessToken(),
+                    repository.getUserId(),
                     topicFromServer
                 )
             }
@@ -88,10 +88,10 @@ class EditImageNoteViewModel @Inject constructor(
             val fileName = getFileNameWithoutExtension(file.name)
 
             val response = handleApi {
-                mainRepository.uploadImages(
-                    mainRepository.getUserId().toString()
+                repository.uploadImages(
+                    repository.getUserId().toString()
                         .toRequestBody("text/plain".toMediaTypeOrNull()),
-                    mainRepository.getAccessToken()!!
+                    repository.getAccessToken()!!
                         .toRequestBody("text/plain".toMediaTypeOrNull()),
                     body,
                     fileName.toRequestBody("text/plain".toMediaTypeOrNull())
