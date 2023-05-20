@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.rivisio.R
 import com.app.rivisio.databinding.FragmentHomeBinding
 import com.app.rivisio.ui.base.BaseFragment
+import com.app.rivisio.ui.subscribe.SubscribeActivity
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
@@ -49,6 +50,10 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     }
 
     override fun setUp(view: View) {
+
+        binding.subscribe.setOnClickListener {
+            startActivity(SubscribeActivity.getStartIntent(requireContext()))
+        }
 
         homeViewModel.userName.observe(this, Observer {
             binding.userName.text = it
