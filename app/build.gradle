@@ -27,8 +27,22 @@ android {
         viewBinding true
     }
 
+    signingConfigs {
+        config {
+            keyAlias 'revu'
+            keyPassword 'password'
+            storeFile file('revu_key.jks')
+            storePassword 'password'
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+            minifyEnabled false
+        }
         release {
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
