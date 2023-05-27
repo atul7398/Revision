@@ -3,8 +3,8 @@ package com.app.rivisio.ui.subscribe
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
+import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -12,9 +12,12 @@ import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.ProductDetailsResponseListener
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import com.android.billingclient.api.QueryPurchasesParams
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivitySubscribeBinding
 import com.app.rivisio.ui.base.BaseActivity
@@ -23,26 +26,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener {
+class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, PurchasesUpdatedListener,
+    PurchasesResponseListener {
 
     private val subscribeViewModel: SubscribeViewModel by viewModels()
 
     private lateinit var binding: ActivitySubscribeBinding
 
-    private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                for (purchase in purchases) {
-                    Timber.e(purchase.toString())
-                }
-            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle an error caused by a user cancelling the purchase flow.
-            } else {
-                // Handle any other error codes.
-            }
-        }
-
     private lateinit var billingClient: BillingClient
+
+    private lateinit var selectedSubscriptionPlanId: String
 
     override fun getViewModel(): BaseViewModel = subscribeViewModel
 
@@ -55,60 +48,88 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener {
         binding = ActivitySubscribeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setButtonListeners()
+
         billingClient = BillingClient.newBuilder(this@SubscribeActivity)
-            .setListener(purchasesUpdatedListener)
+            .setListener(this)
             .enablePendingPurchases()
             .build()
 
+        showLoading()
+
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingSteupResult: BillingResult) {
+                if (billingSteupResult.responseCode == BillingClient.BillingResponseCode.OK) {
+
+                    Timber.e("onBillingSetupFinished() : ")
+
+                    val params = QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+                    val purchasesResult = billingClient.queryPurchasesAsync(
+                        params.build(),
+                        this@SubscribeActivity
+                    )
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+
+                Timber.e("Billing service disconnected")
+            }
+        })
+    }
+
+    private fun setButtonListeners() {
         binding.closeButton.setOnClickListener {
             finish()
         }
 
-        val listener: (view: View) -> Unit = { view ->
+
+        binding.quarter.setOnClickListener {
             binding.quarter.setBackgroundResource(R.drawable.edit_text_bg)
             binding.year.setBackgroundResource(R.drawable.edit_text_bg)
             binding.lifetime.setBackgroundResource(R.drawable.edit_text_bg)
 
-            view.setBackgroundResource(R.drawable.selected_plan_bg)
+            binding.quarter.setBackgroundResource(R.drawable.selected_plan_bg)
+            selectedSubscriptionPlanId = BasePlan.THREE_MONTH.subscriptionPlanId
+        }
+        binding.year.setOnClickListener {
+            binding.quarter.setBackgroundResource(R.drawable.edit_text_bg)
+            binding.year.setBackgroundResource(R.drawable.edit_text_bg)
+            binding.lifetime.setBackgroundResource(R.drawable.edit_text_bg)
+
+            binding.year.setBackgroundResource(R.drawable.selected_plan_bg)
+            selectedSubscriptionPlanId = BasePlan.ONE_YEAR.subscriptionPlanId
         }
 
-        binding.quarter.setOnClickListener { listener(it) }
-        binding.year.setOnClickListener { listener(it) }
-        binding.lifetime.setOnClickListener { listener(it) }
+        //binding.lifetime.setOnClickListener { listener(it) }
 
         binding.upgradeButton.setOnClickListener {
-            billingClient.startConnection(object : BillingClientStateListener {
-                override fun onBillingSetupFinished(billingSteupResult: BillingResult) {
-                    if (billingSteupResult.responseCode == BillingClient.BillingResponseCode.OK) {
 
-                        val productList = mutableListOf<Product>()
+            if (!this::selectedSubscriptionPlanId.isInitialized) {
+                showMessage("Select a subscription plan")
+                return@setOnClickListener
+            }
 
-                        productList.add(
-                            Product.newBuilder()
-                                .setProductId("revu_basic_sub")
-                                .setProductType(BillingClient.ProductType.SUBS)
-                                .build()
-                        )
+            val productList = mutableListOf<Product>()
 
-                        val params = QueryProductDetailsParams.newBuilder()
+            productList.add(
+                Product.newBuilder()
+                    .setProductId("revu_basic_sub")
+                    .setProductType(BillingClient.ProductType.SUBS)
+                    .build()
+            )
 
-                        params.setProductList(productList)
+            val params = QueryProductDetailsParams.newBuilder()
 
-                        billingClient.queryProductDetailsAsync(
-                            params.build(),
-                            this@SubscribeActivity
-                        )
+            params.setProductList(productList)
 
-                    }
-                }
-
-                override fun onBillingServiceDisconnected() {
-                    // Try to restart the connection on the next request to
-                    // Google Play by calling the startConnection() method.
-
-                    Timber.e("Billing service disconnected")
-                }
-            })
+            billingClient.queryProductDetailsAsync(
+                params.build(),
+                this@SubscribeActivity
+            )
         }
     }
 
@@ -121,32 +142,104 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener {
         val debugMessage = billingResult.debugMessage
         when (responseCode) {
             BillingClient.BillingResponseCode.OK -> {
-                //productDetailsList.forEach {
-                productDetailsParamsList.add(
-                    ProductDetailsParams.newBuilder()
-                        .setProductDetails(productDetailsList[0])
-                        .setOfferToken(productDetailsList[0].subscriptionOfferDetails!![0].offerToken)
-                        .build()
-                )
-                //}
+
+                Timber.e("onProductDetailsResponse() : ")
+
+                productDetailsList.forEach {
+                    if (it.subscriptionOfferDetails!![0].basePlanId == selectedSubscriptionPlanId)
+                        productDetailsParamsList.add(
+                            ProductDetailsParams.newBuilder()
+                                .setProductDetails(it)
+                                .setOfferToken(it.subscriptionOfferDetails!![0].offerToken)
+                                .build()
+                        )
+                }
 
                 val billingFlowParams = BillingFlowParams.newBuilder()
                     .setProductDetailsParamsList(productDetailsParamsList)
                     .build()
 
-
                 val billingResult = billingClient.launchBillingFlow(
                     this@SubscribeActivity,
                     billingFlowParams
                 )
-
-                billingResult.responseCode
-                billingResult.debugMessage
             }
 
             else -> {
-
+                Timber.d("onProductDetailsResponse: $responseCode $debugMessage")
             }
         }
+    }
+
+    override fun onPurchasesUpdated(
+        billingResult: BillingResult,
+        purchases: MutableList<Purchase>?
+    ) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                acknowledgePurchases(purchase)
+            }
+        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+            // Handle an error caused by a user cancelling the purchase flow.
+            runOnUiThread {
+                showMessage("Cancelled")
+            }
+        } else {
+            Timber.d("onPurchasesUpdated: ${billingResult.responseCode} ${billingResult.debugMessage}")
+            // Handle any other error codes.
+        }
+    }
+
+    private fun acknowledgePurchases(purchase: Purchase?) {
+        purchase?.let {
+            if (!it.isAcknowledged) {
+                val params = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(it.purchaseToken)
+                    .build()
+
+                billingClient.acknowledgePurchase(
+                    params
+                ) { billingResult ->
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK &&
+                        it.purchaseState == Purchase.PurchaseState.PURCHASED
+                    ) {
+                        runOnUiThread {
+                            showMessage("Purchase acknowledged")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun terminateBillingConnection() {
+        Timber.d("Terminating connection")
+        billingClient.endConnection()
+    }
+
+    override fun onQueryPurchasesResponse(
+        billingResult: BillingResult,
+        purchases: MutableList<Purchase>
+    ) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            Timber.e("onQueryPurchasesResponse() : ${purchases.size}")
+            hideLoading()
+
+            if (purchases.size > 0) {
+                runOnUiThread {
+                    showMessage("You already have an active subscription")
+                    terminateBillingConnection()
+                    finish()
+                }
+            }
+        } else {
+            hideLoading()
+            Timber.e("onQueryPurchasesResponse() : ${billingResult.responseCode} ${billingResult.debugMessage}")
+        }
+    }
+
+    override fun onDestroy() {
+        terminateBillingConnection()
+        super.onDestroy()
     }
 }
