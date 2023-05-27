@@ -153,6 +153,13 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                                 .setOfferToken(it.subscriptionOfferDetails!![0].offerToken)
                                 .build()
                         )
+                    if (it.subscriptionOfferDetails!![1].basePlanId == selectedSubscriptionPlanId)
+                        productDetailsParamsList.add(
+                            ProductDetailsParams.newBuilder()
+                                .setProductDetails(it)
+                                .setOfferToken(it.subscriptionOfferDetails!![1].offerToken)
+                                .build()
+                        )
                 }
 
                 val billingFlowParams = BillingFlowParams.newBuilder()
