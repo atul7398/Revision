@@ -82,7 +82,10 @@ class LoginActivity : BaseActivity() {
                     Identity.getSignInClient(this@LoginActivity)
                         .getPhoneNumberHintIntent(request)
                         .addOnFailureListener { e: Exception ->
-                            Timber.e(e.toString())
+                            Timber.e(e)
+                            showError(e.localizedMessage)
+                            //workaround for: com.google.android.gms.common.api.ApiException: 16: No phone number is found on this device.
+                            loginViewModel.setUserDetails(user)
                         }.addOnSuccessListener { pendingIntent: PendingIntent ->
                             val intentSenderRequest =
                                 IntentSenderRequest.Builder(pendingIntent.intentSender).build()
