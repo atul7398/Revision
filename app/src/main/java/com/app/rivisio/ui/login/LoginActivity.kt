@@ -10,9 +10,9 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.Observer
 import com.app.rivisio.R
-import com.app.rivisio.data.prefs.UserState
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.HomeActivity
@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -40,8 +41,8 @@ class LoginActivity : BaseActivity() {
                         .getPhoneNumberFromIntent(result.data)
 
                     user.mobile = phoneNumber
-
-                    loginViewModel.setUserDetails(user)
+                    //show bottom sheet
+                    showReferralBottomSheet()
 
                     Timber.e("PhoneNumber: $phoneNumber")
                 } catch (e: ApiException) {
@@ -74,7 +75,8 @@ class LoginActivity : BaseActivity() {
                         credential.givenName,
                         credential.familyName,
                         "",
-                        credential.profilePictureUri.toString()
+                        credential.profilePictureUri.toString(),
+                        ""
                     )
 
                     val request = GetPhoneNumberHintIntentRequest.builder().build()
@@ -84,8 +86,8 @@ class LoginActivity : BaseActivity() {
                         .addOnFailureListener { e: Exception ->
                             Timber.e(e)
                             showError(e.localizedMessage)
+                            showReferralBottomSheet()
                             //workaround for: com.google.android.gms.common.api.ApiException: 16: No phone number is found on this device.
-                            loginViewModel.setUserDetails(user)
                         }.addOnSuccessListener { pendingIntent: PendingIntent ->
                             val intentSenderRequest =
                                 IntentSenderRequest.Builder(pendingIntent.intentSender).build()
@@ -154,23 +156,42 @@ class LoginActivity : BaseActivity() {
                     startActivity(HomeActivity.getStartIntent(this@LoginActivity))
                     finish()
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
                 }
             }
         })
+    }
+
+    private fun showReferralBottomSheet() {
+        val referralView = layoutInflater.inflate(R.layout.referral_dialog_layout, null)
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(referralView)
+        dialog.setCancelable(false)
+        referralView.findViewById<AppCompatButton>(R.id.complete_sign_up).setOnClickListener {
+            user.referralCode =
+                referralView.findViewById<AppCompatEditText>(R.id.referral_code).text.toString()
+            loginViewModel.setUserDetails(user)
+
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
 }

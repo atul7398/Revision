@@ -6,5 +6,6 @@ data class User(
     var firstName: String?,
     var lastName: String?,
     var mobile: String?,
-    var profilePictureUrl: String?
+    var profilePictureUrl: String?,
+    var referralCode: String?
 )
