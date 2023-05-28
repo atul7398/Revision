@@ -103,6 +103,12 @@ class LoginActivity : BaseActivity() {
 
     companion object {
         fun getStartIntent(context: Context) = Intent(context, LoginActivity::class.java)
+
+        fun getStartIntentNewTask(context: Context): Intent {
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            return intent
+        }
     }
 
     override fun getViewModel(): BaseViewModel = loginViewModel
@@ -132,18 +138,6 @@ class LoginActivity : BaseActivity() {
                 }
                 .addOnFailureListener { e ->
                     Timber.e("Google Sign-in failed", e)
-                }
-        }
-
-        //sign out code
-        findViewById<AppCompatButton>(R.id.log_out_button).setOnClickListener {
-            Identity.getSignInClient(this@LoginActivity)
-                .signOut()
-                .addOnSuccessListener {
-                    Timber.e("Logout successful")
-                }
-                .addOnFailureListener {
-                    Timber.e("Logout failed")
                 }
         }
     }

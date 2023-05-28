@@ -212,6 +212,8 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                     ) {
                         runOnUiThread {
                             showMessage("Purchase acknowledged")
+                            terminateBillingConnection()
+                            finish()
                         }
                     }
                 }

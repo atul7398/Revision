@@ -85,12 +85,13 @@ class LoginViewModel @Inject constructor(
         val requestBody = mutableMapOf<String, String>()
 
         user.email?.let { requestBody.put(EMAIL, it) }
-        requestBody.put(DOB, "")
+        requestBody[DOB] = ""
         user.firstName?.let { requestBody.put(FIRST_NAME, it) }
         user.lastName?.let { requestBody.put(LAST_NAME, it) }
         user.mobile?.let { requestBody.put(MOBILE, it) }
         user.profilePictureUrl?.let { requestBody.put(PROFILE_IMAGE_URL, it) }
-        requestBody.put(PWD, "")
+        requestBody[PWD] = ""
+        user.referralCode?.let { requestBody.put(REFERRALCODE, it) }
 
         return requestBody
     }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.rivisio.R
 import com.app.rivisio.databinding.FragmentHomeBinding
 import com.app.rivisio.ui.base.BaseFragment
+import com.app.rivisio.ui.refer.ReferActivity
 import com.app.rivisio.ui.subscribe.SubscribeActivity
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
@@ -19,7 +20,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -50,6 +50,10 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     }
 
     override fun setUp(view: View) {
+
+        binding.referButton.setOnClickListener {
+            startActivity(ReferActivity.getStartIntent(requireContext()))
+        }
 
         binding.subscribe.setOnClickListener {
             startActivity(SubscribeActivity.getStartIntent(requireContext()))
@@ -248,25 +252,37 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
     override fun onTopicReviseButtonClick(topicFromServer: TopicFromServer) {
         if (topicFromServer.rev1Status == "wait") {
-            val revsion = mapOf("rev1" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev1" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             homeViewModel.reviseTopic(topicFromServer.id, revsion)
             return
         }
 
         if (topicFromServer.rev2Status == "wait") {
-            val revsion = mapOf("rev2" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev2" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             homeViewModel.reviseTopic(topicFromServer.id, revsion)
             return
         }
 
         if (topicFromServer.rev3Status == "wait") {
-            val revsion = mapOf("rev3" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev3" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             homeViewModel.reviseTopic(topicFromServer.id, revsion)
             return
         }
 
         if (topicFromServer.rev4Status == "wait") {
-            val revsion = mapOf("rev4" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev4" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             homeViewModel.reviseTopic(topicFromServer.id, revsion)
             return
         }
