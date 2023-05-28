@@ -30,6 +30,28 @@
 
     </LinearLayout>
 
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:tabTextAppearance="?attr/textAppearanceTitleMedium"
+        app:tabIndicatorColor="@color/secondary"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/secondary"
+        app:tabTextColor="@color/gray_text">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Referral" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FAQs" />
+
+    </com.google.android.material.tabs.TabLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
