@@ -3,11 +3,8 @@ package com.app.rivisio.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.FragmentTransaction
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityHomeBinding
@@ -18,8 +15,8 @@ import com.app.rivisio.ui.home.fragments.account.AccountFragment
 import com.app.rivisio.ui.home.fragments.calendar.CalendarFragment
 import com.app.rivisio.ui.home.fragments.home_fragment.HomeFragment
 import com.app.rivisio.ui.home.fragments.topics.TopicsFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity() {
@@ -28,6 +25,7 @@ class HomeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityHomeBinding
 
+    private var pressedTime: Long = 0
     companion object {
         fun getStartIntent(context: Context) = Intent(context, HomeActivity::class.java)
 
@@ -90,5 +88,15 @@ class HomeActivity : BaseActivity() {
 
         binding.bottomNav.selectedItemId = R.id.home_item
 
+    }
+
+    override fun onBackPressed() {
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed()
+            finish()
+        } else {
+            showMessage("Press back again to exit")
+        }
+        pressedTime = System.currentTimeMillis()
     }
 }
