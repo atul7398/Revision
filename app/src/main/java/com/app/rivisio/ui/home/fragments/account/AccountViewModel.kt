@@ -24,10 +24,27 @@ class AccountViewModel @Inject constructor(
     val userEmail: LiveData<String>
         get() = _userEmail
 
+    private val _userProfilePic = MutableLiveData<String>()
+    val userProfilePic: LiveData<String>
+        get() = _userProfilePic
+
+    private val _logout = MutableLiveData<Boolean>()
+    val logout: LiveData<Boolean>
+        get() = _logout
+
     fun getUserDetails() {
         viewModelScope.launch {
             _userName.value = repository.getName()
             _userEmail.value = repository.getUserEmail()
+            _userProfilePic.value = repository.getProfilePicture()
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+
+            repository.setUserLoggedOut()
+            _logout.value = true
         }
     }
 }

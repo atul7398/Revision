@@ -1,11 +1,10 @@
 package com.app.rivisio.data.prefs
 
-import dagger.hilt.android.qualifiers.ApplicationContext
-
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Context) :
@@ -18,7 +17,6 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
     private val PREF_KEY_USER_NAME = "PREF_KEY_USER_NAME"
     private val PREF_KEY_FIRST_NAME = "PREF_KEY_FIRST_NAME"
     private val PREF_KEY_LAST_NAME = "PREF_KEY_LAST_NAME"
-    private val PREF_KEY_USER_GENDER = "PREF_KEY_USER_GENDER"
     private val PREF_KEY_USER_LOGGED_IN = "PREF_KEY_USER_LOGGED_IN"
     private val PREF_KEY_USER_STATE = "PREF_KEY_USER_STATE"
     private val PREF_KEY_USER_PROFILE_PICTURE_URL = "PREF_KEY_USER_PROFILE_PICTURE_URL"
@@ -104,11 +102,14 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
         sharedPreferences.edit {
             remove(PREF_KEY_ACCESS_TOKEN)
             remove(PREF_KEY_USER_EMAIL)
+            remove(PREF_KEY_USER_MOBILE)
             remove(PREF_KEY_USER_ID)
             remove(PREF_KEY_USER_NAME)
-            remove(PREF_KEY_USER_GENDER)
+            remove(PREF_KEY_FIRST_NAME)
+            remove(PREF_KEY_LAST_NAME)
             remove(PREF_KEY_USER_LOGGED_IN)
             remove(PREF_KEY_USER_STATE)
+            remove(PREF_KEY_USER_PROFILE_PICTURE_URL)
         }
     }
 

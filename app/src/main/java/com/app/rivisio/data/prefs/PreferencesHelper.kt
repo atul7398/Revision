@@ -36,5 +36,5 @@ interface PreferencesHelper {
 
     fun setUserState(userState: UserState)
     fun getProfilePicture(): String?
-    fun setProfilePicture(gender: String)
+    fun setProfilePicture(profilePictureUrl: String)
 }

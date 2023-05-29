@@ -8,7 +8,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.app.rivisio.databinding.FragmentAccountBinding
 import com.app.rivisio.ui.base.BaseFragment
+import com.app.rivisio.ui.login.LoginActivity
+import com.app.rivisio.ui.notification.NotificationActivity
 import com.app.rivisio.ui.profile.ProfileActivity
+import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -37,11 +40,17 @@ class AccountFragment : BaseFragment() {
 
     override fun setUp(view: View) {
 
+        accountViewModel.logout.observe(this, Observer {
+            if (it)
+                startActivity(LoginActivity.getStartIntentNewTask(requireContext()))
+        })
+
         binding.logout.setOnClickListener {
             Identity.getSignInClient(requireActivity())
                 .signOut()
                 .addOnSuccessListener {
                     Timber.e("Logout successful")
+                    accountViewModel.logout()
                 }
                 .addOnFailureListener {
                     Timber.e("Logout failed")
@@ -57,8 +66,19 @@ class AccountFragment : BaseFragment() {
             binding.accountName.text = it
         })
 
+        accountViewModel.userProfilePic.observe(this, Observer {
+            Glide.with(requireActivity())
+                .asBitmap()
+                .load(it)
+                .into(binding.profileImage)
+        })
+
         binding.profileContainer.setOnClickListener {
             startActivity(ProfileActivity.getStartIntent(requireContext()))
+        }
+
+        binding.notificationContainer.setOnClickListener {
+            startActivity(NotificationActivity.getStartIntent(requireContext()))
         }
 
         accountViewModel.getUserDetails()

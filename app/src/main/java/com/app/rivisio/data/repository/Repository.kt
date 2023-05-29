@@ -155,4 +155,9 @@ class Repository constructor(
         token: String?,
         userId: Int
     ) = apiHelper.getUser(token, userId)
+
+    fun setUserLoggedOut() {
+        preferencesHelper.setUserLoggedOut()
+    }
+
 }
