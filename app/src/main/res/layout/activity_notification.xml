@@ -32,7 +32,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bell"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/notification_bell" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/notification_text"
@@ -41,10 +52,10 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="8dp"
             android:text="Notification"
-            android:textColor="@color/black"
+            android:textColor="#21203E"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/notification_description"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/bell"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -55,10 +66,10 @@
             android:layout_marginLeft="25dp"
             android:layout_marginBottom="8dp"
             android:text="Diasabling this would  stop your daily reminders"
-            android:textColor="#80000000"
+            android:textColor="#616075"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/bell"
             app:layout_constraintRight_toLeftOf="@id/notification_switch"
             app:layout_constraintTop_toBottomOf="@id/notification_text" />
 
@@ -75,5 +86,36 @@
             app:trackTint="@color/switch_color" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="Reminder Time"
+            android:textColor="#616075"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/reminder_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="20dp"
+            android:text="12:00 PM"
+            android:textColor="#393953"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
 </LinearLayout>
