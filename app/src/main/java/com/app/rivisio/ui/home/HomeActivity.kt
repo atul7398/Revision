@@ -19,6 +19,7 @@ import com.app.rivisio.ui.home.fragments.calendar.CalendarFragment
 import com.app.rivisio.ui.home.fragments.home_fragment.HomeFragment
 import com.app.rivisio.ui.home.fragments.topics.TopicsFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -29,6 +30,9 @@ class HomeActivity : BaseActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
 
     private lateinit var binding: ActivityHomeBinding
+
+    @Inject
+    lateinit var remindersManager: RemindersManager
 
     private var pressedTime: Long = 0
     companion object {
@@ -111,10 +115,10 @@ class HomeActivity : BaseActivity() {
             if (!hasPermissions(permissionsArray))
                 requestPermissionsSafely(permissionsArray, PERMISSION_REQUEST_CODE)
             else
-                RemindersManager.startReminder(applicationContext)
+                remindersManager.startReminder(applicationContext)
 
         } else {
-            RemindersManager.startReminder(applicationContext)
+            remindersManager.startReminder(applicationContext)
         }
     }
 
@@ -138,7 +142,7 @@ class HomeActivity : BaseActivity() {
                     }
                     if (allPermissionsGranted) {
                         showMessage("Permissions granted")
-                        RemindersManager.startReminder(applicationContext)
+                        remindersManager.startReminder(applicationContext)
                     } else
                         showError("Permissions not granted, some features will not work")
 

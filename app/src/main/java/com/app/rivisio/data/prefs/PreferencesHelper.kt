@@ -37,4 +37,8 @@ interface PreferencesHelper {
     fun setUserState(userState: UserState)
     fun getProfilePicture(): String?
     fun setProfilePicture(profilePictureUrl: String)
+    fun isNotificationEnabled(): Boolean
+    fun setNotificationSetting(enable: Boolean)
+    fun getNotificationTime(): String
+    fun setNotificationTime(time: String)
 }

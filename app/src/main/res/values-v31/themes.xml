@@ -11,6 +11,9 @@
         <item name="android:windowSplashScreenBackground">@color/primary_500</item>
         <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="android:windowSplashScreenAnimationDuration">0</item>
+
+        <item name="materialTimePickerTheme">@style/ThemeOverlay.App.TimePicker</item>
+
     </style>
 
     <!--Material dialogs theming start-->
@@ -42,9 +45,25 @@
     </style>
     <!--date picker theming end-->
 
+    <!--time picker theming start-->
+    <style name="ThemeOverlay.App.TimePicker" parent="@style/ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="colorPrimary">@color/primary_500</item>
+        <item name="colorOnPrimary">@color/primary_500</item>
+        <item name="colorOnSurface">@color/primary_500</item>
+        <item name="materialClockStyle">@style/Widget.App.TimePicker.Clock</item>
+    </style>
+
+    <style name="Widget.App.TimePicker.Clock" parent="Widget.Material3.MaterialTimePicker.Clock">
+        <item name="clockFaceBackgroundColor">#F6F8FA</item>
+        <item name="clockHandColor">@color/secondary</item>
+        <item name="clockNumberTextColor">@color/black</item>
+    </style>
+    <!--time picker theming end-->
+
+    <!--this is for refer activity tab layout-->
     <style name="TabLayoutTextStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
-
+    <!--END: this is for refer activity tab layout-->
 </resources>

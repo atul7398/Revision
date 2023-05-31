@@ -103,15 +103,19 @@
 
         <View
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reminder_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center"
             android:text="12:00 PM"
             android:textColor="#393953"
             android:textSize="16sp" />

@@ -160,4 +160,19 @@ class Repository constructor(
         preferencesHelper.setUserLoggedOut()
     }
 
+    fun isNotificationEnabled(): Boolean {
+        return preferencesHelper.isNotificationEnabled()
+    }
+
+    fun setNotificationSetting(enable: Boolean) {
+        preferencesHelper.setNotificationSetting(enable)
+    }
+
+    fun getNotificationTime(): String {
+        return preferencesHelper.getNotificationTime()
+    }
+
+    fun setNotificationTime(time: String) {
+        preferencesHelper.setNotificationTime(time)
+    }
 }

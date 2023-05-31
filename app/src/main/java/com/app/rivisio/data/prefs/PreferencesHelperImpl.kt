@@ -20,6 +20,8 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
     private val PREF_KEY_USER_LOGGED_IN = "PREF_KEY_USER_LOGGED_IN"
     private val PREF_KEY_USER_STATE = "PREF_KEY_USER_STATE"
     private val PREF_KEY_USER_PROFILE_PICTURE_URL = "PREF_KEY_USER_PROFILE_PICTURE_URL"
+    private val PREF_KEY_USER_NOTIFICATION_ENABLED = "PREF_KEY_USER_NOTIFICATION_ENABLED"
+    private val PREF_KEY_USER_NOTIFICATION_TIME = "PREF_KEY_USER_NOTIFICATION_TIME"
 
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -89,6 +91,25 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
         sharedPreferences.edit().putString(PREF_KEY_USER_PROFILE_PICTURE_URL, profilePictureUrl)
             .apply()
     }
+
+    override fun isNotificationEnabled(): Boolean {
+        return sharedPreferences.getBoolean(PREF_KEY_USER_NOTIFICATION_ENABLED, true)
+    }
+
+    override fun setNotificationSetting(enable: Boolean) {
+        sharedPreferences.edit().putBoolean(PREF_KEY_USER_NOTIFICATION_ENABLED, enable)
+            .apply()
+    }
+
+    override fun getNotificationTime(): String {
+        return sharedPreferences.getString(PREF_KEY_USER_NOTIFICATION_TIME, "8:32")!!
+    }
+
+    override fun setNotificationTime(time: String) {
+        sharedPreferences.edit().putString(PREF_KEY_USER_NOTIFICATION_TIME, time)
+            .apply()
+    }
+
 
     override fun getUserLoggedIn(): Boolean {
         return sharedPreferences.getBoolean(PREF_KEY_USER_LOGGED_IN, false)
