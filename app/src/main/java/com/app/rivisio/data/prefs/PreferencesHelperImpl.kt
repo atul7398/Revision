@@ -102,7 +102,7 @@ class PreferencesHelperImpl @Inject constructor(@ApplicationContext context: Con
     }
 
     override fun getNotificationTime(): String {
-        return sharedPreferences.getString(PREF_KEY_USER_NOTIFICATION_TIME, "8:32")!!
+        return sharedPreferences.getString(PREF_KEY_USER_NOTIFICATION_TIME, "12:00")!!
     }
 
     override fun setNotificationTime(time: String) {
