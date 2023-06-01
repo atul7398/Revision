@@ -5,7 +5,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -16,6 +18,9 @@ import com.app.rivisio.databinding.ActivityReferBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkResult
+import com.app.rivisio.utils.makeGone
+import com.app.rivisio.utils.makeVisible
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import timber.log.Timber
@@ -49,18 +54,18 @@ class ReferActivity : BaseActivity() {
         binding.faqLayout.settings.loadWithOverviewMode = true
         binding.faqLayout.loadUrl("https://thorn-jupiter-cc6.notion.site/FAQs-Revu-513498a6de624decab58c5434676dc65")
 
-        /*binding.tabLayout.addOnTabSelectedListener(object :
+        binding.tabLayout.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position == 0) {
                     findViewById<LinearLayout>(R.id.refer_layout).makeVisible()
-                    findViewById<LinearLayout>(R.id.faq_layout).makeGone()
+                    findViewById<WebView>(R.id.faq_layout).makeGone()
                 }
 
                 if (tab.position == 1) {
                     findViewById<LinearLayout>(R.id.refer_layout).makeGone()
-                    findViewById<LinearLayout>(R.id.faq_layout).makeVisible()
+                    findViewById<WebView>(R.id.faq_layout).makeVisible()
                 }
             }
 
@@ -71,7 +76,7 @@ class ReferActivity : BaseActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
             }
-        })*/
+        })
 
         binding.refer1.setOnClickListener { shareApp() }
         binding.refer2.setOnClickListener { shareApp() }
