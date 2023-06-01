@@ -30,7 +30,7 @@
 
     </LinearLayout>
 
-    <!--<com.google.android.material.tabs.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="FAQs" />
 
-    </com.google.android.material.tabs.TabLayout>-->
+    </com.google.android.material.tabs.TabLayout>
 
     <LinearLayout
         android:id="@+id/refer_layout"
