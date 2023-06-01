@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebViewClient
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -17,9 +16,6 @@ import com.app.rivisio.databinding.ActivityReferBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.utils.NetworkResult
-import com.app.rivisio.utils.makeGone
-import com.app.rivisio.utils.makeVisible
-import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import timber.log.Timber
@@ -53,7 +49,7 @@ class ReferActivity : BaseActivity() {
         binding.faqLayout.settings.loadWithOverviewMode = true
         binding.faqLayout.loadUrl("https://thorn-jupiter-cc6.notion.site/FAQs-Revu-513498a6de624decab58c5434676dc65")
 
-        binding.tabLayout.addOnTabSelectedListener(object :
+        /*binding.tabLayout.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -75,13 +71,50 @@ class ReferActivity : BaseActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
             }
-        })
+        })*/
 
         binding.refer1.setOnClickListener { shareApp() }
         binding.refer2.setOnClickListener { shareApp() }
         binding.refer3.setOnClickListener { shareApp() }
         binding.refer4.setOnClickListener { shareApp() }
         binding.refer5.setOnClickListener { shareApp() }
+
+        referViewModel.limitData.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    try {
+                        val additionalTopics = it.data.asJsonObject["addtionalTopics"].asInt
+                        binding.additionalTopicEarned.text =
+                            "$additionalTopics Additional Topics Earned"
+                        binding.topicSlider.value = (20 + additionalTopics).toFloat()
+                    } catch (e: Exception) {
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                        showError("Something went wrong")
+                    }
+                }
+
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
 
         referViewModel.userData.observe(this, Observer {
             when (it) {
@@ -118,6 +151,7 @@ class ReferActivity : BaseActivity() {
         })
 
         referViewModel.getUserDetails()
+        referViewModel.limitcheck()
     }
 
     private fun setReferralCode(code: String) {

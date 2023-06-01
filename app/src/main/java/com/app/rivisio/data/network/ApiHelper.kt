@@ -71,4 +71,9 @@ interface ApiHelper {
         token: String?,
         userId: Int
     ): Response<JsonElement>
+
+    suspend fun limitcheck(
+        token: String?,
+        userId: Int
+    ): Response<JsonElement>
 }

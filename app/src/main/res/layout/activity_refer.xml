@@ -30,7 +30,7 @@
 
     </LinearLayout>
 
-    <com.google.android.material.tabs.TabLayout
+    <!--<com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="FAQs" />
 
-    </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.tabs.TabLayout>-->
 
     <LinearLayout
         android:id="@+id/refer_layout"
@@ -194,6 +194,68 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 app:srcCompat="@drawable/refer" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/curved_bg_slider"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/additional_topic_earned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="NA" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/topic_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:stepSize="1"
+                android:value="20"
+                android:valueFrom="0"
+                android:valueTo="50"
+                app:haloRadius="0dp"
+                app:labelBehavior="gone"
+                app:thumbColor="@color/white"
+                app:thumbRadius="8dp"
+                app:thumbStrokeColor="#0FA86A"
+                app:thumbStrokeWidth="2dp"
+                app:tickVisible="false"
+                app:trackColorActive="#0FA86A"
+                app:trackColorInactive="#F6F8FA"
+                app:trackHeight="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="0" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:text="50" />
+
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
     <WebView

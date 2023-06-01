@@ -22,6 +22,11 @@ class ReferViewModel @Inject constructor(
     val userData: LiveData<NetworkResult<JsonElement>>
         get() = _userData
 
+    private val _limitData = MutableLiveData<NetworkResult<JsonElement>>()
+    val limitData: LiveData<NetworkResult<JsonElement>>
+        get() = _limitData
+
+
     fun getUserDetails() {
         viewModelScope.launch {
 
@@ -37,4 +42,22 @@ class ReferViewModel @Inject constructor(
             _userData.value = networkResponse
         }
     }
+
+    fun limitcheck() {
+        viewModelScope.launch {
+
+            _limitData.value = NetworkResult.Loading
+
+            val networkResponse = handleApi {
+                repository.limitcheck(
+                    repository.getAccessToken(),
+                    repository.getUserId()
+                )
+            }
+
+            _limitData.value = networkResponse
+        }
+    }
+
+
 }

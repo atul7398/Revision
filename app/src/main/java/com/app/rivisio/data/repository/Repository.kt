@@ -180,4 +180,9 @@ class Repository constructor(
         token: String?,
         userId: Int
     ) = apiHelper.getUserStats(token, userId)
+
+    suspend fun limitcheck(
+        token: String?,
+        userId: Int
+    ) = apiHelper.limitcheck(token, userId)
 }

@@ -2,12 +2,8 @@ package com.app.rivisio.data.network
 
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
-import com.google.gson.JsonElement
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Path
 import javax.inject.Inject
 
 class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : ApiHelper {
@@ -67,5 +63,11 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
     ) = apiService.reviseTopic(topicId, body)
 
     override suspend fun getUser(token: String?, userId: Int) = apiService.getUser(token, userId)
-    override suspend fun getUserStats(token: String?, userId: Int) = apiService.getUserStats(token, userId)
+    override suspend fun getUserStats(token: String?, userId: Int) =
+        apiService.getUserStats(token, userId)
+
+    override suspend fun limitcheck(
+        token: String?,
+        userId: Int
+    ) = apiService.limitcheck(token, userId)
 }
