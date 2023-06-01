@@ -27,6 +27,8 @@ class NotificationActivity : BaseActivity() {
 
     private val notificationViewModel: NotificationViewModel by viewModels()
 
+    private var isNotificationEnabled: Boolean = false
+
     @Inject
     lateinit var remindersManager: RemindersManager
 
@@ -43,18 +45,38 @@ class NotificationActivity : BaseActivity() {
 
         binding.backButton.setOnClickListener { finish() }
 
-        notificationViewModel.notificationSetting.observe(this, Observer {
+        notificationViewModel.notificationTime.observe(this, Observer {
+            binding.reminderTime.text = "$it (24hr)"
+        })
+
+        notificationViewModel.notificationEnabled.observe(this, Observer {
+
+            isNotificationEnabled = it
             binding.notificationSwitch.isChecked = it
+
             binding.notificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                isNotificationEnabled = isChecked
                 if (isChecked) {
                     getPermissions()
                 } else {
                     remindersManager.stopReminder(applicationContext)
                 }
+                notificationViewModel.enableNotification(isChecked)
             }
         })
 
+        notificationViewModel.notificationTimeUpdated.observe(this, Observer {
+            remindersManager.stopReminder(applicationContext)
+            remindersManager.startReminder(applicationContext)
+        })
+
         binding.reminderTime.setOnClickListener {
+
+            if (!isNotificationEnabled) {
+                showMessage("Enable notification first")
+                return@setOnClickListener
+            }
+
             val picker =
                 MaterialTimePicker.Builder()
                     .setTimeFormat(TimeFormat.CLOCK_12H)
@@ -66,10 +88,13 @@ class NotificationActivity : BaseActivity() {
 
             picker.addOnPositiveButtonClickListener {
                 Timber.e("Selected time: ${picker.hour}:${picker.minute}")
+
+                notificationViewModel.saveTime(picker.hour, picker.minute)
             }
         }
 
         notificationViewModel.isNotificationEnabled()
+        notificationViewModel.getTime()
     }
 
     private fun getPermissions() {
@@ -92,6 +117,8 @@ class NotificationActivity : BaseActivity() {
         } else {
             remindersManager.startReminder(applicationContext)
         }
+
+
     }
 
     override fun onRequestPermissionsResult(
