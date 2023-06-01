@@ -175,4 +175,9 @@ class Repository constructor(
     fun setNotificationTime(time: String) {
         preferencesHelper.setNotificationTime(time)
     }
+
+     suspend fun getUserStats(
+        token: String?,
+        userId: Int
+    ) = apiHelper.getUserStats(token, userId)
 }

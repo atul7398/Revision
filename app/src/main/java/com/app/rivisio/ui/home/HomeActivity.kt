@@ -27,7 +27,7 @@ class HomeActivity : BaseActivity() {
 
     val PERMISSION_REQUEST_CODE = 800
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val homeActivityViewModel: HomeActivityViewModel by viewModels()
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -45,7 +45,7 @@ class HomeActivity : BaseActivity() {
         }
     }
 
-    override fun getViewModel(): BaseViewModel = homeViewModel
+    override fun getViewModel(): BaseViewModel = homeActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

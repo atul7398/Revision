@@ -30,6 +30,10 @@ class HomeViewModel @Inject constructor(
     val update: LiveData<NetworkResult<JsonElement>>
         get() = _update
 
+    private val _userStats = MutableLiveData<NetworkResult<JsonElement>>()
+    val userStats: LiveData<NetworkResult<JsonElement>>
+        get() = _userStats
+
     fun getUserDetails() {
         viewModelScope.launch {
             _userName.value = repository.getName()
@@ -67,6 +71,24 @@ class HomeViewModel @Inject constructor(
 
         }
 
+    }
+
+    fun getUserStats() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+
+                _userStats.value = NetworkResult.Loading
+
+                val response = handleApi {
+                    repository.getUserStats(
+                        repository.getAccessToken()!!,
+                        repository.getUserId()
+                    )
+                }
+                _userStats.value = response
+
+            }
+        }
     }
 
 }

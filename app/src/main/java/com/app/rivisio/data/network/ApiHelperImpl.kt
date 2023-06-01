@@ -67,4 +67,5 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
     ) = apiService.reviseTopic(topicId, body)
 
     override suspend fun getUser(token: String?, userId: Int) = apiService.getUser(token, userId)
+    override suspend fun getUserStats(token: String?, userId: Int) = apiService.getUserStats(token, userId)
 }

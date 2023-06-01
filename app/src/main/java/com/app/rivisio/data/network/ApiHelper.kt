@@ -66,4 +66,9 @@ interface ApiHelper {
         token: String?,
         userId: Int
     ): Response<JsonElement>
+
+    suspend fun getUserStats(
+        token: String?,
+        userId: Int
+    ): Response<JsonElement>
 }

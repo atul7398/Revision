@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +17,9 @@ import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -58,6 +61,39 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         binding.subscribe.setOnClickListener {
             startActivity(SubscribeActivity.getStartIntent(requireContext()))
         }
+
+        binding.statsButton.setOnClickListener {
+            homeViewModel.getUserStats()
+        }
+
+        homeViewModel.userStats.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    showStatsBottomSheet(it.data)
+                }
+
+                is NetworkResult.Loading -> {
+                    hideLoading()
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
 
         homeViewModel.userName.observe(this, Observer {
             binding.userName.text = it
@@ -219,6 +255,28 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         })
 
         homeViewModel.getTopicsData()
+    }
+
+    private fun showStatsBottomSheet(data: JsonElement) {
+        try {
+            val referralView = layoutInflater.inflate(R.layout.stats_dialog_layout, null)
+            referralView.findViewById<AppCompatTextView>(R.id.total_topic).text =
+                data.asJsonObject["totalCount"].asString
+            referralView.findViewById<AppCompatTextView>(R.id.missed_topic).text =
+                data.asJsonObject["missedCount"].asString
+            referralView.findViewById<AppCompatTextView>(R.id.ontrack_topic).text =
+                data.asJsonObject["inprogressCount"].asString
+            referralView.findViewById<AppCompatTextView>(R.id.completed_topic).text =
+                data.asJsonObject["completedCount"].asString
+            val dialog = BottomSheetDialog(requireContext())
+            dialog.setContentView(referralView)
+            dialog.setCancelable(true)
+            dialog.show()
+        } catch (e: Exception) {
+            Timber.e("Json parsing issue: ")
+            Timber.e(e)
+            showError("Something went wrong")
+        }
     }
 
     private fun renderList() {
