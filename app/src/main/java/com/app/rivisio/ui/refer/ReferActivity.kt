@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -59,12 +59,12 @@ class ReferActivity : BaseActivity() {
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position == 0) {
-                    findViewById<LinearLayout>(R.id.refer_layout).makeVisible()
+                    findViewById<ScrollView>(R.id.refer_layout).makeVisible()
                     findViewById<WebView>(R.id.faq_layout).makeGone()
                 }
 
                 if (tab.position == 1) {
-                    findViewById<LinearLayout>(R.id.refer_layout).makeGone()
+                    findViewById<ScrollView>(R.id.refer_layout).makeGone()
                     findViewById<WebView>(R.id.faq_layout).makeVisible()
                 }
             }
