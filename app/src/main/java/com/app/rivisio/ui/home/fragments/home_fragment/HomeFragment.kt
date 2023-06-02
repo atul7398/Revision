@@ -14,6 +14,7 @@ import com.app.rivisio.ui.base.BaseFragment
 import com.app.rivisio.ui.refer.ReferActivity
 import com.app.rivisio.ui.subscribe.SubscribeActivity
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
+import com.app.rivisio.utils.CommonUtils
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
@@ -53,6 +54,8 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     }
 
     override fun setUp(view: View) {
+
+        binding.goodMorningText.text = CommonUtils.getGreetingMessage()
 
         binding.referButton.setOnClickListener {
             startActivity(ReferActivity.getStartIntent(requireContext()))

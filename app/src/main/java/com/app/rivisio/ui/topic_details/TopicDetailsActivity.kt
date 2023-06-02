@@ -120,6 +120,8 @@ class TopicDetailsActivity : BaseActivity() {
 
                         renderRevisionTimeLine(topicFromServer)
 
+                        binding.topicDetailIllustration.makeVisible()
+
                         renderTextNote(topicFromServer)
 
                         renderImageGroup(topicFromServer)
@@ -246,6 +248,7 @@ class TopicDetailsActivity : BaseActivity() {
             return
         }
 
+        binding.topicDetailIllustration.makeGone()
         binding.imageNoteContainer.makeVisible()
 
         binding.imageGroupName.text = "Image Notes"
@@ -328,6 +331,7 @@ class TopicDetailsActivity : BaseActivity() {
             return
         }
 
+        binding.topicDetailIllustration.makeGone()
         binding.textNoteContainer.makeVisible()
 
         binding.textNoteHeading.text = noteJsonObject["title"].asString

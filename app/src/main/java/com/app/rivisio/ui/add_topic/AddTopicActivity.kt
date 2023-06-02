@@ -30,8 +30,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import java.time.LocalDate
+import java.util.Calendar
+import java.util.Locale
 
 const val TOPIC_NAME = "topic"
 const val STUDIED_ON = "studied_on"
@@ -45,6 +46,8 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
     private lateinit var binding: ActivityAddTopicBinding
 
     private val tags = ArrayList<Tag>()
+
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     companion object {
         fun getStartIntent(context: Context) = Intent(context, AddTopicActivity::class.java)
@@ -67,6 +70,8 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
             finish()
         }
 
+        binding.studiedOnField.setText(sdf.format((Calendar.getInstance().time)))
+
         binding.selectDate.setOnClickListener {
             val datePicker =
                 MaterialDatePicker.Builder.datePicker()
@@ -76,7 +81,6 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
                     .build()
 
             datePicker.addOnPositiveButtonClickListener {
-                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val date = sdf.format(it)
                 binding.studiedOnField.setText(date)
             }
@@ -105,17 +109,21 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
                         showError("Something went wrong")
                     }
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -127,19 +135,36 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
             when (it) {
                 is NetworkResult.Success -> {
                     hideLoading()
-                    addTopicViewModel.getTopics()
+                    try {
+                        addTagChip(
+                            Tag(
+                                it.data.asJsonObject[ID].asInt,
+                                it.data.asJsonObject[NAME].asString,
+                                it.data.asJsonObject[HEX_CODE].asString
+                            )
+                        )
+                        addTopicViewModel.getTopics()
+                    } catch (e: Exception) {
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                        showError("Something went wrong")
+                    }
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -226,7 +251,7 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
 
             if (clickedTag.name == "Create Tag") {
 
-                showCreateTagUI()
+                showCreateTagUI(binding.tagsField.text.toString())
 
                 binding.tagsField.setText("")
                 listPopupWindow.dismiss()
@@ -247,8 +272,8 @@ class AddTopicActivity : BaseActivity(), CreateTagBottomSheetDialog.Callback {
         listPopupWindow.show()
     }
 
-    private fun showCreateTagUI() {
-        val createTagBottomSheetDialog = CreateTagBottomSheetDialog()
+    private fun showCreateTagUI(tagToCreate: String) {
+        val createTagBottomSheetDialog = CreateTagBottomSheetDialog.newInstance(tagToCreate)
         createTagBottomSheetDialog.show(supportFragmentManager, CreateTagBottomSheetDialog.TAG)
         createTagBottomSheetDialog.setCallback(this)
     }

@@ -59,7 +59,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 this,
                 message,
                 R.drawable.ic_error,
-                es.dmoral.toasty.R.color.errorColor,
+                R.color.red,
                 Toast.LENGTH_SHORT,
                 true,
                 true
@@ -72,7 +72,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 this,
                 message,
                 R.drawable.ic_info,
-                es.dmoral.toasty.R.color.infoColor,
+                R.color.secondary,
                 Toast.LENGTH_SHORT,
                 true,
                 true

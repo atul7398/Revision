@@ -16,12 +16,32 @@ class CreateTagBottomSheetDialog : BottomSheetDialogFragment() {
 
     private var callback: Callback? = null
 
+
     interface Callback {
         fun onAddTagClick(tagName: String, tagColor: String)
     }
 
     fun setCallback(callback: Callback) {
         this.callback = callback
+    }
+
+    companion object {
+
+        const val TAG = "ModalBottomSheet"
+        const val TAG_TO_CREATE = "tagToCreate"
+
+        @JvmStatic
+        fun newInstance(tagToCreate: String): CreateTagBottomSheetDialog {
+            val fragment = CreateTagBottomSheetDialog()
+
+            val bundle = Bundle().apply {
+                putString(TAG_TO_CREATE, tagToCreate)
+            }
+
+            fragment.arguments = bundle
+
+            return fragment
+        }
     }
 
     override fun onCreateView(
@@ -32,6 +52,9 @@ class CreateTagBottomSheetDialog : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<AppCompatEditText>(R.id.tag_field)
+            .setText(arguments?.getString(TAG_TO_CREATE))
 
         var tagColor = "#F74940"
 
@@ -67,7 +90,7 @@ class CreateTagBottomSheetDialog : BottomSheetDialogFragment() {
                     requireContext(),
                     "Tag cannot be empty",
                     R.drawable.ic_error,
-                    es.dmoral.toasty.R.color.errorColor,
+                    R.color.red,
                     Toast.LENGTH_SHORT,
                     true,
                     true
@@ -85,7 +108,4 @@ class CreateTagBottomSheetDialog : BottomSheetDialogFragment() {
         }
     }
 
-    companion object {
-        const val TAG = "ModalBottomSheet"
-    }
 }
