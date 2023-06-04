@@ -11,7 +11,7 @@ import com.app.rivisio.data.network.AWS_URL
 import com.app.rivisio.databinding.ActivityEditImageNoteBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
-import com.app.rivisio.ui.topic_details.TOPIC_ID
+import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
@@ -60,7 +60,7 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
     companion object {
         fun getStartIntent(context: Context, id: Int?): Intent {
             val intent = Intent(context, EditImageNoteActivity::class.java)
-            intent.putExtra(TOPIC_ID, id)
+            intent.putExtra(TopicDetailsActivity.TOPIC_ID, id)
             return intent
         }
     }
@@ -137,7 +137,7 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
             when (it) {
                 is NetworkResult.Success -> {
                     hideLoading()
-                    val id = intent.getIntExtra(TOPIC_ID, -1)
+                    val id = intent.getIntExtra(TopicDetailsActivity.TOPIC_ID, -1)
 
                     if (id != -1)
                         editImageNoteViewModel.getTopicDetails(id)
@@ -177,7 +177,7 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
                             hideLoading()
                             showMessage("Images uploaded successfully")
 
-                            val id = intent.getIntExtra(TOPIC_ID, -1)
+                            val id = intent.getIntExtra(TopicDetailsActivity.TOPIC_ID, -1)
 
                             uploadedImages.forEach { uploadedImagePath: String ->
                                 topicFromServer.imageUrls.add(uploadedImagePath)
@@ -223,14 +223,14 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
             }
         })
 
-        val id = intent.getIntExtra(TOPIC_ID, -1)
+        val id = intent.getIntExtra(TopicDetailsActivity.TOPIC_ID, -1)
 
         if (id != -1)
             editImageNoteViewModel.getTopicDetails(id)
     }
 
     override fun onDeleteImageClick(imageUrl: String) {
-        val id = intent.getIntExtra(TOPIC_ID, -1)
+        val id = intent.getIntExtra(TopicDetailsActivity.TOPIC_ID, -1)
 
         topicFromServer.imageUrls.remove(imageUrl)
 

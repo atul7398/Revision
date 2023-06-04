@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -19,6 +21,7 @@ import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
@@ -312,40 +315,74 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     }
 
     override fun onTopicReviseButtonClick(topicFromServer: TopicFromServer) {
+
+        var revision: Map<String, String>
+
         if (topicFromServer.rev1Status == "wait") {
-            val revsion = mapOf(
+            revision = mapOf(
                 "rev1" to LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             )
-            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+
+            showRevisePrompt(topicFromServer, revision)
             return
         }
 
         if (topicFromServer.rev2Status == "wait") {
-            val revsion = mapOf(
+            revision = mapOf(
                 "rev2" to LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             )
-            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+
+            showRevisePrompt(topicFromServer, revision)
             return
         }
 
         if (topicFromServer.rev3Status == "wait") {
-            val revsion = mapOf(
+            revision = mapOf(
                 "rev3" to LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             )
-            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+
+            showRevisePrompt(topicFromServer, revision)
             return
         }
 
         if (topicFromServer.rev4Status == "wait") {
-            val revsion = mapOf(
+            revision = mapOf(
                 "rev4" to LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             )
-            homeViewModel.reviseTopic(topicFromServer.id, revsion)
+
+            showRevisePrompt(topicFromServer, revision)
             return
         }
+    }
+
+    private fun showRevisePrompt(topicFromServer: TopicFromServer, revision: Map<String, String>) {
+        var dialog: AlertDialog? = null
+
+        val view =
+            LayoutInflater.from(requireContext()).inflate(R.layout.revise_dialog, null)
+
+        val dialogBuilder =
+            MaterialAlertDialogBuilder(
+                requireContext(),
+                R.style.ThemeOverlay_App_MaterialAlertDialog
+            )
+                .setCancelable(true)
+                .setView(view)
+
+
+        view.findViewById<AppCompatButton>(R.id.revise)?.setOnClickListener {
+            dialog?.dismiss()
+            homeViewModel.reviseTopic(topicFromServer.id, revision)
+        }
+
+        view.findViewById<AppCompatButton>(R.id.cancel)?.setOnClickListener {
+            dialog?.dismiss()
+        }
+
+        dialog = dialogBuilder.show()
     }
 }

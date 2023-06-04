@@ -36,13 +36,11 @@ import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
-const val TOPIC_ID = "topic_id"
-
 @AndroidEntryPoint
 class TopicDetailsActivity : BaseActivity() {
 
     companion object {
+        const val TOPIC_ID = "topic_id"
         fun getStartIntent(context: Context, id: Int?): Intent {
             val intent = Intent(context, TopicDetailsActivity::class.java)
             intent.putExtra(TOPIC_ID, id)
@@ -202,7 +200,10 @@ class TopicDetailsActivity : BaseActivity() {
         if (topicFromServer.rev1Status == "wait") {
             binding.horizontalRule.makeVisible()
             binding.markRevised.makeVisible()
-            val revsion = mapOf("rev1" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev1" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             binding.markRevised.setOnClickListener {
                 topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
             }
@@ -212,7 +213,10 @@ class TopicDetailsActivity : BaseActivity() {
         if (topicFromServer.rev2Status == "wait") {
             binding.horizontalRule.makeVisible()
             binding.markRevised.makeVisible()
-            val revsion = mapOf("rev2" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev2" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             binding.markRevised.setOnClickListener {
                 topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
             }
@@ -222,7 +226,10 @@ class TopicDetailsActivity : BaseActivity() {
         if (topicFromServer.rev3Status == "wait") {
             binding.horizontalRule.makeVisible()
             binding.markRevised.makeVisible()
-            val revsion = mapOf("rev3" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev3" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             binding.markRevised.setOnClickListener {
                 topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
             }
@@ -232,7 +239,10 @@ class TopicDetailsActivity : BaseActivity() {
         if (topicFromServer.rev4Status == "wait") {
             binding.horizontalRule.makeVisible()
             binding.markRevised.makeVisible()
-            val revsion = mapOf("rev4" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            val revsion = mapOf(
+                "rev4" to LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
             binding.markRevised.setOnClickListener {
                 topicDetailsViewModel.reviseTopic(topicFromServer.id, revsion)
             }
@@ -373,6 +383,14 @@ class TopicDetailsActivity : BaseActivity() {
 
             popup.show()
 
+        }
+
+        binding.textNoteContent.setOnClickListener {
+            BottomSheetDialogs.showTextNote(
+                this@TopicDetailsActivity,
+                noteJsonObject["title"].asString,
+                noteJsonObject["body"].asString
+            )
         }
     }
 
