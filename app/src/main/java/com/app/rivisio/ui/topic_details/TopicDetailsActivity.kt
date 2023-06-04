@@ -21,6 +21,7 @@ import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.text_note.CONTENT
 import com.app.rivisio.ui.text_note.HEADING
 import com.app.rivisio.ui.text_note.TextNoteActivity
+import com.app.rivisio.ui.view_image_notes.ViewImageNoteActivity
 import com.app.rivisio.utils.CommonUtils
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.RevisionInterval
@@ -330,6 +331,16 @@ class TopicDetailsActivity : BaseActivity() {
             popup.show()
 
         }
+
+        binding.imageNoteContainer.setOnClickListener {
+            startActivity(
+                ViewImageNoteActivity.getStartIntent(
+                    this@TopicDetailsActivity,
+                    topicFromServer.id
+                )
+            )
+        }
+
     }
 
     private fun renderTextNote(topicFromServer: TopicFromServer) {
@@ -385,7 +396,7 @@ class TopicDetailsActivity : BaseActivity() {
 
         }
 
-        binding.textNoteContent.setOnClickListener {
+        binding.textNoteContainer.setOnClickListener {
             BottomSheetDialogs.showTextNote(
                 this@TopicDetailsActivity,
                 noteJsonObject["title"].asString,

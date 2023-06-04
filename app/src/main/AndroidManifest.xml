@@ -24,6 +24,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.view_image_notes.PhotoViewActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".ui.notification.NotificationActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -45,6 +50,11 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.edit_image_note.EditImageNoteActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.view_image_notes.ViewImageNoteActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
