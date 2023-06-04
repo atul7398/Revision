@@ -81,6 +81,16 @@
                     android:text="Add your image notes here"
                     android:textSize="16sp"
                     app:fontFamily="@font/poppins_semi_bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add"
+                    app:cornerRadius="8dp"
+                    android:layout_gravity="center_horizontal"
+                    app:icon="@drawable/solid_plus"
+                    app:iconSize="24dp" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -102,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:visibility="gone"
         android:backgroundTint="@color/primary_500"
         android:contentDescription="no description"
         app:srcCompat="@drawable/save"

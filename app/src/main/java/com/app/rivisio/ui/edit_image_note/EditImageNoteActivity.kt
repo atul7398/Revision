@@ -83,6 +83,10 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
             launcher.launch(RivisioApp.config)
         }
 
+        binding.addImageButton.setOnClickListener {
+            launcher.launch(RivisioApp.config)
+        }
+
         editImageNoteViewModel.topicData.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {

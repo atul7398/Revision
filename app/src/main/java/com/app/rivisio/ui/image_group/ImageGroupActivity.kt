@@ -83,6 +83,10 @@ class ImageGroupActivity : BaseActivity(), ImagesAdapter.Callback {
             launcher.launch(RivisioApp.config)
         }
 
+        binding.addImageButton.setOnClickListener {
+            launcher.launch(RivisioApp.config)
+        }
+
         binding.saveImages.setOnClickListener {
             if (selectedImages.isEmpty()) {
                 showError("Select s few images")
