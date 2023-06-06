@@ -1,6 +1,8 @@
 package com.app.rivisio.ui.home.fragments.topics
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +25,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class TopicsFragment : BaseFragment(), TopicsAdapter.Callback {
+class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
 
     private var _binding: FragmentTopicsBinding? = null
     private val topicViewModel: TopicViewModel by viewModels()
 
-    private var topicsAdapter = TopicsAdapter()
+    private var topicsAdapter = TopicsAdapterNew()
 
     private val binding
         get() = _binding!!
@@ -60,6 +62,18 @@ class TopicsFragment : BaseFragment(), TopicsAdapter.Callback {
         binding.topicList.adapter = topicsAdapter
         topicsAdapter.setCallback(this)
 
+        binding.searchField.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                topicsAdapter.filterList(s.toString())
+            }
+        })
+
         topicViewModel.topics.observe(this, Observer {
             when (it) {
                 is NetworkResult.Success -> {
@@ -78,7 +92,7 @@ class TopicsFragment : BaseFragment(), TopicsAdapter.Callback {
                             binding.topicsIllustrationMessage.makeGone()
                             binding.topicsIllustrationText.makeGone()
                             binding.topicList.makeVisible()
-                            topicsAdapter.updateItems(topics, false)
+                            topicsAdapter.addItems(topics)
                         } else {
                             binding.topicsIllustrationImage.makeVisible()
                             binding.topicsIllustrationMessage.makeVisible()
