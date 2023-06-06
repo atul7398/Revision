@@ -1,5 +1,7 @@
 package com.app.rivisio.ui.home.fragments.account
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+
 
 @AndroidEntryPoint
 class AccountFragment : BaseFragment() {
@@ -79,6 +82,14 @@ class AccountFragment : BaseFragment() {
 
         binding.notificationContainer.setOnClickListener {
             startActivity(NotificationActivity.getStartIntent(requireContext()))
+        }
+
+        binding.privacyPolicyContainer.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://docs.google.com/document/d/12bESUwLt-AQ88TE3Agz1wd3wFWWJ6n_OIG0CU_BkmSw/edit")
+            )
+            startActivity(browserIntent)
         }
 
         accountViewModel.getUserDetails()
