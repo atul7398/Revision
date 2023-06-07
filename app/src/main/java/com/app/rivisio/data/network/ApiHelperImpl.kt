@@ -2,8 +2,10 @@ package com.app.rivisio.data.network
 
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
+import com.google.gson.JsonElement
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import javax.inject.Inject
 
 class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : ApiHelper {
@@ -70,4 +72,10 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
         token: String?,
         userId: Int
     ) = apiService.limitcheck(token, userId)
+
+    override suspend fun getTopicByDate(
+        date: String,
+        token: String?,
+        userId: Int
+    ) = apiService.getTopicByDate(date, token, userId)
 }

@@ -88,6 +88,13 @@ interface ApiService {
         @Query(USER_ID) userId: Int
     ): Response<JsonElement>
 
+    @GET("/topics/allbydate")
+    suspend fun getTopicByDate(
+        @Query(P_DATE) date: String,
+        @Query(TOKEN) token: String?,
+        @Query(CUST_ID) userId: Int
+    ): Response<JsonElement>
+
     @PUT("/topics/{topicId}")
     suspend fun editTopicDetails(
         @Path(TOPIC_ID) topicId: Int,

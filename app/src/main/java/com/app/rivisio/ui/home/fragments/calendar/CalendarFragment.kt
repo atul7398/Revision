@@ -2,36 +2,51 @@ package com.app.rivisio.ui.home.fragments.calendar
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.rivisio.R
 import com.app.rivisio.databinding.Example7CalendarDayBinding
 import com.app.rivisio.databinding.FragmentCalendarBinding
-import com.app.rivisio.utils.displayText
-import com.app.rivisio.utils.getColorCompat
+import com.app.rivisio.ui.base.BaseFragment
+import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
+import com.app.rivisio.ui.home.fragments.home_fragment.TopicsAdapter
+import com.app.rivisio.ui.home.fragments.home_fragment.VerticalSpaceItemDecoration
+import com.app.rivisio.ui.topic_details.TopicDetailsActivity
+import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.getWeekPageTitle
+import com.app.rivisio.utils.makeGone
+import com.app.rivisio.utils.makeVisible
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.*
+import java.util.Locale
 
-class CalendarFragment : Fragment() {
+@AndroidEntryPoint
+class CalendarFragment : BaseFragment(), TopicsAdapter.Callback {
 
     private var selectedDate = LocalDate.now()
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
 
+    private var topicsAdapter = TopicsAdapter()
+
     private var _binding: FragmentCalendarBinding? = null
+    private val calendarViewModel: CalendarViewModel by viewModels()
 
     private val binding
         get() = _binding!!
@@ -52,10 +67,9 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUp(requireView())
     }
 
-    fun setUp(view: View) {
+    override fun setUp(view: View) {
         class DayViewContainer(view: View) : ViewContainer(view) {
             val bind = Example7CalendarDayBinding.bind(view)
             lateinit var day: WeekDay
@@ -87,6 +101,9 @@ class CalendarFragment : Fragment() {
                         //binding.calendarText.text = "No Data\n" + " Record Found !"
                         //calendarViewModel.getRecord(selectedDate)
                     }
+
+                    calendarViewModel.getTopicsForDate(selectedDate)
+
                 }
             }
 
@@ -145,52 +162,81 @@ class CalendarFragment : Fragment() {
             )
         }
 
-        /*calendarViewModel.isDatafetched.observe(this, Observer {
+        binding.topicsDateList.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding.topicsDateList.addItemDecoration(
+            VerticalSpaceItemDecoration(
+                requireContext().resources.getDimension(R.dimen.vertical_offset)
+                    .toInt()
+            )
+        )
+        binding.topicsDateList.adapter = topicsAdapter
+        topicsAdapter.setCallback(this)
+
+        calendarViewModel.topics.observe(this, Observer {
             when (it) {
-                is Resource.Loading -> showLoading()
-                is Resource.Success -> {
+                is NetworkResult.Success -> {
                     hideLoading()
-
-                    binding.calendarIllustrationContainer.visibility = View.GONE
-                    binding.calenderDataContainer.visibility = View.VISIBLE
-
                     try {
 
-                        binding.feltText.text =
-                            it.data.asJsonObject[ApiConstants.FEELING_STR].asString
-                        binding.dietText.text = it.data.asJsonObject[ApiConstants.DIET_STR].asString
-                        binding.exerciseText.text =
-                            it.data.asJsonObject[ApiConstants.EXERCISE_STR].asString
-                        var medicineStr = ""
+                        val myType = object : TypeToken<ArrayList<TopicFromServer>>() {}.type
 
-                        it.data.asJsonObject[ApiConstants.MEDICATIONS].asJsonArray.forEach { medications: JsonElement ->
-                            medicineStr =
-                                medicineStr.plus(medications.asJsonObject[ApiConstants.MEDICINE_NAME].asString + ",")
+                        val topics = Gson().fromJson<ArrayList<TopicFromServer>>(
+                            it.data.asJsonArray,
+                            myType
+                        )
+
+                        if (topics.isNotEmpty()) {
+                            binding.calendarIllustrationContainer.makeGone()
+                            binding.topicsDateList.makeVisible()
+                            topicsAdapter.updateItems(topics, false)
+                        } else{
+                            topicsAdapter.updateItems(arrayListOf(), false)//to clear old items
+                            binding.calendarIllustrationContainer.makeVisible()
+                            binding.topicsDateList.makeGone()
                         }
-                        if (medicineStr.isEmpty())
-                            binding.medicineText.text = "No Medicine Taken"
-                        else
-                            binding.medicineText.text = medicineStr
                     } catch (e: Exception) {
-                        Timber.e("Json parsing issue: $e")
-                        showError("Something went wrong.")
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                        showError("Something went wrong")
                     }
                 }
-                is Resource.Error -> {
-                    hideLoading()
-                    showError(it.exception.localizedMessage)
-                    binding.calendarIllustrationContainer.visibility = View.VISIBLE
-                    binding.calenderDataContainer.visibility = View.GONE
 
+                is NetworkResult.Loading -> {
+                    hideLoading()
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
                 }
             }
-        })*/
+        })
 
-        //calendarViewModel.getTodaysRecord()
+        calendarViewModel.getTopicsForDate(LocalDate.now())
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onTopicClick(topicFromServer: TopicFromServer) {
+        startActivity(TopicDetailsActivity.getStartIntent(requireContext(), topicFromServer.id))
+    }
+
+    override fun onTopicReviseButtonClick(topicFromServer: TopicFromServer) {
+        //nothing
     }
 }

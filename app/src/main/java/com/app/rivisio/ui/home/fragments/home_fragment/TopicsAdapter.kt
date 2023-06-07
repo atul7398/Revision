@@ -47,7 +47,7 @@ class TopicsAdapter(var topic: ArrayList<TopicFromServer> = arrayListOf()) :
         )
 
         topicViewHolder.itemView.setOnClickListener {
-            if (callback != null) {
+            if (this::callback.isInitialized) {
                 val position = topicViewHolder.bindingAdapterPosition
                 callback.onTopicClick(topic[position])
             }

@@ -76,4 +76,10 @@ interface ApiHelper {
         token: String?,
         userId: Int
     ): Response<JsonElement>
+
+    suspend fun getTopicByDate(
+        date: String,
+        token: String?,
+        userId: Int
+    ): Response<JsonElement>
 }

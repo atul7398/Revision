@@ -1,6 +1,9 @@
 package com.app.rivisio.data.repository
 
 import com.app.rivisio.data.network.ApiHelper
+import com.app.rivisio.data.network.CUST_ID
+import com.app.rivisio.data.network.P_DATE
+import com.app.rivisio.data.network.TOKEN
 import com.app.rivisio.data.prefs.PreferencesHelper
 import com.app.rivisio.data.prefs.UserState
 import com.app.rivisio.ui.add_topic.Topic
@@ -9,6 +12,8 @@ import com.google.gson.JsonElement
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 class Repository constructor(
     private val apiHelper: ApiHelper,
@@ -185,4 +190,10 @@ class Repository constructor(
         token: String?,
         userId: Int
     ) = apiHelper.limitcheck(token, userId)
+
+    suspend fun getTopicByDate(
+        date: String,
+        token: String?,
+        userId: Int
+    ) = apiHelper.getTopicByDate(date, token, userId)
 }
