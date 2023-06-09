@@ -16,9 +16,10 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:text="Congratulations! you have accomplished today’s task" />
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_gravity="center_horizontal"
+        android:text="Topic Created Successfully" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/topic_created_button"
@@ -27,7 +28,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/button_bg"
         android:fontFamily="@font/poppins_medium"
-        android:text="Keep it up"
+        android:text="View Topic"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp" />

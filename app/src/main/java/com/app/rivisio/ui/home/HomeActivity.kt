@@ -8,9 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentTransaction
-import com.app.rivisio.reminder.RemindersManager
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityHomeBinding
+import com.app.rivisio.reminder.RemindersManager
 import com.app.rivisio.ui.add_topic.AddTopicActivity
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
@@ -18,6 +18,7 @@ import com.app.rivisio.ui.home.fragments.account.AccountFragment
 import com.app.rivisio.ui.home.fragments.calendar.CalendarFragment
 import com.app.rivisio.ui.home.fragments.home_fragment.HomeFragment
 import com.app.rivisio.ui.home.fragments.topics.TopicsFragment
+import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,11 +36,15 @@ class HomeActivity : BaseActivity() {
     lateinit var remindersManager: RemindersManager
 
     private var pressedTime: Long = 0
+
     companion object {
+
+        const val TOPIC_ID = "topic_id"
         fun getStartIntent(context: Context) = Intent(context, HomeActivity::class.java)
 
-        fun getStartIntentNewTask(context: Context): Intent {
+        fun getStartIntentNewTask(context: Context, topicId: Int): Intent {
             val intent = Intent(context, HomeActivity::class.java)
+            intent.putExtra(TOPIC_ID, topicId)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             return intent
         }
@@ -57,6 +62,16 @@ class HomeActivity : BaseActivity() {
         }
 
         setUpFragments()
+        //This is to navigate the user after successful topic creation.
+        //The topicId is passed from the AddNotesActivity and we check it here and redirect to teh topic details
+        if (intent != null && intent.getIntExtra(TOPIC_ID, -1) != -1) {
+            startActivity(
+                TopicDetailsActivity.getStartIntent(
+                    this@HomeActivity,
+                    intent.getIntExtra(TOPIC_ID, -1)
+                )
+            )
+        }
     }
 
     private fun setUpFragments() {
@@ -69,6 +84,7 @@ class HomeActivity : BaseActivity() {
                     fragmentTransaction.replace(R.id.home_container, fragment, "")
                     fragmentTransaction.commit()
                 }
+
                 R.id.topics_item -> {
                     val fragment = TopicsFragment.newInstance()
                     val fragmentTransaction: FragmentTransaction =
@@ -76,6 +92,7 @@ class HomeActivity : BaseActivity() {
                     fragmentTransaction.replace(R.id.home_container, fragment, "")
                     fragmentTransaction.commit()
                 }
+
                 R.id.calendar_item -> {
                     val fragment = CalendarFragment.newInstance()
                     val fragmentTransaction: FragmentTransaction =
@@ -151,6 +168,7 @@ class HomeActivity : BaseActivity() {
                 }
                 return
             }
+
             else -> {
                 // Ignore all other requests.
             }

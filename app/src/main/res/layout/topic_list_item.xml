@@ -79,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="Revise"
+        android:text="Mark as Revised"
         app:cornerRadius="8dp"
         app:icon="@drawable/arrow_button"
         android:layout_marginTop="12dp"

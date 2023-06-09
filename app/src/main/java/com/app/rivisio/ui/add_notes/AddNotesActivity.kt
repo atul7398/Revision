@@ -17,10 +17,16 @@ import androidx.lifecycle.Observer
 import com.app.rivisio.R
 import com.app.rivisio.data.network.AWS_URL
 import com.app.rivisio.databinding.ActivityAddNotesBinding
-import com.app.rivisio.ui.add_topic.*
+import com.app.rivisio.ui.add_topic.CreateTagBottomSheetDialog
+import com.app.rivisio.ui.add_topic.STUDIED_ON
+import com.app.rivisio.ui.add_topic.TAGS
+import com.app.rivisio.ui.add_topic.TOPIC_NAME
+import com.app.rivisio.ui.add_topic.Tag
+import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.HomeActivity
+import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.image_group.IMAGE_GROUP_NAME
 import com.app.rivisio.ui.image_group.IMAGE_LIST
 import com.app.rivisio.ui.image_group.ImageGroupActivity
@@ -31,15 +37,13 @@ import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.getPopupMenu
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
+
 
 @AndroidEntryPoint
 class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callback {
@@ -145,21 +149,25 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                         showError("Image upload FAILED....")
                     }
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                     uploadCount = 0
                     uploadedImages.clear()
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                     uploadCount = 0
                     uploadedImages.clear()
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -173,19 +181,35 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
             when (it) {
                 is NetworkResult.Success -> {
                     showMessage("Topic Created successfully.")
-                    showTopicCreatedDialog()
+                    Timber.e("Topic data: ")
+
+                    try {
+                        val topicFromServer = Gson().fromJson(
+                            it.data.asJsonObject,
+                            TopicFromServer::class.java
+                        )
+                        showTopicCreatedDialog(topicFromServer)
+                    } catch (e: Exception) {
+                        Timber.e("Json parsing issue: ")
+                        Timber.e(e)
+                        showError("Something went wrong")
+                    }
                 }
+
                 is NetworkResult.Loading -> {
                     showLoading()
                 }
+
                 is NetworkResult.Error -> {
                     hideLoading()
                     showError(it.message)
                 }
+
                 is NetworkResult.Exception -> {
                     hideLoading()
                     showError(it.e.message)
                 }
+
                 else -> {
                     hideLoading()
                     Timber.e(it.toString())
@@ -194,7 +218,7 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
         })
     }
 
-    private fun showTopicCreatedDialog() {
+    private fun showTopicCreatedDialog(topicFromServer: TopicFromServer) {
 
         var dialog: AlertDialog? = null
 
@@ -212,12 +236,16 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
 
         view.findViewById<AppCompatButton>(R.id.topic_created_button)?.setOnClickListener {
             dialog?.dismiss()
-            startActivity(HomeActivity.getStartIntentNewTask(this@AddNotesActivity))
+            startActivity(
+                HomeActivity.getStartIntentNewTask(
+                    this@AddNotesActivity,
+                    topicFromServer.id!!
+                )
+            )
             finish()
         }
 
         dialog = dialogBuilder.show()
-
 
     }
 

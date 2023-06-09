@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:fontFamily="@font/poppins_semi_bold"
-            android:text="Add topic"
+            android:text="Add Topic"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -107,7 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:text="Studied on"
+        android:text="Studied On"
         android:textColor="@color/subtext_color"
         android:textSize="12sp" />
 

@@ -52,17 +52,48 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <LinearLayout
             android:id="@+id/notes_illustration_text"
-            android:layout_width="320dp"
-            android:layout_height="310dp"
-            android:layout_gravity="center"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/notes_img" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/add_your_notes" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/topics_illustration_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="center_horizontal"
+                android:inputType="textMultiLine"
+                android:text="Add Notes (Optional)"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/topics_illustration_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:gravity="center_horizontal"
+                android:text="Adding your notes here will let you revise the topic quick &amp; easy"
+                android:textColor="@color/gray_text"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/text_note_container"
@@ -246,7 +277,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -269,7 +299,7 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/button_bg"
             android:fontFamily="@font/poppins_medium"
-            android:text="Create Topic"
+            android:text="Submit"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp" />
