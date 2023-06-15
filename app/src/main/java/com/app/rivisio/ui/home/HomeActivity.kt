@@ -74,6 +74,13 @@ class HomeActivity : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        homeActivityViewModel.syncPurchases()
+
+    }
+
     private fun setUpFragments() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {

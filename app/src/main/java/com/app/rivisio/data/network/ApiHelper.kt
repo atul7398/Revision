@@ -1,5 +1,6 @@
 package com.app.rivisio.data.network
 
+import com.app.rivisio.data.db.entity.Purchase
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.google.gson.JsonElement
@@ -81,5 +82,11 @@ interface ApiHelper {
         date: String,
         token: String?,
         userId: Int
+    ): Response<JsonElement>
+
+    suspend fun saveSubscription(
+        token: String?,
+        userId: Int,
+        purchase: Purchase
     ): Response<JsonElement>
 }

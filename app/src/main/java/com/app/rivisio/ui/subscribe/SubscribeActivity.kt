@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -22,6 +23,7 @@ import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivitySubscribeBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
+import com.google.gson.JsonParser
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -36,6 +38,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
     private lateinit var billingClient: BillingClient
 
     private lateinit var selectedSubscriptionPlanId: String
+    private lateinit var selectedSubscription: ProductDetails.SubscriptionOfferDetails
 
     override fun getViewModel(): BaseViewModel = subscribeViewModel
 
@@ -47,6 +50,14 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
         super.onCreate(savedInstanceState)
         binding = ActivitySubscribeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        subscribeViewModel.insert.observe(this, Observer {
+            if (it > 0) {
+                hideLoading()
+                terminateBillingConnection()
+                finish()
+            }
+        })
 
         setButtonListeners()
 
@@ -146,20 +157,24 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                 Timber.e("onProductDetailsResponse() : ")
 
                 productDetailsList.forEach {
-                    if (it.subscriptionOfferDetails!![0].basePlanId == selectedSubscriptionPlanId)
+                    if (it.subscriptionOfferDetails!![0].basePlanId == selectedSubscriptionPlanId) {
                         productDetailsParamsList.add(
                             ProductDetailsParams.newBuilder()
                                 .setProductDetails(it)
                                 .setOfferToken(it.subscriptionOfferDetails!![0].offerToken)
                                 .build()
                         )
-                    if (it.subscriptionOfferDetails!![1].basePlanId == selectedSubscriptionPlanId)
+                        selectedSubscription = it.subscriptionOfferDetails!![0]
+                    }
+                    if (it.subscriptionOfferDetails!![1].basePlanId == selectedSubscriptionPlanId) {
                         productDetailsParamsList.add(
                             ProductDetailsParams.newBuilder()
                                 .setProductDetails(it)
                                 .setOfferToken(it.subscriptionOfferDetails!![1].offerToken)
                                 .build()
                         )
+                        selectedSubscription = it.subscriptionOfferDetails!![1]
+                    }
                 }
 
                 val billingFlowParams = BillingFlowParams.newBuilder()
@@ -183,6 +198,9 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
         purchases: MutableList<Purchase>?
     ) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            runOnUiThread {
+                showLoading()
+            }
             for (purchase in purchases) {
                 acknowledgePurchases(purchase)
             }
@@ -211,9 +229,30 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                         it.purchaseState == Purchase.PurchaseState.PURCHASED
                     ) {
                         runOnUiThread {
+
+                            //make a network call to the server
+                            Timber.e("Purchase: ${it.toString()}")
+                            Timber.e("Purchase orderId: ${it.orderId}")
+                            Timber.e("Purchase productId: ${JsonParser().parse(it.originalJson).asJsonObject["productId"].asString}")
+                            Timber.e("Purchase purchaseTime: ${it.purchaseTime}")
+                            Timber.e("Purchase isAutoRenewing: ${it.isAutoRenewing}")
+
+                            Timber.e("Subscription basePlanId: ${selectedSubscription.basePlanId}")
+                            if (selectedSubscription.pricingPhases.pricingPhaseList.size > 0)
+                                Timber.e("Subscription billingPeriod: ${selectedSubscription.pricingPhases.pricingPhaseList[0].billingPeriod}")
+
                             showMessage("Purchase acknowledged")
-                            terminateBillingConnection()
-                            finish()
+
+                            subscribeViewModel.insertPurchase(
+                                com.app.rivisio.data.db.entity.Purchase(
+                                    orderId = it.orderId!!,
+                                    productId = JsonParser().parse(it.originalJson).asJsonObject["productId"].asString!!,
+                                    purchaseTime = it.purchaseTime,
+                                    isAutoRenewing = it.isAutoRenewing,
+                                    basePlanId = selectedSubscription.basePlanId,
+                                    billingPeriod = selectedSubscription.pricingPhases.pricingPhaseList[0].billingPeriod
+                                )
+                            )
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package com.app.rivisio.data.network
 
+import com.app.rivisio.data.db.entity.Purchase
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.google.gson.JsonElement
@@ -78,4 +79,10 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
         token: String?,
         userId: Int
     ) = apiService.getTopicByDate(date, token, userId)
+
+    override suspend fun saveSubscription(
+        token: String?,
+        userId: Int,
+        purchase: Purchase
+    ) = apiService.saveSubscription(token, userId, purchase)
 }

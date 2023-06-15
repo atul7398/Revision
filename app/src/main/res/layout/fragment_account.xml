@@ -46,6 +46,12 @@
         android:textSize="14sp"
         tools:text="ayush.prshr9@gmail.com" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/manage_subscription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Manage Subscription" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/profile_label"

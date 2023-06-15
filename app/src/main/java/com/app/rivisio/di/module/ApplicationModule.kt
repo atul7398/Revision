@@ -1,6 +1,10 @@
 package com.app.rivisio.di.module
 
+import android.content.Context
 import com.app.rivisio.BuildConfig
+import com.app.rivisio.data.db.AppDatabase
+import com.app.rivisio.data.db.DbHelper
+import com.app.rivisio.data.db.DbHelperImpl
 import com.app.rivisio.data.network.ApiHelper
 import com.app.rivisio.data.network.ApiHelperImpl
 import com.app.rivisio.data.network.ApiService
@@ -10,6 +14,7 @@ import com.app.rivisio.data.repository.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -104,10 +109,21 @@ class ApplicationModule {
 
     @Provides
     @Singleton
+    fun provideRoomDatabase(@ApplicationContext context: Context): AppDatabase {
+        return AppDatabase.getInstance(context)!!
+    }
+
+    @Provides
+    @Singleton
+    fun provideDbHelper(dbHelper: DbHelperImpl): DbHelper = dbHelper
+
+    @Provides
+    @Singleton
     fun provideRepository(
         apiHelper: ApiHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        dbHelper: DbHelper
     ): Repository {
-        return Repository(apiHelper, preferencesHelper)
+        return Repository(apiHelper, preferencesHelper, dbHelper)
     }
 }

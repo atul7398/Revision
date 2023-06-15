@@ -1,5 +1,6 @@
 package com.app.rivisio.data.network
 
+import com.app.rivisio.data.db.entity.Purchase
 import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.google.gson.JsonElement
@@ -107,6 +108,13 @@ interface ApiService {
     suspend fun reviseTopic(
         @Path(TOPIC_ID) topicId: Int,
         @Body body: Map<String, String>
+    ): Response<JsonElement>
+
+    @POST("/users/subscription")
+    suspend fun saveSubscription(
+        @Query(TOKEN) token: String?,
+        @Query(USER_ID) userId: Int,
+        @Body purchase: Purchase
     ): Response<JsonElement>
 
 }

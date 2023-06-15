@@ -43,6 +43,16 @@ class AccountFragment : BaseFragment() {
 
     override fun setUp(view: View) {
 
+        binding.manageSubscription.setOnClickListener {
+
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/account/subscriptions?sku=revu_basic_sub&package=com.app.rivisio")
+            )
+            startActivity(browserIntent)
+
+        }
+
         accountViewModel.logout.observe(this, Observer {
             if (it)
                 startActivity(LoginActivity.getStartIntentNewTask(requireContext()))
