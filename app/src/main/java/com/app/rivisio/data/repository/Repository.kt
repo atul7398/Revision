@@ -208,8 +208,6 @@ class Repository constructor(
     }
 
     suspend fun saveSubscription(
-        token: String?,
-        userId: Int,
         purchase: Purchase
-    ) = apiHelper.saveSubscription(token, userId, purchase)
+    ) = apiHelper.saveSubscription(purchase)
 }

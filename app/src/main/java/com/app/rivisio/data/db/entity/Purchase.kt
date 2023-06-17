@@ -12,6 +12,9 @@ data class Purchase(
     @NonNull
     var id: Long = 0,
 
+    @ColumnInfo(name = "userId")
+    var userId: Int,
+
     @ColumnInfo(name = "orderId")
     var orderId: String,
 

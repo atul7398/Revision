@@ -23,6 +23,9 @@ class SubscribeViewModel @Inject constructor(
 
     fun insertPurchase(purchase: Purchase) {
         viewModelScope.launch {
+
+            purchase.userId = repository.getUserId()
+
             val result = repository.insertPurchase(purchase)
             _insert.value = result
         }

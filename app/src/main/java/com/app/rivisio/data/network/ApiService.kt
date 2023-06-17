@@ -112,8 +112,6 @@ interface ApiService {
 
     @POST("/users/subscription")
     suspend fun saveSubscription(
-        @Query(TOKEN) token: String?,
-        @Query(USER_ID) userId: Int,
         @Body purchase: Purchase
     ): Response<JsonElement>
 

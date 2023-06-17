@@ -85,8 +85,6 @@ interface ApiHelper {
     ): Response<JsonElement>
 
     suspend fun saveSubscription(
-        token: String?,
-        userId: Int,
         purchase: Purchase
     ): Response<JsonElement>
 }

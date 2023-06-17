@@ -81,8 +81,6 @@ class ApiHelperImpl @Inject constructor(private val apiService: ApiService) : Ap
     ) = apiService.getTopicByDate(date, token, userId)
 
     override suspend fun saveSubscription(
-        token: String?,
-        userId: Int,
         purchase: Purchase
-    ) = apiService.saveSubscription(token, userId, purchase)
+    ) = apiService.saveSubscription(purchase)
 }

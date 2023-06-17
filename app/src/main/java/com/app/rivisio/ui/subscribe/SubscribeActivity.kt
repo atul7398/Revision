@@ -250,7 +250,8 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                                     purchaseTime = it.purchaseTime,
                                     isAutoRenewing = it.isAutoRenewing,
                                     basePlanId = selectedSubscription.basePlanId,
-                                    billingPeriod = selectedSubscription.pricingPhases.pricingPhaseList[0].billingPeriod
+                                    billingPeriod = selectedSubscription.pricingPhases.pricingPhaseList[0].billingPeriod,
+                                    userId = 0
                                 )
                             )
                         }
@@ -276,8 +277,8 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
             if (purchases.size > 0) {
                 runOnUiThread {
                     showMessage("You already have an active subscription")
-                    terminateBillingConnection()
-                    finish()
+                    //terminateBillingConnection()
+                    //finish()
                 }
             }
         } else {
