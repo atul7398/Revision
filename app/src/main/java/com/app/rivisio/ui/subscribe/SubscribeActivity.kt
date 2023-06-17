@@ -277,8 +277,8 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
             if (purchases.size > 0) {
                 runOnUiThread {
                     showMessage("You already have an active subscription")
-                    //terminateBillingConnection()
-                    //finish()
+                    terminateBillingConnection()
+                    finish()
                 }
             }
         } else {
