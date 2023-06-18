@@ -12,6 +12,7 @@ import com.app.rivisio.databinding.ActivityEditImageNoteBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
+import com.app.rivisio.utils.FileUtils
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
@@ -46,6 +47,10 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
         uploadedImages.clear()
 
         images.forEach { image ->
+            if (FileUtils.calculateFileSize(image.path) > FileUtils.fileSizeThreshold) {
+                showMessage("Some files skipped because size exceeds ${FileUtils.fileSizeThreshold} MB")
+                return@forEach
+            }
             Timber.e(image.path)
             selectedImages.add(image)
         }
