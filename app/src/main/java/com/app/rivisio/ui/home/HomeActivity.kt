@@ -121,6 +121,8 @@ class HomeActivity : BaseActivity() {
 
         binding.bottomNav.selectedItemId = R.id.home_item
 
+        binding.bottomNav.setOnItemReselectedListener { }
+
         getPermissions()
     }
 

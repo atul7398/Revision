@@ -121,4 +121,15 @@ class TopicsAdapterNew(var topics: ArrayList<TopicFromServer> = arrayListOf()) :
 
         notifyDataSetChanged()
     }
+
+    fun filterListByStatus(status: ArrayList<String>) {
+        topicsFiltered = if (status.size == 0)
+            topics
+        else
+            topics.filter {
+                status.contains(it.status)
+            } as ArrayList<TopicFromServer>
+
+        notifyDataSetChanged()
+    }
 }
