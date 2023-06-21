@@ -4,7 +4,7 @@ import java.io.File
 
 object FileUtils {
 
-    const val fileSizeThreshold = 1
+    const val fileSizeThreshold = 5
 
     fun calculateFileSize(filepath: String): Float {
         val file = File(filepath);
