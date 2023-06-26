@@ -42,6 +42,11 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
         get() = _binding!!
 
     companion object {
+
+        const val TOPIC_STATUS_IN_PROGRESS = "in_progress"
+        const val TOPIC_STATUS_CREATED = "created"
+        const val TOPIC_STATUS_STOP = "stop"
+
         @JvmStatic
         fun newInstance() = TopicsFragment()
     }
@@ -85,15 +90,13 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
             val filterView = layoutInflater.inflate(R.layout.filter_dialog_layout, null)
             val dialog = BottomSheetDialog(requireContext())
 
-            if (statusFilter.contains("in_progress"))
+            if (statusFilter.contains(TOPIC_STATUS_IN_PROGRESS))
                 filterView.findViewById<CheckBox>(R.id.on_track).isChecked = true
 
-
-            if (statusFilter.contains("created"))
+            if (statusFilter.contains(TOPIC_STATUS_CREATED))
                 filterView.findViewById<CheckBox>(R.id.created).isChecked = true
 
-
-            if (statusFilter.contains("stop"))
+            if (statusFilter.contains(TOPIC_STATUS_STOP))
                 filterView.findViewById<CheckBox>(R.id.stopped).isChecked = true
 
             val listener: (buttonView: CompoundButton, isChecked: Boolean) -> Unit =

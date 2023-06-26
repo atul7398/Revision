@@ -43,6 +43,9 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
     override fun getViewModel(): BaseViewModel = subscribeViewModel
 
     companion object {
+
+        const val REV_BASIC_SUBSCRIPTION = "revu_basic_sub"
+        const val PRODUCT_ID = "productId"
         fun getStartIntent(context: Context) = Intent(context, SubscribeActivity::class.java)
     }
 
@@ -128,7 +131,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
 
             productList.add(
                 Product.newBuilder()
-                    .setProductId("revu_basic_sub")
+                    .setProductId(REV_BASIC_SUBSCRIPTION)
                     .setProductType(BillingClient.ProductType.SUBS)
                     .build()
             )
@@ -233,7 +236,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                             //make a network call to the server
                             Timber.e("Purchase: ${it.toString()}")
                             Timber.e("Purchase orderId: ${it.orderId}")
-                            Timber.e("Purchase productId: ${JsonParser().parse(it.originalJson).asJsonObject["productId"].asString}")
+                            Timber.e("Purchase productId: ${JsonParser().parse(it.originalJson).asJsonObject[PRODUCT_ID].asString}")
                             Timber.e("Purchase purchaseTime: ${it.purchaseTime}")
                             Timber.e("Purchase isAutoRenewing: ${it.isAutoRenewing}")
 
@@ -246,7 +249,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                             subscribeViewModel.insertPurchase(
                                 com.app.rivisio.data.db.entity.Purchase(
                                     orderId = it.orderId!!,
-                                    productId = JsonParser().parse(it.originalJson).asJsonObject["productId"].asString!!,
+                                    productId = JsonParser().parse(it.originalJson).asJsonObject[PRODUCT_ID].asString!!,
                                     purchaseTime = it.purchaseTime,
                                     isAutoRenewing = it.isAutoRenewing,
                                     basePlanId = selectedSubscription.basePlanId,

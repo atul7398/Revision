@@ -5,7 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import com.app.rivisio.BuildConfig
+import com.app.rivisio.data.network.EMAIL
+import com.app.rivisio.data.network.FIRST_NAME
+import com.app.rivisio.data.network.LAST_NAME
+import com.app.rivisio.data.network.MOBILE
+import com.app.rivisio.data.network.PROFILE_IMAGE_URL
 import com.app.rivisio.databinding.ActivityProfileBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
@@ -42,13 +46,13 @@ class ProfileActivity : BaseActivity() {
                     hideLoading()
                     try {
 
-                        binding.nameField.setText(it.data.asJsonObject["firstName"].asString + " " + it.data.asJsonObject["lastName"].asString)
-                        binding.emailField.setText(it.data.asJsonObject["email"].asString)
-                        binding.phoneField.setText(it.data.asJsonObject["mobileNo"].asString)
+                        binding.nameField.setText(it.data.asJsonObject[FIRST_NAME].asString + " " + it.data.asJsonObject[LAST_NAME].asString)
+                        binding.emailField.setText(it.data.asJsonObject[EMAIL].asString)
+                        binding.phoneField.setText(it.data.asJsonObject[MOBILE].asString)
 
                         Glide.with(this@ProfileActivity)
                             .asBitmap()
-                            .load(it.data.asJsonObject["profileImageUrl"].asString)
+                            .load(it.data.asJsonObject[PROFILE_IMAGE_URL].asString)
                             .into(binding.profileImage)
 
                     } catch (e: Exception) {

@@ -44,6 +44,16 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     //topicsMissedList
 
     companion object {
+
+        const val TOTAL_COUNT = "totalCount"
+        const val MISSED_COUNT = "missedCount"
+        const val INPROGRESS_COUNT = "inprogressCount"
+        const val COMPLETED_COUNT = "completedCount"
+
+        const val TOPIC_MISSED_LIST = "topicsMissedList"
+        const val TOPIC_TODAY_LIST = "topicsTodayList"
+        const val TOPIC_UPCOMING_LIST = "topicsUpcomingList"
+
         @JvmStatic
         fun newInstance() = HomeFragment()
     }
@@ -160,17 +170,17 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                         val myType = object : TypeToken<ArrayList<TopicFromServer>>() {}.type
 
                         val topicsMissedList = Gson().fromJson<ArrayList<TopicFromServer>>(
-                            it.data.asJsonObject["topicsMissedList"].asJsonArray,
+                            it.data.asJsonObject[TOPIC_MISSED_LIST].asJsonArray,
                             myType
                         )
 
                         val topicsTodayList = Gson().fromJson<ArrayList<TopicFromServer>>(
-                            it.data.asJsonObject["topicsTodayList"].asJsonArray,
+                            it.data.asJsonObject[TOPIC_TODAY_LIST].asJsonArray,
                             myType
                         )
 
                         val topicsUpcomingList = Gson().fromJson<ArrayList<TopicFromServer>>(
-                            it.data.asJsonObject["topicsUpcomingList"].asJsonArray,
+                            it.data.asJsonObject[TOPIC_UPCOMING_LIST].asJsonArray,
                             myType
                         )
 
@@ -267,13 +277,13 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         try {
             val referralView = layoutInflater.inflate(R.layout.stats_dialog_layout, null)
             referralView.findViewById<AppCompatTextView>(R.id.total_topic).text =
-                data.asJsonObject["totalCount"].asString
+                data.asJsonObject[TOTAL_COUNT].asString
             referralView.findViewById<AppCompatTextView>(R.id.missed_topic).text =
-                data.asJsonObject["missedCount"].asString
+                data.asJsonObject[MISSED_COUNT].asString
             referralView.findViewById<AppCompatTextView>(R.id.ontrack_topic).text =
-                data.asJsonObject["inprogressCount"].asString
+                data.asJsonObject[INPROGRESS_COUNT].asString
             referralView.findViewById<AppCompatTextView>(R.id.completed_topic).text =
-                data.asJsonObject["completedCount"].asString
+                data.asJsonObject[COMPLETED_COUNT].asString
             val dialog = BottomSheetDialog(requireContext())
             dialog.setContentView(referralView)
             dialog.setCancelable(true)
