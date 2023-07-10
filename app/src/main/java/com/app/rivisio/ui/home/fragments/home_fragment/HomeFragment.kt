@@ -44,16 +44,6 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     //topicsMissedList
 
     companion object {
-
-        const val TOTAL_COUNT = "totalCount"
-        const val MISSED_COUNT = "missedCount"
-        const val INPROGRESS_COUNT = "inprogressCount"
-        const val COMPLETED_COUNT = "completedCount"
-
-        const val TOPIC_MISSED_LIST = "topicsMissedList"
-        const val TOPIC_TODAY_LIST = "topicsTodayList"
-        const val TOPIC_UPCOMING_LIST = "topicsUpcomingList"
-
         @JvmStatic
         fun newInstance() = HomeFragment()
     }
@@ -170,17 +160,17 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                         val myType = object : TypeToken<ArrayList<TopicFromServer>>() {}.type
 
                         val topicsMissedList = Gson().fromJson<ArrayList<TopicFromServer>>(
-                            it.data.asJsonObject[TOPIC_MISSED_LIST].asJsonArray,
+                            it.data.asJsonObject["topicsMissedList"].asJsonArray,
                             myType
                         )
 
                         val topicsTodayList = Gson().fromJson<ArrayList<TopicFromServer>>(
-                            it.data.asJsonObject[TOPIC_TODAY_LIST].asJsonArray,
+                            it.data.asJsonObject["topicsTodayList"].asJsonArray,
                             myType
                         )
 
                         val topicsUpcomingList = Gson().fromJson<ArrayList<TopicFromServer>>(
-                            it.data.asJsonObject[TOPIC_UPCOMING_LIST].asJsonArray,
+                            it.data.asJsonObject["topicsUpcomingList"].asJsonArray,
                             myType
                         )
 
@@ -189,9 +179,9 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                             binding.homeTabs.visibility = View.GONE
                             binding.homeIllustrationContainer.visibility = View.VISIBLE
                             binding.homeIllustration.setImageResource(R.drawable.start_journey)
-                            binding.homeIllustrationMessage.text = "Start Your Journey"
+                            binding.homeIllustrationMessage.text = "Add Topics to Revise"
                             binding.homeIllustrationText.text =
-                                "Every big step start with small step. Add your first topic and start your journey!"
+                                "Our revision cycle helps you remember anything permanently."
                         } else {
                             binding.homeTabs.visibility = View.VISIBLE
                             homeTabs.setTabClickListener { v ->
@@ -277,13 +267,13 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         try {
             val referralView = layoutInflater.inflate(R.layout.stats_dialog_layout, null)
             referralView.findViewById<AppCompatTextView>(R.id.total_topic).text =
-                data.asJsonObject[TOTAL_COUNT].asString
+                data.asJsonObject["totalCount"].asString
             referralView.findViewById<AppCompatTextView>(R.id.missed_topic).text =
-                data.asJsonObject[MISSED_COUNT].asString
+                data.asJsonObject["missedCount"].asString
             referralView.findViewById<AppCompatTextView>(R.id.ontrack_topic).text =
-                data.asJsonObject[INPROGRESS_COUNT].asString
+                data.asJsonObject["inprogressCount"].asString
             referralView.findViewById<AppCompatTextView>(R.id.completed_topic).text =
-                data.asJsonObject[COMPLETED_COUNT].asString
+                data.asJsonObject["completedCount"].asString
             val dialog = BottomSheetDialog(requireContext())
             dialog.setContentView(referralView)
             dialog.setCancelable(true)
@@ -306,9 +296,9 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         binding.homeTabs.makeVisible()
         binding.homeIllustrationContainer.makeVisible()
         binding.homeIllustration.setImageResource(R.drawable.meditation)
-        binding.homeIllustrationMessage.text = "No topics here"
+        binding.homeIllustrationMessage.text = "No Topics to Revise"
         binding.homeIllustrationText.text =
-            "You have revised all the topics, add new to create more."
+            "Our revision cycle helps you remember anything permanently."
     }
 
     private fun showTopicsList(topics: ArrayList<TopicFromServer>, isTodaysTopic: Boolean = false) {

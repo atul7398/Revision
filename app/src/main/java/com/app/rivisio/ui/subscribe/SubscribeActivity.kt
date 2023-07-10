@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -23,6 +24,7 @@ import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivitySubscribeBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
+import com.app.rivisio.ui.refer.ReferActivity
 import com.google.gson.JsonParser
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -43,9 +45,6 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
     override fun getViewModel(): BaseViewModel = subscribeViewModel
 
     companion object {
-
-        const val REV_BASIC_SUBSCRIPTION = "revu_basic_sub"
-        const val PRODUCT_ID = "productId"
         fun getStartIntent(context: Context) = Intent(context, SubscribeActivity::class.java)
     }
 
@@ -131,7 +130,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
 
             productList.add(
                 Product.newBuilder()
-                    .setProductId(REV_BASIC_SUBSCRIPTION)
+                    .setProductId("revu_basic_sub")
                     .setProductType(BillingClient.ProductType.SUBS)
                     .build()
             )
@@ -145,8 +144,13 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                 this@SubscribeActivity
             )
         }
-    }
 
+        binding.referOnSub.setOnClickListener {
+            val intent = Intent(this@SubscribeActivity, ReferActivity::class.java)
+            finish()
+            startActivity(intent)
+        }
+    }
     override fun onProductDetailsResponse(
         billingResult: BillingResult,
         productDetailsList: MutableList<ProductDetails>
@@ -236,7 +240,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                             //make a network call to the server
                             Timber.e("Purchase: ${it.toString()}")
                             Timber.e("Purchase orderId: ${it.orderId}")
-                            Timber.e("Purchase productId: ${JsonParser().parse(it.originalJson).asJsonObject[PRODUCT_ID].asString}")
+                            Timber.e("Purchase productId: ${JsonParser().parse(it.originalJson).asJsonObject["productId"].asString}")
                             Timber.e("Purchase purchaseTime: ${it.purchaseTime}")
                             Timber.e("Purchase isAutoRenewing: ${it.isAutoRenewing}")
 
@@ -249,7 +253,7 @@ class SubscribeActivity : BaseActivity(), ProductDetailsResponseListener, Purcha
                             subscribeViewModel.insertPurchase(
                                 com.app.rivisio.data.db.entity.Purchase(
                                     orderId = it.orderId!!,
-                                    productId = JsonParser().parse(it.originalJson).asJsonObject[PRODUCT_ID].asString!!,
+                                    productId = JsonParser().parse(it.originalJson).asJsonObject["productId"].asString!!,
                                     purchaseTime = it.purchaseTime,
                                     isAutoRenewing = it.isAutoRenewing,
                                     basePlanId = selectedSubscription.basePlanId,

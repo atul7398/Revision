@@ -10,7 +10,6 @@ import com.app.rivisio.RivisioApp
 import com.app.rivisio.databinding.ActivityImageGroupBinding
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.base.BaseViewModel
-import com.app.rivisio.utils.FileUtils
 import com.esafirm.imagepicker.features.registerImagePicker
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,10 +36,6 @@ class ImageGroupActivity : BaseActivity(), ImagesAdapter.Callback {
     private val launcher = registerImagePicker { result: List<Image> ->
         result.forEach { image ->
             Timber.e(image.path)
-            if (FileUtils.calculateFileSize(image.path) > FileUtils.fileSizeThreshold) {
-                showMessage("Some files skipped because size exceeds ${FileUtils.fileSizeThreshold} MB")
-                return@forEach
-            }
             selectedImages.add(image)
         }
 
