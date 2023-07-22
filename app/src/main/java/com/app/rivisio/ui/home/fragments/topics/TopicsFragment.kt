@@ -90,7 +90,7 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
             }
         })
 
-        val totalTopicsAllowed = 3
+        val totalTopicsAllowed = 20
         val totalTopicsCountTextView = binding.totalTopicsCount
 
         topicViewModel.topics.observe(this, Observer {

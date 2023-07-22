@@ -136,7 +136,7 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                                 Topic(
                                     uploadedImages,
                                     intent.getStringExtra(TOPIC_NAME)!!,
-                                    getStringifiedJsonNote(textNote!!),
+                                    getStringifiedJsonNote(textNote),
                                     getStudiedOnDateString(),
                                     getTags()
                                 )

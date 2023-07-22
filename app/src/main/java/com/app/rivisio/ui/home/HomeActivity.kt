@@ -87,7 +87,7 @@ class HomeActivity : BaseActivity() {
                     hideLoading()
                     totalTopicsCreated = result.data.asJsonObject["totalCount"].asInt
 
-                    if (totalTopicsCreated > 4) {
+                    if (totalTopicsCreated > 19) {
                         startActivity(Intent(this@HomeActivity, SubscribeActivity::class.java))
                     } else {
                         startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
