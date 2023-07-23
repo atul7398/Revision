@@ -429,7 +429,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/button_bg"
         android:fontFamily="@font/poppins_medium"
-        android:text="Mark revised"
+        android:text="Mark as Revised"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp" />
