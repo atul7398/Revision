@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "245457956877",
+    "project_id": "revu-android",
+    "storage_bucket": "revu-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245457956877:android:c971710e24041ce661e544",
+        "android_client_info": {
+          "package_name": "com.app.rivisio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245457956877-20r877egvt0j3nd15grer6mthmp8ab02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAE89ic8W0KHXCSDm1i0vFnDKBNdHTmREs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245457956877-20r877egvt0j3nd15grer6mthmp8ab02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

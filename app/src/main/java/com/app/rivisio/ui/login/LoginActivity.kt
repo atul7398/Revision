@@ -85,7 +85,7 @@ class LoginActivity : BaseActivity() {
                         .getPhoneNumberHintIntent(request)
                         .addOnFailureListener { e: Exception ->
                             Timber.e(e)
-                            showError(e.localizedMessage)
+                            //showError(e.localizedMessage)
                             showReferralBottomSheet()
                             //workaround for: com.google.android.gms.common.api.ApiException: 16: No phone number is found on this device.
                         }.addOnSuccessListener { pendingIntent: PendingIntent ->
