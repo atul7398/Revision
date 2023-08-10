@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.joinIntoString
 import com.app.rivisio.data.repository.Repository
 import com.app.rivisio.ui.base.BaseViewModel
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
@@ -12,7 +13,9 @@ import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -36,14 +39,12 @@ class TopicViewModel @Inject constructor(
     fun getTopicsData() {
         viewModelScope.launch {
             _topics.value = NetworkResult.Loading
-            Log.e("Token", repository.getAccessToken()!!)
             val response = handleApi {
                 repository.getAllTopics(
                     repository.getAccessToken()!!,
                     repository.getUserId()
                 )
             }
-
             _topics.value = response
         }
     }
@@ -62,6 +63,25 @@ class TopicViewModel @Inject constructor(
             }
 
             _deleteTopic.value = response
+        }
+    }
+
+    private val _topicStats = MutableLiveData<NetworkResult<JsonElement>>()
+    val topicStats: LiveData<NetworkResult<JsonElement>>
+        get() = _topicStats
+    fun getUserStats() {
+        viewModelScope.launch {
+
+            _topicStats.value = NetworkResult.Loading
+
+            val response = handleApi {
+                repository.getUserStats(
+                    repository.getAccessToken()!!,
+                    repository.getUserId()
+                )
+            }
+            _topicStats.value = response
+
         }
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.app.rivisio.R
 import com.app.rivisio.RivisioApp
 import com.app.rivisio.databinding.ActivityImageGroupBinding
 import com.app.rivisio.ui.base.BaseActivity
@@ -73,7 +74,8 @@ class ImageGroupActivity : BaseActivity(), ImagesAdapter.Callback {
         setContentView(binding.root)
 
         val imageGroupName = intent.getStringExtra(IMAGE_GROUP_NAME)
-        binding.imageGroupName.text = imageGroupName
+       // binding.imageGroupName.text = imageGroupName
+        binding.imageGroupName.text = getString(R.string.select_image)
 
         binding.backButton.setOnClickListener {
             finish()

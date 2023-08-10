@@ -65,7 +65,7 @@ class HomeActivity : BaseActivity() {
         setContentView(binding.root)
 
         binding.floatingButton.setOnClickListener {
-            homeActivityViewModel.gettotalTopicsCreated()
+            homeActivityViewModel.getUserStats()
         }
 
         setUpFragments()

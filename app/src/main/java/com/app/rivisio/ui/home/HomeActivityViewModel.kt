@@ -46,7 +46,7 @@ class HomeActivityViewModel @Inject constructor(
     }
 
 
-    fun gettotalTopicsCreated() {
+    fun getUserStats() {
             viewModelScope.launch {
 
                 _totalTopicsCreated.value = NetworkResult.Loading
