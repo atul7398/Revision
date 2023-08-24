@@ -16,13 +16,13 @@ android {
         applicationId "com.app.rivisio"
         minSdk 24
         targetSdk 33
-        versionCode 5
-        versionName "1.0.3"
+        versionCode 7
+        versionName "1.0.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
        // buildConfigField 'String', 'BASE_URL', "\"http://65.1.86.178:8080/\""
-        buildConfigField 'String', 'BASE_URL', "\"http://13.126.175.13:8080/\""
+        buildConfigField 'String', 'BASE_URL', "\"https://revu.co.in/\""
 
     }
 
