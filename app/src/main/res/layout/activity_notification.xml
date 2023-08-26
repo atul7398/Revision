@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginBottom="8dp"
-            android:text="Diasabling this would  stop your daily reminders"
+            android:text="Diasabling this would stop your daily reminders"
             android:textColor="#616075"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

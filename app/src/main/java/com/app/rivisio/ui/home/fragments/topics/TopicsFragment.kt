@@ -23,10 +23,11 @@ import com.app.rivisio.ui.home.fragments.home_fragment.VerticalSpaceItemDecorati
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.getPopupMenu
-import com.app.rivisio.utils.getPopupMenuTopic
 import com.app.rivisio.utils.makeGone
 import com.app.rivisio.utils.makeVisible
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -61,7 +62,7 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentTopicsBinding.inflate(inflater, container, false)
@@ -90,8 +91,52 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
             }
         })
 
-        val totalTopicsAllowed = 20
-        val totalTopicsCountTextView = binding.totalTopicsCount
+        topicViewModel.getUserStats()
+        topicViewModel.getTopicsData()
+
+        topicViewModel.topicStats.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    val data = it.data
+
+                    val totalCount = data.asJsonObject["totalCount"].asInt
+                    val limitStats = data.asJsonObject["limitStats"].asJsonObject
+
+                    if (!data.asJsonObject["subscriptionStats"].isJsonNull) {
+                        val subscriptionStats = data.asJsonObject["subscriptionStats"].asJsonObject
+                        val isActivePlan = subscriptionStats.asJsonObject["isActive"].asBoolean
+                        if (isActivePlan) {
+                            binding.totalTopicsCount.makeGone()
+                            binding.subscribe.makeVisible()
+                        } else {
+                            showTopicCount(limitStats, totalCount)
+                        }
+                    } else {
+                        showTopicCount(limitStats, totalCount)
+                    }
+                }
+
+                is NetworkResult.Loading -> {
+                    hideLoading()
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        }
 
         topicViewModel.topics.observe(this, Observer {
             Log.d("TAG", "observe topic")
@@ -117,10 +162,6 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
                             binding.topicsIllustrationText.makeVisible()
                             binding.topicList.makeGone()
                         }
-
-                        totalTopicsCreated = topics.size
-                        val topicsCountText = "$totalTopicsCreated/$totalTopicsAllowed Free Topics"
-                        totalTopicsCountTextView.text = topicsCountText
                     } catch (e: Exception) {
                         Timber.e("Json parsing issue: ")
                         Timber.e(e)
@@ -149,8 +190,6 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
                 }
             }
         })
-
-        topicViewModel.getTopicsData()
 
         topicViewModel.deleteTopic.observe(this, Observer {
             Log.d("TAG", "observe delete")
@@ -182,7 +221,6 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
             }
         })
 
-        topicViewModel.getTopicsData()
     }
 
 
@@ -197,7 +235,7 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
     override fun onMenuIconClick(
         anchorView: AppCompatImageView,
         position: Int,
-        topicFromServer: TopicFromServer
+        topicFromServer: TopicFromServer,
     ) {
 
         deleteTopicPosition = position
@@ -226,5 +264,16 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
 //        return totalTopicsCreated
 //    }
 
+    private fun showTopicCount(limitStats: JsonObject, totalCount: Int) {
+        binding.subscribe.makeGone()
+        binding.totalTopicsCount.makeVisible()
+        val topicLimit =
+            limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
+        binding.totalTopicsCount.text =
+            getString(R.string.total_free_topic_text).format(
+                totalCount,
+                topicLimit
+            )
+    }
 
 }

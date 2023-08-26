@@ -1,13 +1,18 @@
 package com.app.rivisio.ui.home
 
 import android.Manifest
+import android.app.AlertDialog
+import android.view.LayoutInflater
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.app.rivisio.R
 import com.app.rivisio.databinding.ActivityHomeBinding
@@ -23,6 +28,7 @@ import com.app.rivisio.ui.home.fragments.topics.TopicsFragment
 import com.app.rivisio.ui.subscribe.SubscribeActivity
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,7 +71,7 @@ class HomeActivity : BaseActivity() {
         setContentView(binding.root)
 
         binding.floatingButton.setOnClickListener {
-            homeActivityViewModel.gettotalTopicsCreated()
+            homeActivityViewModel.getUserStats()
         }
 
         setUpFragments()
@@ -87,7 +93,10 @@ class HomeActivity : BaseActivity() {
                     hideLoading()
                     totalTopicsCreated = result.data.asJsonObject["totalCount"].asInt
 
-                    if (totalTopicsCreated > 19) {
+                    if (totalTopicsCreated == 3 || totalTopicsCreated == 12) {
+                        showRating()
+                    }
+                    else if (totalTopicsCreated > 19) {
                         startActivity(Intent(this@HomeActivity, SubscribeActivity::class.java))
                     } else {
                         startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
@@ -108,6 +117,43 @@ class HomeActivity : BaseActivity() {
         })
     }
 
+//    private fun showRating() {
+//        val customView = layoutInflater.inflate(R.layout.rating, null)
+//
+//        val dialog = BottomSheetDialog(this)
+//        dialog.setContentView(customView)
+//        dialog.setCancelable(true)
+//        dialog.show()
+//    }
+
+    private fun showRating() {
+        val customView = layoutInflater.inflate(R.layout.rating, null)
+
+        val notNowButton = customView.findViewById<AppCompatButton>(R.id.notNowButton)
+        val rateNowButton = customView.findViewById<AppCompatButton>(R.id.rateNowButton)
+
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(customView)
+        dialog.setCancelable(true)
+
+        // Set up click listener for Not Now button
+        notNowButton.setOnClickListener {
+            // Dismiss the BottomSheetDialog
+            dialog.dismiss()
+        }
+
+        // Set up click listener for Rate Now button
+        rateNowButton.setOnClickListener {
+            // Open the link (replace 'your_link_here' with the actual link)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.app.rivisio&hl=en-IN"))
+            startActivity(intent)
+
+            // Dismiss the BottomSheetDialog
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
     override fun onResume() {
         super.onResume()
         homeActivityViewModel.syncPurchases()

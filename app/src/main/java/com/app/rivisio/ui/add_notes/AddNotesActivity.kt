@@ -343,12 +343,19 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
                     }
                 } else {
                     if (imageNote == null) {
+                       /*
+                        Image group name dialog hidden
+
+
                         val createImageGroupBottomSheetDialog = CreateImageGroupBottomSheetDialog()
                         createImageGroupBottomSheetDialog.show(
                             supportFragmentManager,
                             CreateTagBottomSheetDialog.TAG
                         )
                         createImageGroupBottomSheetDialog.setCallback(this@AddNotesActivity)
+
+                        */
+                        navigateToImageGroupScreen()
                     } else {
                         showError("Not allowed")
                     }
@@ -400,6 +407,15 @@ class AddNotesActivity : BaseActivity(), CreateImageGroupBottomSheetDialog.Callb
             ImageGroupActivity.getStartIntent(
                 this@AddNotesActivity,
                 imageGroupName
+            )
+        )
+    }
+
+    private fun navigateToImageGroupScreen(){
+        addImageGroupLauncher.launch(
+            ImageGroupActivity.getStartIntent(
+                this@AddNotesActivity,
+                ""
             )
         )
     }

@@ -9,4 +9,8 @@
     <string name="description_notification_reminder">Let us revise the topics!</string>
     <string name="reminders_notification_channel">Reminder</string>
     <string name="reminders_notification_channel_id">reminder_channel</string>
+    <string name="total_free_topic_text">%d/%d free topic</string>
+    <string name="select_image">Select Images</string>
+    <string name="finding_revu_useful">Finding Revu Useful?</string>
+    <string name="give_us_5_stars_to_encourage_us">Give us 5 stars to encourage us.</string>
 </resources>

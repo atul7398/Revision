@@ -10,6 +10,7 @@ import com.esafirm.imagepicker.features.ImagePickerConfig
 import com.esafirm.imagepicker.features.ImagePickerMode
 import com.esafirm.imagepicker.features.ImagePickerSavePath
 import com.esafirm.imagepicker.features.ReturnMode
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
 import timber.log.Timber
@@ -23,6 +24,10 @@ class RivisioApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if(!BuildConfig.DEBUG){
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+        }
 
         Timber.plant(Timber.DebugTree())
 

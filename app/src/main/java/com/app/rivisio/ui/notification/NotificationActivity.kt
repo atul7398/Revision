@@ -88,8 +88,10 @@ class NotificationActivity : BaseActivity() {
 
             picker.addOnPositiveButtonClickListener {
                 Timber.e("Selected time: ${picker.hour}:${picker.minute}")
-
+                val formattedMinute = String.format("%02d", picker.minute) // Format minutes with leading zero
+                val formattedTime = "${picker.hour}:$formattedMinute"
                 notificationViewModel.saveTime(picker.hour, picker.minute)
+                binding.reminderTime.text = formattedTime // Set formatted time to the TextView
             }
         }
 

@@ -6,11 +6,15 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.app.rivisio.R
 import com.app.rivisio.RivisioApp
 import com.app.rivisio.data.network.AWS_URL
 import com.app.rivisio.databinding.ActivityEditImageNoteBinding
+import com.app.rivisio.ui.add_notes.CreateImageGroupBottomSheetDialog
+import com.app.rivisio.ui.add_topic.CreateTagBottomSheetDialog
 import com.app.rivisio.ui.base.BaseActivity
 import com.app.rivisio.ui.home.fragments.home_fragment.TopicFromServer
+import com.app.rivisio.ui.image_group.ImageGroupActivity
 import com.app.rivisio.ui.topic_details.TopicDetailsActivity
 import com.app.rivisio.utils.NetworkResult
 import com.app.rivisio.utils.makeGone
@@ -23,7 +27,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
+class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback,
+    CreateImageGroupBottomSheetDialog.Callback {
 
     @Inject
     lateinit var editImageAdapter: EditImageAdapter
@@ -70,6 +75,8 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
         binding = ActivityEditImageNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.imageGroupName.text = getString(R.string.select_image)
+
         binding.backButton.setOnClickListener {
             finish()
         }
@@ -80,10 +87,12 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
         editImageAdapter.setCallback(this)
 
         binding.selectImages.setOnClickListener {
+           // launchImageGroupNameBottomDialog()
             launcher.launch(RivisioApp.config)
         }
 
         binding.addImageButton.setOnClickListener {
+          //  launchImageGroupNameBottomDialog()
             launcher.launch(RivisioApp.config)
         }
 
@@ -233,6 +242,15 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
             editImageNoteViewModel.getTopicDetails(id)
     }
 
+    private fun launchImageGroupNameBottomDialog(){
+        val createImageGroupBottomSheetDialog = CreateImageGroupBottomSheetDialog()
+        createImageGroupBottomSheetDialog.show(
+            supportFragmentManager,
+            CreateTagBottomSheetDialog.TAG
+        )
+        createImageGroupBottomSheetDialog.setCallback(this@EditImageNoteActivity)
+    }
+
     override fun onDeleteImageClick(imageUrl: String) {
         val id = intent.getIntExtra(TopicDetailsActivity.TOPIC_ID, -1)
 
@@ -242,5 +260,10 @@ class EditImageNoteActivity : BaseActivity(), EditImageAdapter.Callback {
             id,
             topicFromServer
         )
+    }
+
+    override fun onImageGroupCreated(imageGroupName: String) {
+        binding.imageGroupName.text = imageGroupName
+        launcher.launch(RivisioApp.config)
     }
 }

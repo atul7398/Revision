@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
@@ -71,6 +73,15 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         binding.statsButton.setOnClickListener {
             homeViewModel.getUserStats()
         }
+
+        binding.howToButton.setOnClickListener {
+            showHowToBottomSheet()
+        }
+
+        binding.dailyVocab.setOnClickListener {
+            showVocab()
+        }
+
 
         homeViewModel.userStats.observe(this, Observer {
             when (it) {
@@ -385,4 +396,81 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
         dialog = dialogBuilder.show()
     }
+
+//    private fun showHowToBottomSheet() {
+//        val howToView = layoutInflater.inflate(R.layout.how_to_dialog_layout, null)
+//
+//        val dialog = BottomSheetDialog(requireContext())
+//        dialog.setContentView(howToView)
+//        dialog.setCancelable(true)
+//        dialog.show()
+//
+//        // Find the WebView component in the inflated layout
+//        val webView = howToView.findViewById<WebView>(R.id.how_to_layout)
+//
+//        // Set WebViewClient to handle page loading
+//        webView.webViewClient = WebViewClient()
+//
+//        // Enable JavaScript and other settings
+//        webView.settings.javaScriptEnabled = true
+//        webView.settings.domStorageEnabled = true
+//        webView.settings.builtInZoomControls = true
+//        webView.settings.useWideViewPort = true
+//        webView.settings.loadWithOverviewMode = true
+//
+//        webView.loadUrl("https://snapdragon-consonant-027.notion.site/FAQs-Revu-879b2cc69b3b45dd9e16158c7ca11e83?pvs=4")
+//
+//        webView.makeVisible()
+//    }
+
+    private fun showVocab() {
+        val vocabView = layoutInflater.inflate(R.layout.vocab, null)
+
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(vocabView)
+        dialog.setCancelable(true)
+        dialog.show()
+
+    }
+    private fun showHowToBottomSheet() {
+        val howToView = layoutInflater.inflate(R.layout.how_to_dialog_layout, null)
+
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(howToView)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        // Find the WebView component in the inflated layout
+        val webView = howToView.findViewById<WebView>(R.id.how_to_layout)
+
+        // Create a sample HTML content to be displayed
+        val sampleHtml = ("<html><body>"
+                + "<h1>How Does It Work?</h1>"
+                + "<p>How do we help you remember things forever?</p>"
+                + "<p>Our algorithm follows Spaced Repetition method for creating revision cycles, that are scientifically proven for maximum retention.</p>"
+                + "<p>Day 0 You Read a Topic</p>"
+                + "<p>Next Day Revision 1</p>"
+                + "<p>Day 7 Revision 2</p>"
+                + "<p>Day 30 Revision 3</p>"
+                + "<p>Day 90 Revision 4</p>"
+                + "<p>You read a topic on a day, and you revise it the next day, the 7th day, 30th day and 90th day. This stores the information in your permanent memory. Now, it would stay in your memory for long-term.</p>"
+                + "<h2>What is Forgetting Curve?</h2>"
+                + "<p>According to Ebbinghaus Forgetting Curve, we remember:</p>"
+                + "<ul>"
+                + "<li>100% of what we learn immediately after we study it</li>"
+                + "<li>33% after 1 Day</li>"
+                + "<li>25% after 1 Week</li>"
+                + "</ul>"
+                + "<p>Hence, our retention falls steeply with elapsed time.</p>"
+                + "<p>Spaced Repetition method flattens the forgetting curve and hence enables us to retain the information long-term.</p>"
+                + "</body></html>")
+
+        // Load the sample HTML content into the WebView
+        webView.loadData(sampleHtml, "text/html", "UTF-8")
+
+        webView.makeVisible()
+    }
+
+
+
 }
