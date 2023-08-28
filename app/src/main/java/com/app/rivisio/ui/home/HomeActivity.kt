@@ -138,8 +138,7 @@ class HomeActivity : BaseActivity() {
 
         // Set up click listener for Not Now button
         notNowButton.setOnClickListener {
-            // Dismiss the BottomSheetDialog
-            dialog.dismiss()
+            startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
         }
 
         // Set up click listener for Rate Now button
