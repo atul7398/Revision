@@ -4,12 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.rivisio.data.repository.Repository
+import com.app.rivisio.ui.add_notes.TextNote
+import com.app.rivisio.ui.add_topic.TOPIC_NAME
+import com.app.rivisio.ui.add_topic.Tag
+import com.app.rivisio.ui.add_topic.Topic
 import com.app.rivisio.ui.base.BaseViewModel
+import com.app.rivisio.utils.CommonUtils
 import com.app.rivisio.utils.NetworkHelper
 import com.app.rivisio.utils.NetworkResult
+import com.app.rivisio.utils.stringifyJsonNote
 import com.google.gson.JsonElement
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +41,14 @@ class HomeViewModel @Inject constructor(
     val userStats: LiveData<NetworkResult<JsonElement>>
         get() = _userStats
 
+    private val _dailyVocab = MutableLiveData<NetworkResult<JsonElement>>()
+    val dailyVocab: LiveData<NetworkResult<JsonElement>>
+        get() = _dailyVocab
+
+    private val _saveVocab = MutableLiveData<NetworkResult<JsonElement>>()
+    val saveVocab: LiveData<NetworkResult<JsonElement>>
+        get() = _saveVocab
+
     fun getUserDetails() {
         viewModelScope.launch {
             _userName.value = repository.getName()
@@ -43,14 +58,12 @@ class HomeViewModel @Inject constructor(
     fun getTopicsData() {
         viewModelScope.launch {
             _topics.value = NetworkResult.Loading
-
             val response = handleApi {
                 repository.getTopicsData(
                     repository.getAccessToken()!!,
                     repository.getUserId()
                 )
             }
-
             _topics.value = response
         }
     }
@@ -72,13 +85,12 @@ class HomeViewModel @Inject constructor(
         }
 
     }
-
     fun getUserStats() {
         viewModelScope.launch {
             viewModelScope.launch {
 
                 _userStats.value = NetworkResult.Loading
-
+                Timber.d("ATUL",repository.getAccessToken())
                 val response = handleApi {
                     repository.getUserStats(
                         repository.getAccessToken()!!,
@@ -89,6 +101,53 @@ class HomeViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun getDailyVocab() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+
+                _dailyVocab.value = NetworkResult.Loading
+
+                val response = handleApi {
+                    repository.getDailyVocab(
+                        repository.getAccessToken()!!,
+                        repository.getUserId()
+                    )
+                }
+                _dailyVocab.value = response
+            }
+        }
+    }
+
+    fun saveWordAsTopic(word: String, meaning: String) {
+        viewModelScope.launch {
+            viewModelScope.launch {
+                _saveVocab.value = NetworkResult.Loading
+                val topic = createTopicData(word,meaning)
+                val response = handleApi {
+                    repository.addTopic(
+                        repository.getAccessToken()!!,
+                        repository.getUserId(),
+                        topic
+                    )
+                }
+                _saveVocab.value = response
+            }
+        }
+    }
+
+    private fun createTopicData(word: String, meaning: String): Topic {
+        val textNote= TextNote(word,meaning).stringifyJsonNote()
+        val studiedOnDate = CommonUtils.getStudiedOnDateString()
+        val tag:ArrayList<Int> = arrayListOf(2)
+        return Topic(
+            ArrayList<String>(),
+            "Word : $word",
+            textNote,
+            studiedOnDate,
+            tag
+        )
     }
 
 }

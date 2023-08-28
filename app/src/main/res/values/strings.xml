@@ -13,4 +13,10 @@
     <string name="select_image">Select Images</string>
     <string name="finding_revu_useful">Finding Revu Useful?</string>
     <string name="give_us_5_stars_to_encourage_us">Give us 5 stars to encourage us.</string>
+    <string name="vocab_sub_title">Learn a different set of word everyday !</string>
+    <string name="vocab_title">Build Your Vocabulary</string>
+    <string name="learn_now">Learn Now</string>
+    <string name="good_morning_text">Good morning</string>
+    <string name="save_as_topic">Save as Topic</string>
+    <string name="memorize_text">Want to memorize this permanently?</string>
 </resources>

@@ -212,5 +212,6 @@ class Repository constructor(
     ) = apiHelper.saveSubscription(purchase)
 
     suspend fun deleteTopic(topicId: Int, token: String?, userId: Int) = apiHelper.deleteTopic(topicId, token, userId)
+   suspend fun getDailyVocab(token: String, userId: Int) = apiHelper.getDailyVocab(token,userId)
 
 }

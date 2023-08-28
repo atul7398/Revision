@@ -21,72 +21,73 @@ interface ApiHelper {
         userId: RequestBody,
         token: RequestBody,
         file: MultipartBody.Part,
-        fileName: RequestBody
+        fileName: RequestBody,
     ): Response<JsonElement>
 
     suspend fun addTopic(
         token: String?,
         userId: Int,
-        topic: Topic
+        topic: Topic,
     ): Response<JsonElement>
 
     suspend fun getTopics(
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun getTopicsData(
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun getTopicDetails(
         topicId: Int,
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun editTopicDetails(
         topicId: Int,
         token: String?,
         userId: Int,
-        topicFromServer: TopicFromServer
+        topicFromServer: TopicFromServer,
     ): Response<JsonElement>
 
     suspend fun getAllTopics(
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun reviseTopic(
         topicId: Int,
-        body: Map<String, String>
+        body: Map<String, String>,
     ): Response<JsonElement>
 
     suspend fun getUser(
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun getUserStats(
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun limitcheck(
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun getTopicByDate(
         date: String,
         token: String?,
-        userId: Int
+        userId: Int,
     ): Response<JsonElement>
 
     suspend fun saveSubscription(
-        purchase: Purchase
+        purchase: Purchase,
     ): Response<JsonElement>
 
-    suspend fun deleteTopic(topicId: Int,token: String?, userId: Int): Response<JsonElement>
+    suspend fun deleteTopic(topicId: Int, token: String?, userId: Int): Response<JsonElement>
+    suspend fun getDailyVocab(token: String, userId: Int): Response<JsonElement>
 }

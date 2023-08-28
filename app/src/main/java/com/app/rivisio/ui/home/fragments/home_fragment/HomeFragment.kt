@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -52,7 +52,7 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -78,8 +78,8 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             showHowToBottomSheet()
         }
 
-        binding.dailyVocab.setOnClickListener {
-            showVocab()
+        binding.learnNow.setOnClickListener {
+            homeViewModel.getDailyVocab()
         }
 
 
@@ -271,6 +271,65 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             }
         })
 
+
+        homeViewModel.dailyVocab.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    showVocabBottomSheet(it.data)
+                }
+
+                is NetworkResult.Loading -> {
+                    hideLoading()
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
+
+        homeViewModel.saveVocab.observe(this, Observer {
+            when (it) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                    showMessage("Topic Created successfully.")
+                    homeViewModel.getTopicsData()
+                }
+
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(it.message)
+                }
+
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(it.e.message)
+                }
+
+                else -> {
+                    hideLoading()
+                    Timber.e(it.toString())
+                }
+            }
+        })
+
         homeViewModel.getTopicsData()
     }
 
@@ -423,18 +482,39 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 //        webView.makeVisible()
 //    }
 
-    private fun showVocab() {
-        val vocabView = layoutInflater.inflate(R.layout.vocab, null)
+    private fun showVocabBottomSheet(data: JsonElement) {
+        try {
+            val vocabView = layoutInflater.inflate(R.layout.vocab_bottom_sheet_layout, null)
+            val word: String = data.asJsonObject["word"].asString
+            val meaning: String = data.asJsonObject["meaning"].asString
 
-        val dialog = BottomSheetDialog(requireContext())
-        dialog.setContentView(vocabView)
-        dialog.setCancelable(true)
-        dialog.show()
+            vocabView.findViewById<AppCompatTextView>(R.id.vocab_word).text = word
+            vocabView.findViewById<AppCompatTextView>(R.id.vocab_word_desc).text = meaning
 
+            val dialog = BottomSheetDialog(requireContext())
+            dialog.setContentView(vocabView)
+            dialog.setCancelable(true)
+
+            vocabView.findViewById<AppCompatImageView>(R.id.shuffle).setOnClickListener {
+                dialog.dismiss()
+                homeViewModel.getDailyVocab()
+            }
+
+            vocabView.findViewById<AppCompatButton>(R.id.save_vocab).setOnClickListener {
+                dialog.dismiss()
+                homeViewModel.saveWordAsTopic(word, meaning)
+            }
+
+            dialog.show()
+        } catch (e: Exception) {
+            Timber.e("Json parsing issue: ")
+            Timber.e(e)
+            showError("Something went wrong")
+        }
     }
+
     private fun showHowToBottomSheet() {
         val howToView = layoutInflater.inflate(R.layout.how_to_dialog_layout, null)
-
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(howToView)
         dialog.setCancelable(true)
@@ -470,7 +550,6 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
         webView.makeVisible()
     }
-
 
 
 }

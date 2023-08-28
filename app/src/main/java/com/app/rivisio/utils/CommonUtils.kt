@@ -6,7 +6,10 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import com.app.rivisio.R
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -91,5 +94,12 @@ object CommonUtils {
         }
     }
 
+    fun getStudiedOnDateString(): String {
+        val inputFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault(Locale.Category.FORMAT))
+        val currentDate = inputFormatter.parse(inputFormatter.format(Date()))
+        val outputFormatter =
+            SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault(Locale.Category.FORMAT))
+        return currentDate?.let { outputFormatter.format(it) }.toString()
+    }
 
 }

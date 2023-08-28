@@ -17,4 +17,5 @@
     <color name="hint_color">#A6A6B2</color>
     <color name="red">#E82C59</color>
     <color name="subtext_color">#616075</color>
+    <color name="vocab_rectangle_stroke_color">#EAEAEA</color>
 </resources>

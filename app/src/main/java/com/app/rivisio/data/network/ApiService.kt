@@ -121,5 +121,10 @@ interface ApiService {
         @Query(TOKEN) token: String?,
         @Query(USER_ID) userId: Int
     ): Response<JsonElement>
+    @GET("/users/getword")
+   suspend fun getDailyVocab(
+        @Query(TOKEN) token: String?,
+        @Query(CUST_ID) userId: Int
+    ): Response<JsonElement>
 
 }
