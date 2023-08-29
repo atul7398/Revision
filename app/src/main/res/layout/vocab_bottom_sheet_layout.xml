@@ -33,45 +33,33 @@
         app:srcCompat="@drawable/drag_handle" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/daily_vocab_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/poppins_semi_bold"
-        android:text="@string/vocab_title"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/vocab_word"
-        app:layout_constraintEnd_toStartOf="@+id/shuffle"
-        app:layout_constraintStart_toStartOf="@id/start_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/drag_img" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/shuffle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/daily_vocab_title"
-        app:layout_constraintTop_toBottomOf="@+id/drag_img"
-        app:srcCompat="@drawable/ic_shuffle" />
-
-    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/vocab_word"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/poppins_semi_bold"
         android:lineSpacingExtra="-6sp"
         android:textColor="#21203E"
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@+id/vocab_word_desc"
+        app:layout_constraintEnd_toStartOf="@+id/shuffle"
         app:layout_constraintStart_toStartOf="@id/start_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/daily_vocab_title"
+        app:layout_constraintTop_toBottomOf="@+id/drag_img"
         tools:text="brouhaha" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/shuffle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="15dp"
+        android:background="?selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vocab_word"
+        app:layout_constraintBottom_toBottomOf="@+id/vocab_word"
+        app:layout_constraintStart_toEndOf="@+id/vocab_word"
+        app:layout_constraintTop_toBottomOf="@+id/drag_img"
+        app:srcCompat="@drawable/ic_shuffle" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/vocab_word_desc"
@@ -93,7 +81,7 @@
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:src="@drawable/horizontal_dash_line"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintBottom_toTopOf="@+id/memorize_text"
         app:layout_constraintEnd_toEndOf="@id/end_guideline"
         app:layout_constraintStart_toStartOf="@id/start_guideline"
@@ -104,7 +92,7 @@
         android:id="@+id/memorize_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
+        android:layout_marginTop="15dp"
         android:fontFamily="@font/poppins_regular"
         android:lineSpacingExtra="-3sp"
         android:textColor="@color/ef_grey"
@@ -116,12 +104,11 @@
         app:layout_constraintTop_toBottomOf="@+id/divider"
     />
 
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/save_vocab"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
+        android:layout_marginVertical="10dp"
         android:background="@drawable/button_bg"
         android:fontFamily="@font/poppins_medium"
         android:lineSpacingExtra="0sp"
