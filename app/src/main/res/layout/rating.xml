@@ -23,10 +23,18 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="353dp"
+        android:layout_height="87dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/five_star" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/give_us_5_stars_to_encourage_us"
+        android:text="@string/could_you_take_a_moment_to_rate_us"
+        android:layout_marginTop="12dp"
         android:textSize="14sp"
         android:layout_marginBottom="16dp" />
 
@@ -38,7 +46,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/notNowButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Not Now"
             android:layout_marginEnd="16dp"
             android:background="@drawable/button_white_bg"
@@ -50,7 +58,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/rateNowButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Rate Now"
             android:background="@drawable/button_bg"
             android:fontFamily="@font/poppins_medium"
