@@ -101,7 +101,6 @@ class HomeActivity : BaseActivity() {
                     } else {
                         startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
                     }
-
                 }
 
                 is NetworkResult.Loading -> {

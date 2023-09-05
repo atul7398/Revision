@@ -45,6 +45,10 @@ class HomeViewModel @Inject constructor(
     val dailyVocab: LiveData<NetworkResult<JsonElement>>
         get() = _dailyVocab
 
+    private val _topicVocab = MutableLiveData<NetworkResult<JsonElement>>()
+    val topicVocab: LiveData<NetworkResult<JsonElement>>
+        get() = _topicVocab
+
     private val _saveVocab = MutableLiveData<NetworkResult<JsonElement>>()
     val saveVocab: LiveData<NetworkResult<JsonElement>>
         get() = _saveVocab
@@ -103,6 +107,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
     fun getDailyVocab() {
         viewModelScope.launch {
             viewModelScope.launch {
@@ -116,6 +121,23 @@ class HomeViewModel @Inject constructor(
                     )
                 }
                 _dailyVocab.value = response
+            }
+        }
+    }
+
+    fun getTopicVocab() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+
+                _topicVocab.value = NetworkResult.Loading
+                val response = handleApi {
+                    repository.getUserStats(
+                        repository.getAccessToken()!!,
+                        repository.getUserId()
+                    )
+                }
+                _topicVocab.value = response
+
             }
         }
     }

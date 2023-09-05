@@ -39,6 +39,7 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     private val homeViewModel: HomeViewModel by viewModels()
 
     private var topicsAdapter = TopicsAdapter()
+    private var totalCount: Int = 0
 
     private val binding
         get() = _binding!!
@@ -487,6 +488,7 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             val vocabView = layoutInflater.inflate(R.layout.vocab_bottom_sheet_layout, null)
             val word: String = data.asJsonObject["word"].asString
             val meaning: String = data.asJsonObject["meaning"].asString
+            // Fetch totalCount from userStats LiveData if it's a NetworkResult<JsonElement>
 
             vocabView.findViewById<AppCompatTextView>(R.id.vocab_word).text = word
             vocabView.findViewById<AppCompatTextView>(R.id.vocab_word_desc).text = meaning
@@ -501,9 +503,35 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             }
 
             vocabView.findViewById<AppCompatButton>(R.id.save_vocab).setOnClickListener {
-                dialog.dismiss()
-                homeViewModel.saveWordAsTopic(word, meaning)
+                Timber.d("Button Clicked")
+                homeViewModel.getTopicVocab()
             }
+            homeViewModel.topicVocab.observe(this, Observer { result ->
+                Timber.d("Inside homeViewModel.userStats.observe(this, Observer { result ->")
+                when (result) {
+                    is NetworkResult.Success -> {
+                        hideLoading()
+                        totalCount = result.data.asJsonObject["totalCount"].asInt
+                        Timber.d("totalCount: $totalCount")
+
+                        if (totalCount < 19) {
+                            dialog.dismiss()
+                            homeViewModel.saveWordAsTopic(word, meaning)
+                        } else {
+//                            val isActivePlan = result.data.asJsonObject["isActive"].asBoolean
+                            val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
+                            if (isActivePlan) {
+                                homeViewModel.saveWordAsTopic(word, meaning)
+                            } else {
+                                startActivity(SubscribeActivity.getStartIntent(requireContext()))
+                            }
+                        }
+                        dialog.dismiss()
+                    }
+                    else -> {
+                        Timber.e(result.toString())
+                    }
+                }})
 
             dialog.show()
         } catch (e: Exception) {
@@ -525,30 +553,26 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
         // Create a sample HTML content to be displayed
         val sampleHtml = ("<html><body>"
-                + "<h1><strong>How Does It Work?</strong></h1>"
-                + "<ol>"
-                + "<li><strong>How do we help you remember things forever?</strong></li>"
-                + "</ol>"
-                + "<p>Our algorithm follows Spaced Repetition method for creating revision cycles, that are scientifically proven for maximum retention.</p>"
-                + "<ol>"
+                + "<h1 style=\"font-weight: bold; font-size: 28px;\">How Does It Work?</h1>"
+                + "<p style=\"font-weight: bold; font-size: 18px;\">1. How do we help you remember things forever?</p>"
+                + "<p style=\"font-size: 18px;\">Our algorithm follows Spaced Repetition method for creating revision cycles, that are scientifically proven for maximum retention.</p>"
+                + "<ul style=\"font-size: 18px; list-style-type: disc;\">"
                 + "<li>Day 0 – You Read a Topic</li>"
                 + "<li>Day 1 – Revision 1</li>"
                 + "<li>Day 7 – Revision 2</li>"
                 + "<li>Day 30 – Revision 3</li>"
                 + "<li>Day 90 – Revision 4</li>"
-                + "</ol>"
-                + "<p>You read a topic on a day, and you revise it the next day, the 7th day, 30th day, and 90th day. This stores the information in your permanent memory for long-term retention.</p>"
-                + "<h2><strong>What is Forgetting Curve?</strong></h2>"
-                + "<ol>"
-                + "<li><strong>According to Ebbinghaus Forgetting Curve, we remember:</strong></li>"
-                + "</ol>"
-                + "<ul>"
+                + "</ul>"
+                + "<p style=\"font-size: 18px;\">You read a topic on a day, and you revise it the next day, the 7th day, 30th day, and 90th day. This stores the information in your permanent memory for long-term retention.</p>"
+                + "<p style=\"font-weight: bold; font-size: 18px;\">2. What is Forgetting Curve?</p>"
+                + "<p style=\"font-size: 18px;\">According to Ebbinghaus Forgetting Curve, we remember:</p>"
+                + "<ul style=\"font-size: 18px; list-style-type: disc;\">"
                 + "<li>100% of what we learn immediately after we study it</li>"
                 + "<li>33% after 1 Day</li>"
                 + "<li>25% after 1 Week</li>"
                 + "</ul>"
-                + "<p>Hence, our retention falls steeply with elapsed time.</p>"
-                + "<p>Spaced Repetition method flattens the forgetting curve and hence enables us to retain the information long-term.</p>"
+                + "<p style=\"font-size: 18px;color: red;\">Hence, our retention falls steeply with elapsed time.</p>"
+                + "<p style=\"font-size: 18px;\">Spaced Repetition method flattens the forgetting curve and hence enables us to retain the information long-term.</p>"
                 + "</body></html>")
 
         // Load the sample HTML content into the WebView

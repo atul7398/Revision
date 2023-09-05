@@ -43,7 +43,6 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
     private lateinit var topicFromServer: TopicFromServer
     private var deleteTopicPosition = -1
 
-
     private val binding
         get() = _binding!!
 
