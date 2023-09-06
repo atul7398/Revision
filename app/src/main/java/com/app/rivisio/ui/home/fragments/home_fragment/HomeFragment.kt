@@ -507,7 +507,6 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                 homeViewModel.getTopicVocab()
             }
             homeViewModel.topicVocab.observe(this, Observer { result ->
-                Timber.d("Inside homeViewModel.userStats.observe(this, Observer { result ->")
                 when (result) {
                     is NetworkResult.Success -> {
                         hideLoading()
@@ -518,7 +517,6 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                             dialog.dismiss()
                             homeViewModel.saveWordAsTopic(word, meaning)
                         } else {
-//                            val isActivePlan = result.data.asJsonObject["isActive"].asBoolean
                             val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
                             if (isActivePlan) {
                                 homeViewModel.saveWordAsTopic(word, meaning)
