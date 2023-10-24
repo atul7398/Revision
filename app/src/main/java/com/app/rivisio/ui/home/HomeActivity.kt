@@ -91,15 +91,25 @@ class HomeActivity : BaseActivity() {
             when (result) {
                 is NetworkResult.Success -> {
                     hideLoading()
-                    totalTopicsCreated = result.data.asJsonObject["totalCount"].asInt
+                    val data = result.data
+                    val totalTopicsCreated = data.asJsonObject["totalCount"].asInt
+                    val limitStats = data.asJsonObject["limitStats"].asJsonObject
+                    val topicLimit = limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
 
                     if (totalTopicsCreated == 3 || totalTopicsCreated == 12) {
                         showRating()
                     }
-                    else if (totalTopicsCreated > 19) {
-                        startActivity(Intent(this@HomeActivity, SubscribeActivity::class.java))
-                    } else {
+                    else if (totalTopicsCreated < 19) {
                         startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
+                    } else {
+                        val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
+                        if (isActivePlan) {
+                            startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
+                        } else if (totalTopicsCreated < topicLimit) {
+                            startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
+                        } else {
+                            startActivity(Intent(this@HomeActivity, SubscribeActivity::class.java))
+                        }
                     }
                 }
 
@@ -125,7 +135,7 @@ class HomeActivity : BaseActivity() {
 //        dialog.show()
 //    }
 
-    private fun showRating() {
+        private fun showRating() {
         val customView = layoutInflater.inflate(R.layout.rating, null)
 
         val notNowButton = customView.findViewById<AppCompatButton>(R.id.notNowButton)

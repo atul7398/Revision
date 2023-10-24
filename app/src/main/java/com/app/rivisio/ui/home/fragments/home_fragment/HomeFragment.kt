@@ -39,7 +39,6 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
     private val homeViewModel: HomeViewModel by viewModels()
 
     private var topicsAdapter = TopicsAdapter()
-    private var totalCount: Int = 0
 
     private val binding
         get() = _binding!!
@@ -510,8 +509,11 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                 when (result) {
                     is NetworkResult.Success -> {
                         hideLoading()
-                        totalCount = result.data.asJsonObject["totalCount"].asInt
-                        Timber.d("totalCount: $totalCount")
+
+                        val data = result.data
+                        val totalCount = data.asJsonObject["totalCount"].asInt
+                        val limitStats = data.asJsonObject["limitStats"].asJsonObject
+                        val topicLimit = limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
 
                         if (totalCount < 19) {
                             dialog.dismiss()
@@ -519,6 +521,8 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
                         } else {
                             val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
                             if (isActivePlan) {
+                                homeViewModel.saveWordAsTopic(word, meaning)
+                            } else if (totalCount < topicLimit) {
                                 homeViewModel.saveWordAsTopic(word, meaning)
                             } else {
                                 startActivity(SubscribeActivity.getStartIntent(requireContext()))

@@ -267,7 +267,7 @@ class TopicsFragment : BaseFragment(), TopicsAdapterNew.Callback {
         binding.subscribe.makeGone()
         binding.totalTopicsCount.makeVisible()
         val topicLimit =
-            limitStats.asJsonObject["currentLimit"].asInt
+            limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
         binding.totalTopicsCount.text =
             getString(R.string.total_free_topic_text).format(
                 totalCount,
