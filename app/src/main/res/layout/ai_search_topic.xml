@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    tools:context=".ui.home.ai_search_topic">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/infoButton"-->
+    <!--        android:layout_width="30dp"-->
+    <!--        android:layout_height="30dp"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:background="?android:attr/selectableItemBackground"-->
+    <!--        android:src="@drawable/information_vector_icon"-->
+    <!--        android:scaleType="fitCenter" />-->
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/searchBox"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/edit_text_bg_dark_blue"
+            android:hint="Type your topic here. eg. Ionic bonds"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/subtext_color"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@id/searchBox"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:text="Newton's Second Law of Motion"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView1"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit facilisis dolor eget bibendum. Nullam suscipit massa faucibus, vehicula dolor vitae, rhoncus erat. Morbi sit amet semper nibh, id venenatis tortor. "
+            android:textColor="@color/gray_text"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/textView2"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/complete_sign_up"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_bg"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Save as a topic"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/notNowButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Newton's third law"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/button_white_bg"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textAllCaps="false"
+                    android:textColor="@color/primary_500"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/rateNowButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Law of momentum"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/button_white_bg"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textAllCaps="false"
+                    android:textColor="@color/primary_500"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
