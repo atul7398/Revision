@@ -1,6 +1,7 @@
 package com.app.rivisio.ui.home.fragments.home_fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -81,6 +83,33 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
         binding.learnNow.setOnClickListener {
             homeViewModel.getDailyVocab()
         }
+
+        homeViewModel.saveVocab.observe(this, Observer { result ->
+            when (result) {
+                is NetworkResult.Success -> {
+                    hideLoading()
+                }
+                is NetworkResult.Loading -> {
+                    showLoading()
+                }
+
+                is NetworkResult.Error -> {
+                    hideLoading()
+                    showError(result.message)
+                    if (result.code == 1021){
+                        startActivity(SubscribeActivity.getStartIntent(requireContext()))
+                    }
+                }
+                is NetworkResult.Exception -> {
+                    hideLoading()
+                    showError(result.e.message)
+                }
+                else -> {
+                    hideLoading()
+                    Timber.e(result.toString())
+                }
+            }
+        })
 
 
         homeViewModel.userStats.observe(this, Observer {
@@ -487,6 +516,7 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             val vocabView = layoutInflater.inflate(R.layout.vocab_bottom_sheet_layout, null)
             val word: String = data.asJsonObject["word"].asString
             val meaning: String = data.asJsonObject["meaning"].asString
+            // Fetch totalCount from userStats LiveData if it's a NetworkResult<JsonElement>
 
             vocabView.findViewById<AppCompatTextView>(R.id.vocab_word).text = word
             vocabView.findViewById<AppCompatTextView>(R.id.vocab_word_desc).text = meaning
@@ -501,9 +531,40 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             }
 
             vocabView.findViewById<AppCompatButton>(R.id.save_vocab).setOnClickListener {
-                dialog.dismiss()
+                Timber.d("Button Clicked")
+//                homeViewModel.getTopicVocab()
                 homeViewModel.saveWordAsTopic(word, meaning)
             }
+//            homeViewModel.topicVocab.observe(this, Observer { result ->
+//                when (result) {
+//                    is NetworkResult.Success -> {
+//                        hideLoading()
+//
+//                        val data = result.data
+//                        val totalCount = data.asJsonObject["totalCount"].asInt
+//                        val limitStats = data.asJsonObject["limitStats"].asJsonObject
+//                        val topicLimit = limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
+//
+//                        if (totalCount < limitStats.asJsonObject["currentLimit"].asInt) {
+//                            dialog.dismiss()
+//                            homeViewModel.saveWordAsTopic(word, meaning)
+//                        }
+//                        else {
+//                            val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
+//                            if (isActivePlan) {
+//                                homeViewModel.saveWordAsTopic(word, meaning)
+//                            } else if (totalCount < topicLimit) {
+//                                homeViewModel.saveWordAsTopic(word, meaning)
+//                            } else {
+//                                startActivity(SubscribeActivity.getStartIntent(requireContext()))
+//                            }
+//                        }
+//                        dialog.dismiss()
+//                    }
+//                    else -> {
+//                        Timber.e(result.toString())
+//                    }
+//                }})
 
             dialog.show()
         } catch (e: Exception) {
@@ -512,6 +573,8 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
             showError("Something went wrong")
         }
     }
+
+
 
     private fun showHowToBottomSheet() {
         val howToView = layoutInflater.inflate(R.layout.how_to_dialog_layout, null)
@@ -525,24 +588,26 @@ class HomeFragment : BaseFragment(), TopicsAdapter.Callback {
 
         // Create a sample HTML content to be displayed
         val sampleHtml = ("<html><body>"
-                + "<h1>How Does It Work?</h1>"
-                + "<p>How do we help you remember things forever?</p>"
-                + "<p>Our algorithm follows Spaced Repetition method for creating revision cycles, that are scientifically proven for maximum retention.</p>"
-                + "<p>Day 0 You Read a Topic</p>"
-                + "<p>Next Day Revision 1</p>"
-                + "<p>Day 7 Revision 2</p>"
-                + "<p>Day 30 Revision 3</p>"
-                + "<p>Day 90 Revision 4</p>"
-                + "<p>You read a topic on a day, and you revise it the next day, the 7th day, 30th day and 90th day. This stores the information in your permanent memory. Now, it would stay in your memory for long-term.</p>"
-                + "<h2>What is Forgetting Curve?</h2>"
-                + "<p>According to Ebbinghaus Forgetting Curve, we remember:</p>"
-                + "<ul>"
+                + "<h1 style=\"font-weight: bold; font-size: 28px;\">How Does It Work?</h1>"
+                + "<p style=\"font-weight: bold; font-size: 18px;\">1. How do we help you remember things forever?</p>"
+                + "<p style=\"font-size: 18px;\">Our algorithm follows Spaced Repetition method for creating revision cycles, that are scientifically proven for maximum retention.</p>"
+                + "<ul style=\"font-size: 18px; list-style-type: disc;\">"
+                + "<li>Day 0 – You Read a Topic</li>"
+                + "<li>Day 1 – Revision 1</li>"
+                + "<li>Day 7 – Revision 2</li>"
+                + "<li>Day 30 – Revision 3</li>"
+                + "<li>Day 90 – Revision 4</li>"
+                + "</ul>"
+                + "<p style=\"font-size: 18px;\">You read a topic on a day, and you revise it the next day, the 7th day, 30th day, and 90th day. This stores the information in your permanent memory for long-term retention.</p>"
+                + "<p style=\"font-weight: bold; font-size: 18px;\">2. What is Forgetting Curve?</p>"
+                + "<p style=\"font-size: 18px;\">According to Ebbinghaus Forgetting Curve, we remember:</p>"
+                + "<ul style=\"font-size: 18px; list-style-type: disc;\">"
                 + "<li>100% of what we learn immediately after we study it</li>"
                 + "<li>33% after 1 Day</li>"
                 + "<li>25% after 1 Week</li>"
                 + "</ul>"
-                + "<p>Hence, our retention falls steeply with elapsed time.</p>"
-                + "<p>Spaced Repetition method flattens the forgetting curve and hence enables us to retain the information long-term.</p>"
+                + "<p style=\"font-size: 18px;color: red;\">Hence, our retention falls steeply with elapsed time.</p>"
+                + "<p style=\"font-size: 18px;\">Spaced Repetition method flattens the forgetting curve and hence enables us to retain the information long-term.</p>"
                 + "</body></html>")
 
         // Load the sample HTML content into the WebView
