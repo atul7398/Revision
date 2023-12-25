@@ -99,7 +99,7 @@ class HomeActivity : BaseActivity() {
                     if (totalTopicsCreated == 3 || totalTopicsCreated == 12) {
                         showRating()
                     }
-                    else if (totalTopicsCreated < 19) {
+                    else if (totalTopicsCreated < limitStats.asJsonObject["currentLimit"].asInt) {
                         startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
                     } else {
                         val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
