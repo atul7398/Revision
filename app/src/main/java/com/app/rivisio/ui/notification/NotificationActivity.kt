@@ -1,12 +1,15 @@
 package com.app.rivisio.ui.notification
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.app.rivisio.databinding.ActivityNotificationBinding
 import com.app.rivisio.reminder.RemindersManager
@@ -102,11 +105,10 @@ class NotificationActivity : BaseActivity() {
     private fun getPermissions() {
         if (Build.VERSION.SDK_INT >= 31) {
 
-            var permissionsArray = arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM)
+            var permissionsArray = emptyArray<String>()
 
-            if (Build.VERSION.SDK_INT >= 33) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 permissionsArray = arrayOf(
-                    Manifest.permission.SCHEDULE_EXACT_ALARM,
                     Manifest.permission.POST_NOTIFICATIONS
                 )
             }
@@ -114,13 +116,11 @@ class NotificationActivity : BaseActivity() {
             if (!hasPermissions(permissionsArray))
                 requestPermissionsSafely(permissionsArray, PERMISSION_REQUEST_CODE)
             else
-                remindersManager.startReminder(applicationContext)
+                startReminder()
 
         } else {
-            remindersManager.startReminder(applicationContext)
+            startReminder()
         }
-
-
     }
 
     override fun onRequestPermissionsResult(
@@ -143,7 +143,7 @@ class NotificationActivity : BaseActivity() {
                     }
                     if (allPermissionsGranted) {
                         showMessage("Permissions granted")
-                        remindersManager.startReminder(applicationContext)
+                        startReminder()
                     } else
                         showError("Permissions not granted, some features will not work")
 
@@ -156,6 +156,23 @@ class NotificationActivity : BaseActivity() {
             else -> {
                 // Ignore all other requests.
             }
+        }
+    }
+
+    private fun startReminder() {
+        val manager = ContextCompat.getSystemService(this, AlarmManager::class.java)
+
+        if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                manager?.canScheduleExactAlarms() == false
+            } else {
+                false
+            }) {
+            Intent().also {
+                it.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                startActivity(it)
+            }
+        } else {
+            remindersManager.startReminder(applicationContext)
         }
     }
 }

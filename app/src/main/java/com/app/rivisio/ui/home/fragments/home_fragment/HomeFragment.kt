@@ -87,7 +87,9 @@
             homeViewModel.saveVocab.observe(this, Observer { result ->
                 when (result) {
                     is NetworkResult.Success -> {
+                        showMessage("Topic Created successfully.")
                         hideLoading()
+                        homeViewModel.getTopicsData()
                     }
                     is NetworkResult.Loading -> {
                         showLoading()
@@ -329,36 +331,7 @@
                     }
                 }
             })
-    
-            homeViewModel.saveVocab.observe(this, Observer {
-                when (it) {
-                    is NetworkResult.Success -> {
-                        hideLoading()
-                        showMessage("Topic Created successfully.")
-                        homeViewModel.getTopicsData()
-                    }
-    
-                    is NetworkResult.Loading -> {
-                        showLoading()
-                    }
-    
-                    is NetworkResult.Error -> {
-                        hideLoading()
-                        showError(it.message)
-                    }
-    
-                    is NetworkResult.Exception -> {
-                        hideLoading()
-                        showError(it.e.message)
-                    }
-    
-                    else -> {
-                        hideLoading()
-                        Timber.e(it.toString())
-                    }
-                }
-            })
-    
+
             homeViewModel.getTopicsData()
         }
     
@@ -484,33 +457,7 @@
     
             dialog = dialogBuilder.show()
         }
-    
-    //    private fun showHowToBottomSheet() {
-    //        val howToView = layoutInflater.inflate(R.layout.how_to_dialog_layout, null)
-    //
-    //        val dialog = BottomSheetDialog(requireContext())
-    //        dialog.setContentView(howToView)
-    //        dialog.setCancelable(true)
-    //        dialog.show()
-    //
-    //        // Find the WebView component in the inflated layout
-    //        val webView = howToView.findViewById<WebView>(R.id.how_to_layout)
-    //
-    //        // Set WebViewClient to handle page loading
-    //        webView.webViewClient = WebViewClient()
-    //
-    //        // Enable JavaScript and other settings
-    //        webView.settings.javaScriptEnabled = true
-    //        webView.settings.domStorageEnabled = true
-    //        webView.settings.builtInZoomControls = true
-    //        webView.settings.useWideViewPort = true
-    //        webView.settings.loadWithOverviewMode = true
-    //
-    //        webView.loadUrl("https://snapdragon-consonant-027.notion.site/FAQs-Revu-879b2cc69b3b45dd9e16158c7ca11e83?pvs=4")
-    //
-    //        webView.makeVisible()
-    //    }
-    
+
         private fun showVocabBottomSheet(data: JsonElement) {
             try {
                 val vocabView = layoutInflater.inflate(R.layout.vocab_bottom_sheet_layout, null)
@@ -531,41 +478,9 @@
                 }
     
                 vocabView.findViewById<AppCompatButton>(R.id.save_vocab).setOnClickListener {
-                    Timber.d("Button Clicked")
-    //                homeViewModel.getTopicVocab()
+                    dialog.dismiss()
                     homeViewModel.saveWordAsTopic(word, meaning)
                 }
-    //            homeViewModel.topicVocab.observe(this, Observer { result ->
-    //                when (result) {
-    //                    is NetworkResult.Success -> {
-    //                        hideLoading()
-    //
-    //                        val data = result.data
-    //                        val totalCount = data.asJsonObject["totalCount"].asInt
-    //                        val limitStats = data.asJsonObject["limitStats"].asJsonObject
-    //                        val topicLimit = limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
-    //
-    //                        if (totalCount < limitStats.asJsonObject["currentLimit"].asInt) {
-    //                            dialog.dismiss()
-    //                            homeViewModel.saveWordAsTopic(word, meaning)
-    //                        }
-    //                        else {
-    //                            val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
-    //                            if (isActivePlan) {
-    //                                homeViewModel.saveWordAsTopic(word, meaning)
-    //                            } else if (totalCount < topicLimit) {
-    //                                homeViewModel.saveWordAsTopic(word, meaning)
-    //                            } else {
-    //                                startActivity(SubscribeActivity.getStartIntent(requireContext()))
-    //                            }
-    //                        }
-    //                        dialog.dismiss()
-    //                    }
-    //                    else -> {
-    //                        Timber.e(result.toString())
-    //                    }
-    //                }})
-    
                 dialog.show()
             } catch (e: Exception) {
                 Timber.e("Json parsing issue: ")

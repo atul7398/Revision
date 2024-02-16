@@ -21,8 +21,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // buildConfigField 'String', 'BASE_URL', "\"http://65.1.86.178:8080/\""
-        buildConfigField 'String', 'BASE_URL', "\"https://revu.co.in/\""
+         buildConfigField 'String', 'BASE_URL', "\"http://65.1.86.178:8080/\""
+       // buildConfigField 'String', 'BASE_URL', "\"https://revu.co.in/\""
 
     }
 

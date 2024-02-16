@@ -1,6 +1,7 @@
 package com.app.rivisio.ui.home
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.content.Context
@@ -9,8 +10,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -94,22 +97,42 @@ class HomeActivity : BaseActivity() {
                     val data = result.data
                     val totalTopicsCreated = data.asJsonObject["totalCount"].asInt
                     val limitStats = data.asJsonObject["limitStats"].asJsonObject
-                    val topicLimit = limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
+
+                    val subscriptionStats = if (!data.asJsonObject["subscriptionStats"].isJsonNull) {
+                        data.asJsonObject["subscriptionStats"].asJsonObject
+                    } else {
+                        null
+                    }
+
+                    val topicLimit =
+                        limitStats.asJsonObject["currentLimit"].asInt + limitStats.asJsonObject["addtionalTopics"].asInt
 
                     if (totalTopicsCreated == 3 || totalTopicsCreated == 12) {
                         showRating()
-                    }
-                    else if (totalTopicsCreated < limitStats.asJsonObject["currentLimit"].asInt) {
+                    } else if (totalTopicsCreated < topicLimit) {
                         startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
                     } else {
-                        val isActivePlan = data.asJsonObject["isActive"]?.asBoolean ?: false
-                        if (isActivePlan) {
-                            startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
-                        } else if (totalTopicsCreated < topicLimit) {
-                            startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
+
+                        if (subscriptionStats != null) {
+                            val isActivePlan = subscriptionStats["isActive"]?.asBoolean ?: false
+                            if (isActivePlan) {
+                                startActivity(AddTopicActivity.getStartIntent(this@HomeActivity))
+
+                            } else {
+                                startActivity(
+                                    Intent(
+                                        this@HomeActivity,
+                                        SubscribeActivity::class.java
+                                    )
+                                )
+                            }
+
                         } else {
                             startActivity(Intent(this@HomeActivity, SubscribeActivity::class.java))
+
                         }
+
+
                     }
                 }
 
@@ -135,7 +158,7 @@ class HomeActivity : BaseActivity() {
 //        dialog.show()
 //    }
 
-        private fun showRating() {
+    private fun showRating() {
         val customView = layoutInflater.inflate(R.layout.rating, null)
 
         val notNowButton = customView.findViewById<AppCompatButton>(R.id.notNowButton)
@@ -153,7 +176,10 @@ class HomeActivity : BaseActivity() {
         // Set up click listener for Rate Now button
         rateNowButton.setOnClickListener {
             // Open the link (replace 'your_link_here' with the actual link)
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.app.rivisio&hl=en-IN"))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=com.app.rivisio&hl=en-IN")
+            )
             startActivity(intent)
 
             // Dismiss the BottomSheetDialog
@@ -162,6 +188,7 @@ class HomeActivity : BaseActivity() {
 
         dialog.show()
     }
+
     override fun onResume() {
         super.onResume()
         homeActivityViewModel.syncPurchases()
@@ -213,22 +240,16 @@ class HomeActivity : BaseActivity() {
     private fun getPermissions() {
         if (Build.VERSION.SDK_INT >= 31) {
 
-            var permissionsArray = arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM)
+            var permissionsArray = emptyArray<String>()
 
             if (Build.VERSION.SDK_INT >= 33) {
                 permissionsArray = arrayOf(
-                    Manifest.permission.SCHEDULE_EXACT_ALARM,
                     Manifest.permission.POST_NOTIFICATIONS
                 )
             }
 
             if (!hasPermissions(permissionsArray))
                 requestPermissionsSafely(permissionsArray, PERMISSION_REQUEST_CODE)
-            else
-                remindersManager.startReminder(applicationContext)
-
-        } else {
-            remindersManager.startReminder(applicationContext)
         }
     }
 
@@ -252,7 +273,6 @@ class HomeActivity : BaseActivity() {
                     }
                     if (allPermissionsGranted) {
                         showMessage("Permissions granted")
-                        remindersManager.startReminder(applicationContext)
                     } else
                         showError("Permissions not granted, some features will not work")
 

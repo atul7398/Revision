@@ -5,6 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.app.rivisio.data.repository.Repository
 import java.util.Calendar
 import java.util.Locale

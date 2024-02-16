@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -25,7 +27,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity() {
@@ -173,18 +174,43 @@ class LoginActivity : BaseActivity() {
         })
     }
 
+
     private fun showReferralBottomSheet() {
         val referralView = layoutInflater.inflate(R.layout.referral_dialog_layout, null)
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(referralView)
         dialog.setCancelable(false)
-        referralView.findViewById<AppCompatButton>(R.id.complete_sign_up).setOnClickListener {
-            user.referralCode =
-                referralView.findViewById<AppCompatEditText>(R.id.referral_code).text.toString()
+
+        val referralCodeEditText = referralView.findViewById<AppCompatEditText>(R.id.referral_code)
+        val completeSignUpButton = referralView.findViewById<AppCompatButton>(R.id.complete_sign_up)
+
+        // Add TextWatcher to the referral code EditText
+        referralCodeEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Check if referral code EditText is empty or not
+                if (s?.isNotEmpty() == true) {
+                    // If not empty, change the text of the button to "Next"
+                    completeSignUpButton.text = "Next"
+                } else {
+                    // If empty, change the text of the button back to "Skip"
+                    completeSignUpButton.text = "Skip"
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
+
+        completeSignUpButton.setOnClickListener {
+            user.referralCode = referralCodeEditText.text.toString()
             loginViewModel.setUserDetails(user)
 
             dialog.dismiss()
         }
+
         dialog.show()
     }
 
